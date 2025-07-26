@@ -1,1 +1,72 @@
-...
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Infirmière</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>👩‍⚕️ Espace Infirmière</h1>
+
+    <!-- Formulaire Enfant -->
+    <section>
+      <h2>Enregistrer un enfant</h2>
+      <form id="form-enfant">
+        <input type="text" name="nom" placeholder="Nom de l'enfant" required>
+        <input type="date" name="date_naissance" required>
+        <select name="sexe" required>
+          <option value="">Sexe</option>
+          <option value="M">Masculin</option>
+          <option value="F">Féminin</option>
+        </select>
+        <input type="text" name="parent_nom" placeholder="Nom du parent" required>
+        <input type="tel" name="telephone" placeholder="Téléphone" required>
+        <input type="text" name="centre_sante" placeholder="Centre de santé" required>
+        <select name="langue" required>
+          <option value="">Langue préférée</option>
+          <option value="fr">Français</option>
+          <option value="ln">Lingala</option>
+          <option value="sw">Swahili</option>
+        </select>
+        <button type="submit">Enregistrer Enfant</button>
+      </form>
+    </section>
+
+    <!-- Formulaire Grossesse -->
+    <section>
+      <h2>Enregistrer une grossesse</h2>
+      <form id="form-grossesse">
+        <input type="text" name="nom" placeholder="Nom de la femme" required>
+        <input type="date" name="date_debut_grossesse" required>
+        <input type="tel" name="telephone" placeholder="Téléphone" required>
+        <input type="text" name="centre_sante" placeholder="Centre de santé" required>
+        <select name="langue" required>
+          <option value="">Langue préférée</option>
+          <option value="fr">Français</option>
+          <option value="ln">Lingala</option>
+          <option value="sw">Swahili</option>
+        </select>
+        <button type="submit">Enregistrer Grossesse</button>
+      </form>
+    </section>
+
+    <!-- Liste des enfants à vacciner -->
+    <section>
+      <h2>Enfants à vacciner aujourd’hui</h2>
+      <ul id="liste-vaccins">
+        <li>Chargement...</li>
+      </ul>
+    </section>
+
+    <!-- Bouton de synchronisation -->
+    <section>
+      <button id="btn-sync">🔄 Synchroniser maintenant</button>
+      <p id="offline-status" style="color: red;"></p>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
