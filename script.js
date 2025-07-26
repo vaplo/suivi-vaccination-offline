@@ -1,82 +1,127 @@
-body {
-  font-family: 'Open Sans', sans-serif;
-  background: #f7f9fc;
-  margin: 0;
-  padding: 0;
+// 🧠 Config — à adapter selon ton backend
+const WEBHOOKS = {
+  enfant: '/webhook/enregistrement-enfant',
+  grossesse: '/webhook/enregistrement-grossesse',
+  vaccinAdministre: '/webhook/vaccin-administre',
+};
+
+// ⏺️ Enregistrer un formulaire
+function envoyerFormulaire(idForm, type) {
+  const form = document.getElementById(idForm);
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+
+    if (navigator.onLine) {
+      try {
+        await fetch(WEBHOOKS[type], {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        alert('✅ Données envoyées avec succès !');
+        form.reset();
+      } catch (err) {
+        sauvegarderLocalement(type, data);
+        alert('⚠️ Problème d’envoi. Données stockées localement.');
+      }
+    } else {
+      sauvegarderLocalement(type, data);
+      alert('📴 Hors ligne. Données enregistrées localement.');
+    }
+  });
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+// 🧱 Enregistrer localement si offline
+function sauvegarderLocalement(type, data) {
+  const file = localStorage.getItem('queue') || '[]';
+  const queue = JSON.parse(file);
+  queue.push({ type, data });
+  localStorage.setItem('queue', JSON.stringify(queue));
 }
 
-.card {
-  background: white;
-  padding: 2rem;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
-  width: 90%;
-  max-width: 400px;
+// 🔄 Bouton Synchronisation
+document.getElementById('btn-sync')?.addEventListener('click', synchroniser);
+
+// 🔄 Auto-sync quand la connexion revient
+window.addEventListener('online', synchroniser);
+
+// 🔁 Synchroniser les données en attente
+async function synchroniser() {
+  const file = localStorage.getItem('queue') || '[]';
+  const queue = JSON.parse(file);
+  if (queue.length === 0) {
+    alert("✅ Aucune donnée à synchroniser.");
+    return;
+  }
+
+  for (const item of queue) {
+    try {
+      await fetch(WEBHOOKS[item.type], {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(item.data)
+      });
+    } catch (err) {
+      alert("⚠️ Erreur pendant la synchronisation.");
+      return;
+    }
+  }
+
+  localStorage.removeItem('queue');
+  alert("✅ Données synchronisées avec succès !");
 }
 
-.icon-circle {
-  width: 60px;
-  height: 60px;
-  background: #2f80ed;
-  color: white;
-  border-radius: 50%;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 32px;
-  margin-bottom: 1rem;
+// 📋 Charger la liste des enfants à vacciner
+async function chargerVaccinations() {
+  const liste = document.getElementById('liste-vaccins');
+  if (!liste) return;
+
+  try {
+    const res = await fetch('/webhook/enfants-a-vacciner');
+    const enfants = await res.json();
+    liste.innerHTML = '';
+
+    enfants.forEach(enfant => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <strong>${enfant.nom}</strong> (${enfant.date_naissance}) – ${enfant.vaccin}
+        <button data-id="${enfant.id}">✅ Vaccin administré</button>
+      `;
+      liste.appendChild(li);
+    });
+
+    liste.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.getAttribute('data-id');
+        if (navigator.onLine) {
+          await fetch(WEBHOOKS.vaccinAdministre, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+          });
+          btn.parentElement.remove();
+        } else {
+          sauvegarderLocalement('vaccinAdministre', { id });
+          btn.parentElement.remove();
+        }
+      });
+    });
+
+  } catch {
+    liste.innerHTML = '<li style="color:red;">Impossible de charger la liste.</li>';
+  }
 }
 
-h1 {
-  font-size: 1.6rem;
-  margin: 0 0 0.5rem 0;
-  color: #1a1a1a;
+// 🔄 Affiche l'état de connexion
+function verifierConnexion() {
+  const offlineMsg = document.getElementById('offline-status');
+  if (!offlineMsg) return;
+  offlineMsg.textContent = navigator.onLine ? '' : '📴 Mode hors ligne activé';
 }
+setInterval(verifierConnexion, 1000);
 
-p {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.buttons {
-  margin-top: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.btn {
-  padding: 0.75rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  text-align: center;
-  display: block;
-}
-
-.btn-outline {
-  border: 2px solid #2f80ed;
-  color: #2f80ed;
-  background: white;
-}
-
-.btn-outline:hover {
-  background: #e3f0ff;
-}
-
-.btn-solid {
-  background: #27ae60;
-  color: white;
-}
-
-.btn-solid:hover {
-  background: #219150;
-}
+// ✅ Initialisation
+envoyerFormulaire('form-enfant', 'enfant');
+envoyerFormulaire('form-grossesse', 'grossesse');
+chargerVaccinations();
