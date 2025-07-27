@@ -1,18 +1,144 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Espace Superviseur</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f8fffe 0%, #e8f5f3 100%);
+      color: #2c3e50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 95%;
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+
+    h2 {
+      color: #2c5aa0;
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      margin-top: 2rem;
+      color: #16a085;
+      font-size: 1.2rem;
+    }
+
+    #stats p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+
+    label {
+      display: block;
+      margin: 1.5rem 0 0.8rem;
+      font-weight: 500;
+      font-size: 1rem;
+      color: #34495e;
+      text-align: left;
+    }
+
+    select {
+      padding: 0.8rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 2px solid #bdc3c7;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 1rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    th {
+      background: linear-gradient(135deg, #2c5aa0 0%, #16a085 100%);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    td {
+      border-bottom: 1px solid #ecf0f1;
+      padding: 1rem;
+      text-align: left;
+    }
+
+    tr:hover td {
+      background-color: #f8f9fa;
+    }
+
+    button {
+      margin-top: 1rem;
+      margin-right: 0.5rem;
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #27ae60, #16a085);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, #3498db, #2c5aa0);
+      color: white;
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    #bonjour-user {
+      font-weight: bold;
+      color: #2c5aa0;
+      margin-bottom: 1rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>📊 Statistiques</h2>
+    <p id="bonjour-user">Bonjour</p>
+
     <div id="stats">
       <p>Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
       <p>Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
       <p>Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+    </div>
+
+    <div>
+      <button onclick="synchroniserDonnees()" class="btn btn-primary">🔄 Synchroniser</button>
+      <button onclick="exporterCSV()" class="btn btn-secondary">⬇️ Exporter CSV</button>
+      <button onclick="logout()" class="btn btn-danger">🚪 Déconnexion</button>
     </div>
 
     <h3>🧒 Enfants en retard</h3>
@@ -21,6 +147,7 @@
         <option value="">Tous</option>
       </select>
     </label>
+
     <table id="table-retards">
       <thead>
         <tr>
@@ -35,6 +162,36 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    // Afficher nom de l’utilisateur
+    const username = localStorage.getItem("username");
+    if (username) {
+      document.getElementById("bonjour-user").textContent = "👋 Bonjour " + username;
+    }
+
+    function logout() {
+      localStorage.removeItem("session_token");
+      localStorage.removeItem("user_role");
+      localStorage.removeItem("username");
+      window.location.href = "login.html";
+    }
+
+    function exporterCSV() {
+      let rows = [["Nom", "Centre", "Vaccin", "Date prévue"]];
+      document.querySelectorAll("#table-retards tbody tr").forEach(tr => {
+        const cells = Array.from(tr.children).map(td => td.textContent);
+        rows.push(cells);
+      });
+      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      const link = document.createElement("a");
+      link.setAttribute("href", encodeURI(csvContent));
+      link.setAttribute("download", "retards_vaccination.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
 </body>
 </html>
+
 
