@@ -1,62 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Espace Superviseur</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h1>📊 Espace Superviseur</h1>
+    <h2>📊 Statistiques</h2>
+    <div id="stats">
+      <p>Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
+      <p>Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
+      <p>Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+    </div>
 
-    <section id="stats">
-      <p><strong>Nombre d’enfants enregistrés :</strong> <span id="nb-enfants">...</span></p>
-      <p><strong>Vaccins administrés :</strong> <span id="nb-vaccins">...</span></p>
-      <p><strong>Grossesses enregistrées :</strong> <span id="nb-grossesses">...</span></p>
-      <p><strong>Retards de vaccination :</strong> <span id="nb-retards">...</span></p>
-    </section>
-
-    <button id="btn-export">⬇️ Exporter les données</button>
-
-    <a href="index.html" class="btn btn-outline" style="margin-top: 2rem;">⬅ Retour à l'accueil</a>
+    <h3>🧒 Enfants en retard</h3>
+    <label>Filtrer par centre :
+      <select id="filtre-centre">
+        <option value="">Tous</option>
+      </select>
+    </label>
+    <table id="table-retards">
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Centre</th>
+          <th>Vaccin</th>
+          <th>Date prévue</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
-  <script>
-    async function chargerStats() {
-      try {
-        const response = await fetch('/webhook/statistiques-globales');
-        const data = await response.json();
-
-        document.getElementById('nb-enfants').textContent = data.enfants || '0';
-        document.getElementById('nb-vaccins').textContent = data.vaccins || '0';
-        document.getElementById('nb-grossesses').textContent = data.grossesses || '0';
-        document.getElementById('nb-retards').textContent = data.retards || '0';
-      } catch (err) {
-        document.getElementById('stats').innerHTML = "<p style='color:red;'>Erreur de connexion. Statistiques indisponibles.</p>";
-      }
-    }
-
-    function exporterCSV() {
-      const lignes = [
-        ["Indicateur", "Valeur"],
-        ["Enfants enregistrés", document.getElementById('nb-enfants').textContent],
-        ["Vaccins administrés", document.getElementById('nb-vaccins').textContent],
-        ["Grossesses enregistrées", document.getElementById('nb-grossesses').textContent],
-        ["Retards de vaccination", document.getElementById('nb-retards').textContent],
-      ];
-      const csv = lignes.map(l => l.join(',')).join('\n');
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'statistiques_vaccination.csv';
-      a.click();
-    }
-
-    document.getElementById('btn-export').addEventListener('click', exporterCSV);
-    chargerStats();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
+
