@@ -1,127 +1,81 @@
-// 🧠 Config — à adapter selon ton backend
-const WEBHOOKS = {
-  enfant: '/webhook/enregistrement-enfant',
-  grossesse: '/webhook/enregistrement-grossesse',
-  vaccinAdministre: '/webhook/vaccin-administre',
-};
-
-// ⏺️ Enregistrer un formulaire
-function envoyerFormulaire(idForm, type) {
-  const form = document.getElementById(idForm);
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form));
-
-    if (navigator.onLine) {
-      try {
-        await fetch(WEBHOOKS[type], {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-        alert('✅ Données envoyées avec succès !');
-        form.reset();
-      } catch (err) {
-        sauvegarderLocalement(type, data);
-        alert('⚠️ Problème d’envoi. Données stockées localement.');
-      }
-    } else {
-      sauvegarderLocalement(type, data);
-      alert('📴 Hors ligne. Données enregistrées localement.');
-    }
-  });
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f9;
+  color: #333;
 }
 
-// 🧱 Enregistrer localement si offline
-function sauvegarderLocalement(type, data) {
-  const file = localStorage.getItem('queue') || '[]';
-  const queue = JSON.parse(file);
-  queue.push({ type, data });
-  localStorage.setItem('queue', JSON.stringify(queue));
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
 }
 
-// 🔄 Bouton Synchronisation
-document.getElementById('btn-sync')?.addEventListener('click', synchroniser);
-
-// 🔄 Auto-sync quand la connexion revient
-window.addEventListener('online', synchroniser);
-
-// 🔁 Synchroniser les données en attente
-async function synchroniser() {
-  const file = localStorage.getItem('queue') || '[]';
-  const queue = JSON.parse(file);
-  if (queue.length === 0) {
-    alert("✅ Aucune donnée à synchroniser.");
-    return;
-  }
-
-  for (const item of queue) {
-    try {
-      await fetch(WEBHOOKS[item.type], {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item.data)
-      });
-    } catch (err) {
-      alert("⚠️ Erreur pendant la synchronisation.");
-      return;
-    }
-  }
-
-  localStorage.removeItem('queue');
-  alert("✅ Données synchronisées avec succès !");
+.card {
+  text-align: center;
+  padding: 40px 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-// 📋 Charger la liste des enfants à vacciner
-async function chargerVaccinations() {
-  const liste = document.getElementById('liste-vaccins');
-  if (!liste) return;
-
-  try {
-    const res = await fetch('/webhook/enfants-a-vacciner');
-    const enfants = await res.json();
-    liste.innerHTML = '';
-
-    enfants.forEach(enfant => {
-      const li = document.createElement('li');
-      li.innerHTML = `
-        <strong>${enfant.nom}</strong> (${enfant.date_naissance}) – ${enfant.vaccin}
-        <button data-id="${enfant.id}">✅ Vaccin administré</button>
-      `;
-      liste.appendChild(li);
-    });
-
-    liste.querySelectorAll('button').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.getAttribute('data-id');
-        if (navigator.onLine) {
-          await fetch(WEBHOOKS.vaccinAdministre, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id })
-          });
-          btn.parentElement.remove();
-        } else {
-          sauvegarderLocalement('vaccinAdministre', { id });
-          btn.parentElement.remove();
-        }
-      });
-    });
-
-  } catch {
-    liste.innerHTML = '<li style="color:red;">Impossible de charger la liste.</li>';
-  }
+h1, h2 {
+  color: #2e7d32;
 }
 
-// 🔄 Affiche l'état de connexion
-function verifierConnexion() {
-  const offlineMsg = document.getElementById('offline-status');
-  if (!offlineMsg) return;
-  offlineMsg.textContent = navigator.onLine ? '' : '📴 Mode hors ligne activé';
+p {
+  font-size: 1rem;
 }
-setInterval(verifierConnexion, 1000);
 
-// ✅ Initialisation
-envoyerFormulaire('form-enfant', 'enfant');
-envoyerFormulaire('form-grossesse', 'grossesse');
-chargerVaccinations();
+.buttons {
+  margin-top: 20px;
+}
+
+.btn {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.btn-outline {
+  border: 2px solid #2e7d32;
+  color: #2e7d32;
+  background: white;
+}
+
+.btn-solid {
+  background: #2e7d32;
+  color: white;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+button {
+  background: #2e7d32;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
