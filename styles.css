@@ -1,123 +1,84 @@
-// Détection de la page actuelle
-const page = location.pathname;
-
-if (page.includes('infirmiere.html')) {
-  const form = document.getElementById('form-enfant');
-  const status = document.getElementById('status');
-  const listeVaccins = document.getElementById('liste-vaccins');
-
-  // 🔄 Vérifie la connexion
-  function isOnline() {
-    return window.navigator.onLine;
-  }
-
-  // 📝 Enregistrer un enfant (online ou offline)
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const data = {
-      nom: document.getElementById('nom').value,
-      date_naissance: document.getElementById('dateNaissance').value,
-      sexe: document.getElementById('sexe').value,
-      centre_sante: document.getElementById('centre').value,
-      langue: document.getElementById('langue').value
-    };
-
-    if (isOnline()) {
-      // Envoi direct au webhook
-      const res = await fetch("https://mon-n8n-url/webhook/enregistrement-enfant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      if (res.ok) {
-        status.textContent = "Enfant enregistré avec succès.";
-        form.reset();
-      } else {
-        status.textContent = "Erreur serveur.";
-      }
-    } else {
-      // Enregistre localement
-      const offlineData = JSON.parse(localStorage.getItem("offlineEnfants") || "[]");
-      offlineData.push(data);
-      localStorage.setItem("offlineEnfants", JSON.stringify(offlineData));
-      status.textContent = "Mode hors-ligne – données stockées localement.";
-    }
-  });
-
-  // ⏱ Vaccins du jour
-  async function chargerVaccins() {
-    const res = await fetch("https://mon-n8n-url/webhook/vaccins-prevus-aujourdhui");
-    const vaccins = await res.json();
-    listeVaccins.innerHTML = "";
-    vaccins.forEach(v => {
-      const li = document.createElement('li');
-      li.innerHTML = `${v.nom} – ${v.vaccin} <button data-id="${v.id}">✅</button>`;
-      listeVaccins.appendChild(li);
-    });
-  }
-
-  // ✅ Marquer comme fait
-  listeVaccins.addEventListener('click', async (e) => {
-    if (e.target.tagName === "BUTTON") {
-      const id = e.target.dataset.id;
-      await fetch("https://mon-n8n-url/webhook/marquer-vaccin-fait", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id })
-      });
-      chargerVaccins(); // recharge
-    }
-  });
-
-  // Synchronisation automatique offline
-  window.addEventListener("online", async () => {
-    const offlineData = JSON.parse(localStorage.getItem("offlineEnfants") || "[]");
-    for (const data of offlineData) {
-      await fetch("https://mon-n8n-url/webhook/enregistrement-enfant", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-    }
-    localStorage.removeItem("offlineEnfants");
-    alert("Connexion rétablie. Données synchronisées.");
-  });
-
-  chargerVaccins();
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f6f9;
+  color: #333;
 }
 
-// 🧑‍💼 Partie Superviseur
-if (page.includes('superviseur.html')) {
-  const total = document.getElementById("total-enfants");
-  const prevus = document.getElementById("vaccins-aujourdhui");
-  const retard = document.getElementById("vaccins-retard");
-  const filtre = document.getElementById("filtre-centre");
-  const tableau = document.getElementById("tableau-retard");
-
-  async function chargerStats() {
-    const res = await fetch("https://mon-n8n-url/webhook/statistiques-centre");
-    const data = await res.json();
-    total.textContent = data.total_enfants;
-    prevus.textContent = data.vaccins_aujourdhui;
-    retard.textContent = data.vaccins_retard;
-    afficherTableau(data.retards);
-  }
-
-  function afficherTableau(retards) {
-    tableau.innerHTML = "";
-    const centres = new Set();
-    retards.forEach(e => {
-      centres.add(e.centre_sante);
-      if (!filtre.value || filtre.value === e.centre_sante) {
-        const row = `<tr><td>${e.nom}</td><td>${e.centre_sante}</td><td>${e.vaccin}</td><td>${e.date_prevue}</td></tr>`;
-        tableau.innerHTML += row;
-      }
-    });
-    filtre.innerHTML = `<option value="">Tous les centres</option>` +
-      [...centres].map(c => `<option value="${c}">${c}</option>`).join('');
-  }
-
-  filtre.addEventListener("change", chargerStats);
-  chargerStats();
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 1rem;
 }
+
+h1, h2, h3 {
+  color: #1565c0;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.btn {
+  display: block;
+  margin-top: 1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  text-align: center;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.btn-secondary {
+  background-color: #1565c0;
+  color: white;
+}
+
+.home {
+  text-align: center;
+  padding-top: 5rem;
+}
+
+#message-form {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+
 
