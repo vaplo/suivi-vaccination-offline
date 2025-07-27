@@ -183,5 +183,71 @@ setInterval(synchroniserDonnees, 15000);
 // 🔔 Détection online / offline
 window.addEventListener('online', () => alert('✅ Connexion rétablie. Données synchronisées.'));
 window.addEventListener('offline', () => alert('❌ Hors ligne. Vos données seront synchronisées plus tard.'));
+const FORM_GROSSESSE = document.getElementById("form-grossesse");
+const GROSSESSES_KEY = "grossesses_en_attente";
+
+FORM_GROSSESSE.addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const femme = {
+    nom: FORM_GROSSESSE.nom.value,
+    date_debut_grossesse: FORM_GROSSESSE.date_debut_grossesse.value,
+    centre_sante: FORM_GROSSESSE.centre_sante.value,
+    langue: FORM_GROSSESSE.langue.value,
+  };
+
+  if (!navigator.onLine) {
+    // offline — stocker
+    let list = JSON.parse(localStorage.getItem(GROSSESSES_KEY)) || [];
+    list.push(femme);
+    localStorage.setItem(GROSSESSES_KEY, JSON.stringify(list));
+    afficherMessage("✅ Enregistrée localement (offline)", "success");
+  } else {
+    try {
+      const res = await fetch("https://TON-N8N-URL/webhook/enregistrement-grossesse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(femme),
+      });
+
+      if (res.ok) {
+        afficherMessage("✅ Femme enregistrée", "success");
+        FORM_GROSSESSE.reset();
+      } else {
+        afficherMessage("❌ Erreur côté serveur", "error");
+      }
+    } catch {
+      afficherMessage("❌ Problème de réseau", "error");
+    }
+  }
+});
+
+// Synchronisation automatique des grossesses
+async function synchroniserGrossesses() {
+  if (!navigator.onLine) return;
+
+  const list = JSON.parse(localStorage.getItem(GROSSESSES_KEY)) || [];
+  if (list.length === 0) return;
+
+  for (const femme of list) {
+    try {
+      const res = await fetch("https://TON-N8N-URL/webhook/enregistrement-grossesse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(femme),
+      });
+      if (!res.ok) throw new Error();
+    } catch {
+      return; // arrête si erreur
+    }
+  }
+
+  localStorage.removeItem(GROSSESSES_KEY);
+  afficherMessage("✅ Grossesses synchronisées", "success");
+}
+
+window.addEventListener("online", synchroniserGrossesses);
+
+
 
 
