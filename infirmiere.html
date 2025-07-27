@@ -3,62 +3,69 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Espace Infirmière</title> 
+  <title>Espace Personnel Médical</title> 
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
-    <h2>👶 Enregistrement d’un enfant</h2>
-    <form id="form-enfant">
-      <label>Nom :<input type="text" name="nom_complet" required></label>
-      <label>Date de naissance :<input type="date" name="date_naissance" required></label>
-      <label>Sexe :
-        <select name="sexe" required>
-          <option value="">-- Choisir --</option>
-          <option value="M">Masculin</option>
-          <option value="F">Féminin</option>
-        </select>
-      </label>
-      <label>Centre de santé :<input type="text" name="centre_sante" required></label>
-      <label>Langue preferee :
-        <select name="langue_preferee" required>
-          <option value="fr">Français</option>
-          <option value="ln">Lingala</option>
-          <option value="sw">Swahili</option>
-          <option value="ts">Tshiluba</option>
-        </select>
-      </label>
-      <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
-      <div id="message-form"></div>
-    </form>
+    <h2>🩺 Espace Personnel Médical</h2>
 
-    <h2>📅 Vaccins à faire aujourd’hui</h2>
-    <div id="vaccins-jour">Chargement...</div>
+    <div class="buttons">
+      <a href="#formulaire-enfant" class="btn btn-primary">👶 ENREGISTREMENT ENFANT</a>
+      <a href="#formulaire-grossesse" class="btn btn-secondary">🤰 ENREGISTREMENT FEMME</a>
+    </div>
+
+    <div id="formulaire-enfant">
+      <h2>👶 Enregistrement d’un enfant</h2>
+      <form id="form-enfant">
+        <label>Nom :<input type="text" name="nom_complet" required></label>
+        <label>Date de naissance :<input type="date" name="date_naissance" required></label>
+        <label>Sexe :
+          <select name="sexe" required>
+            <option value="">-- Choisir --</option>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+          </select>
+        </label>
+        <label>Centre de santé :<input type="text" name="centre_sante" required></label>
+        <label>Langue préférée :
+          <select name="langue_preferee" required>
+            <option value="fr">Français</option>
+            <option value="ln">Lingala</option>
+            <option value="sw">Swahili</option>
+            <option value="ts">Tshiluba</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
+        <div id="message-form"></div>
+      </form>
+
+      <h2>📅 Vaccins à faire aujourd’hui</h2>
+      <div id="vaccins-jour">Chargement...</div>
+    </div>
+
+    <div id="formulaire-grossesse">
+      <h2>🤰 Enregistrement d'une femme enceinte</h2>
+      <form id="form-grossesse">
+        <label>Nom complet : <input name="nom" required /></label>
+        <label>Date de début de grossesse : <input type="date" name="date_debut_grossesse" required /></label>
+        <label>Centre de santé : <input name="centre_sante" required /></label>
+        <label>Langue préférée :
+          <select name="langue" required>
+            <option value="fr">Français</option>
+            <option value="ln">Lingala</option>
+            <option value="sw">Swahili</option>
+            <option value="ts">Tshiluba</option>
+          </select>
+        </label>
+        <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
+      </form>
+    </div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-<hr>
-<h2>🤰 Enregistrement d'une femme enceinte</h2>
 
-<form id="form-grossesse">
-  <label>Nom complet : <input name="nom" required /></label>
-
-  <label>Date de début de grossesse : <input type="date" name="date_debut_grossesse" required /></label>
-
-  <label>Centre de santé : <input name="centre_sante" required /></label>
-
-  <label>Langue préférée :
-    <select name="langue" required>
-      <option value="fr">Français</option>
-      <option value="ln">Lingala</option>
-      <option value="sw">Swahili</option>
-      <option value="ts">Tshiluba</option>
-    </select>
-  </label>
-
-  <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
-</form>
 
 
