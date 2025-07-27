@@ -2,73 +2,23 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Espace Infirmière</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suivi Vaccination</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="container">
-    <h2>👩‍⚕️ Espace Infirmière</h2>
-
-    <!-- Boutons de sélection -->
+  <div class="container home">
+    <h1>📋 Suivi Vaccination</h1>
+    <p>Système intelligent pour les centres de santé en RDC</p>
+    
     <div class="buttons">
-      <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">👶 Enregistrement Enfant</button>
-      <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">🤰 Enregistrement Femme</button>
-    </div>
-
-    <!-- Formulaire enfant -->
-    <div id="formulaire-enfant">
-      <h2>👶 Enregistrement d’un enfant</h2>
-      <form id="form-enfant">
-        <label>Nom :<input type="text" name="nom_complet" required></label>
-        <label>Date de naissance :<input type="date" name="date_naissance" required></label>
-        <label>Sexe :
-          <select name="sexe" required>
-            <option value="">-- Choisir --</option>
-            <option value="M">Masculin</option>
-            <option value="F">Féminin</option>
-          </select>
-        </label>
-        <label>Centre de santé :<input type="text" name="centre_sante" required></label>
-        <label>Langue préférée :
-          <select name="langue_preferee" required>
-            <option value="fr">Français</option>
-            <option value="ln">Lingala</option>
-            <option value="sw">Swahili</option>
-            <option value="ts">Tshiluba</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
-        <div id="message-form"></div>
-      </form>
-
-      <h2>📅 Vaccins à faire aujourd’hui</h2>
-      <div id="vaccins-jour">Chargement...</div>
-    </div>
-
-    <!-- Formulaire grossesse -->
-    <div id="formulaire-grossesse" style="display: none;">
-      <h2>🤰 Enregistrement d'une femme enceinte</h2>
-      <form id="form-grossesse">
-        <label>Nom complet : <input name="nom" required /></label>
-        <label>Date de début de grossesse : <input type="date" name="date_debut_grossesse" required /></label>
-        <label>Centre de santé : <input name="centre_sante" required /></label>
-        <label>Langue préférée :
-          <select name="langue" required>
-            <option value="fr">Français</option>
-            <option value="ln">Lingala</option>
-            <option value="sw">Swahili</option>
-            <option value="ts">Tshiluba</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
-      </form>
+      <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Personnel Médical</a>
+      <a href="superviseur.html" class="btn btn-secondary">📊 Espace Superviseur</a>
     </div>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
