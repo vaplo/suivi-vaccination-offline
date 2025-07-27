@@ -63,34 +63,34 @@
     </div>
 
     <!-- Formulaire enfant -->
-    <div id="formulaire-enfant">
-      <h2>👶 Enregistrement d’un enfant</h2>
-      <form id="form-enfant">
-        <label>Nom :<input type="text" name="nom_complet" required></label>
-        <label>Date de naissance :<input type="date" name="date_naissance" required></label>
-        <label>Sexe :
-          <select name="sexe" required>
-            <option value="">-- Choisir --</option>
-            <option value="M">Masculin</option>
-            <option value="F">Féminin</option>
-          </select>
-        </label>
-        <label>Numéro de téléphone :<input type="tel" name="telephone" required></label>
-        <label>Centre de santé :<input type="text" name="centre_sante" required></label>
-        <label>Langue préférée :
-          <select name="langue_preferee" required>
-            <option value="fr">Français</option>
-            <option value="ln">Lingala</option>
-            <option value="sw">Swahili</option>
-            <option value="ts">Tshiluba</option>
-            <option value="Kg">Kikongo</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
-        <div id="message-form"></div>
-      </form>
+    <form id="form-enfant">
+  <label>Nom :<input type="text" name="nom" required></label>
+  <label>Date de naissance :<input type="date" name="date_naissance" required></label>
+  <label>Sexe :
+    <select name="sexe" required>
+      <option value="">-- Choisir --</option>
+      <option value="M">Masculin</option>
+      <option value="F">Féminin</option>
+    </select>
+  </label>
+  <label>Numéro de téléphone :<input type="tel" name="telephone_parent" required></label>
+  <label>Province :<input type="text" name="province" required></label>
+  <label>Centre de santé :<input type="text" name="centre_sante" required></label>
+  <label>Langue préférée :
+    <select name="langue_preferee" required>
+      <option value="fr">Français</option>
+      <option value="ln">Lingala</option>
+      <option value="sw">Swahili</option>
+      <option value="ts">Tshiluba</option>
+      <option value="Kg">Kikongo</option>
+    </select>
+  </label>
+  <button type="submit" class="btn btn-primary">✅ ENREGISTRER</button>
+  <div id="message-form"></div>
+</form>
 
-      <h2>📅 Vaccins à faire aujourd’hui</h2>
+
+     <h2>📅 Vaccins à faire aujourd’hui</h2>
       <div id="vaccins-jour">Chargement...</div>
     </div>
 
