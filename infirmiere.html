@@ -5,16 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Espace Personnel Médical</title> 
   <link rel="stylesheet" href="styles.css">
+  <style>
+    #formulaire-enfant,
+    #formulaire-grossesse {
+      display: none;
+      margin-top: 2rem;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h2>🩺 Espace Personnel Médical</h2>
 
     <div class="buttons">
-      <a href="#formulaire-enfant" class="btn btn-primary">👶 ENREGISTREMENT ENFANT</a>
-      <a href="#formulaire-grossesse" class="btn btn-secondary">🤰 ENREGISTREMENT FEMME</a>
+      <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">👶 ENREGISTREMENT ENFANT</button>
+      <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">🤰 ENREGISTREMENT FEMME</button>
     </div>
 
+    <!-- Formulaire enfant -->
     <div id="formulaire-enfant">
       <h2>👶 Enregistrement d’un enfant</h2>
       <form id="form-enfant">
@@ -44,6 +52,7 @@
       <div id="vaccins-jour">Chargement...</div>
     </div>
 
+    <!-- Formulaire grossesse -->
     <div id="formulaire-grossesse">
       <h2>🤰 Enregistrement d'une femme enceinte</h2>
       <form id="form-grossesse">
@@ -64,8 +73,25 @@
   </div>
 
   <script src="script.js"></script>
+  <script>
+    function afficherFormulaire(type) {
+      const enfantDiv = document.getElementById('formulaire-enfant');
+      const grossesseDiv = document.getElementById('formulaire-grossesse');
+
+      if (type === 'enfant') {
+        enfantDiv.style.display = 'block';
+        grossesseDiv.style.display = 'none';
+        enfantDiv.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        enfantDiv.style.display = 'none';
+        grossesseDiv.style.display = 'block';
+        grossesseDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
 </body>
 </html>
+
 
 
 
