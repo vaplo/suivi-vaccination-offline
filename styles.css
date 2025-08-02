@@ -1,3 +1,4 @@
+/* ====== Base ====== */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -66,8 +67,8 @@ input, select, textarea {
   border-radius: 8px;
   border: 2px solid #bdc3c7;
   box-sizing: border-box;
-  transition: all 0.3s ease;
   background-color: #fdfdfd;
+  transition: all 0.3s ease;
 }
 
 input:focus, select:focus, textarea:focus {
@@ -77,6 +78,7 @@ input:focus, select:focus, textarea:focus {
   background-color: white;
 }
 
+/* ====== Boutons ====== */
 .btn {
   display: block;
   margin-top: 1.5rem;
@@ -90,8 +92,6 @@ input:focus, select:focus, textarea:focus {
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
 }
 
 .btn:hover {
@@ -103,7 +103,6 @@ input:focus, select:focus, textarea:focus {
   background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
   color: white;
 }
-
 .btn-primary:hover {
   background: linear-gradient(135deg, #219a52 0%, #138d75 100%);
 }
@@ -112,7 +111,6 @@ input:focus, select:focus, textarea:focus {
   background: linear-gradient(135deg, #3498db 0%, #2c5aa0 100%);
   color: white;
 }
-
 .btn-secondary:hover {
   background: linear-gradient(135deg, #2980b9 0%, #1e4085 100%);
 }
@@ -121,27 +119,11 @@ input:focus, select:focus, textarea:focus {
   background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
   color: white;
 }
-
 .btn-danger:hover {
   background: linear-gradient(135deg, #d62c1a 0%, #a93226 100%);
 }
 
-.home {
-  text-align: center;
-  padding-top: 3rem;
-  background: linear-gradient(135deg, #ecf0f1 0%, #ffffff 100%);
-  border-radius: 12px;
-  margin: 2rem 0;
-}
-
-#message-form {
-  margin-top: 2rem;
-  font-weight: 600;
-  padding: 1rem;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-}
-
+/* ====== Alertes ====== */
 .success {
   color: #27ae60;
   font-weight: 600;
@@ -182,6 +164,7 @@ input:focus, select:focus, textarea:focus {
   margin: 1rem 0;
 }
 
+/* ====== Tables (retards, supervision) ====== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -214,11 +197,18 @@ tr:hover td {
   background-color: #f8f9fa;
 }
 
-tr:last-child td {
-  border-bottom: none;
+/* ====== Cartes médicales (vaccins du jour, fiches) ====== */
+.carte {
+  border: 1px solid #bdc3c7;
+  border-left: 6px solid #16a085;
+  background: #ffffff;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
-/* Styles spécifiques au domaine médical */
+/* ====== Médical : fiche patient, signes vitaux, planning ====== */
 .medical-card {
   background: white;
   border-radius: 12px;
@@ -265,14 +255,7 @@ tr:last-child td {
   color: #27ae60;
 }
 
-.medication-list {
-  background-color: #f8fffe;
-  border: 1px solid #16a085;
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-
+/* ====== Créneaux de RDV (à venir avec IA) ====== */
 .appointment-slot {
   background: white;
   border: 1px solid #bdc3c7;
@@ -282,31 +265,30 @@ tr:last-child td {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .appointment-slot:hover {
   border-color: #16a085;
   background-color: #f8fffe;
 }
-
 .appointment-slot.selected {
   border-color: #16a085;
   background-color: #d5f4e6;
 }
 
-/* Responsive design */
+/* ====== Responsive mobile-first ====== */
 @media (max-width: 768px) {
   .container {
     margin: 1rem;
     padding: 1rem;
   }
-  
+
   .vital-signs {
     grid-template-columns: 1fr;
   }
-  
+
   h1 {
     font-size: 1.8rem;
   }
 }
+
 
 
