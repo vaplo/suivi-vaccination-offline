@@ -3,8 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Espace Superviseur</title>
+  <title>V-Smart Monitoring – Supervision</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
   <style>
     body {
       margin: 0;
@@ -123,30 +134,17 @@
       margin-bottom: 1rem;
     }
   </style>
-  <link rel="manifest" href="manifest.webmanifest" />
-<meta name="theme-color" content="#16a085" />
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker actif"))
-      .catch(err => console.error("❌ SW error:", err));
-  }
-</script>
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-
-
-
 </head>
 <body>
   <div class="container">
-    <h2>📊 Statistiques</h2>
+    <h2>📊 V-Smart Monitoring – Supervision</h2>
     <p id="bonjour-user">Bonjour</p>
 
     <div id="stats">
-      <p>Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
-      <p>Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
-      <p>Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+      <p>👶 Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
+      <p>📅 Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
+      <p>⏳ Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+      <p>🛑 Cas zéros dose : <strong id="zeros-dose">...</strong></p>
     </div>
 
     <div>
@@ -155,10 +153,10 @@
       <button onclick="logout()" class="btn btn-danger">🚪 Déconnexion</button>
     </div>
 
-    <h3>🧒 Enfants en retard</h3>
-    <label>Filtrer par centre :
+    <h3>📍 Enfants en retard (filtrage par structure de santé)</h3>
+    <label>Filtrer par structure :
       <select id="filtre-centre">
-        <option value="">Tous</option>
+        <option value="">Toutes</option>
       </select>
     </label>
 
@@ -166,7 +164,7 @@
       <thead>
         <tr>
           <th>Nom</th>
-          <th>Centre</th>
+          <th>Structure</th>
           <th>Vaccin</th>
           <th>Date prévue</th>
         </tr>
@@ -177,7 +175,6 @@
 
   <script src="script.js"></script>
   <script>
-    // Afficher nom de l’utilisateur
     const username = localStorage.getItem("username");
     if (username) {
       document.getElementById("bonjour-user").textContent = "👋 Bonjour " + username;
@@ -191,7 +188,7 @@
     }
 
     function exporterCSV() {
-      let rows = [["Nom", "Centre", "Vaccin", "Date prévue"]];
+      let rows = [["Nom", "Structure", "Vaccin", "Date prévue"]];
       document.querySelectorAll("#table-retards tbody tr").forEach(tr => {
         const cells = Array.from(tr.children).map(td => td.textContent);
         rows.push(cells);
@@ -207,5 +204,6 @@
   </script>
 </body>
 </html>
+
 
 
