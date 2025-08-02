@@ -3,8 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Suivi Vaccination</title>
+  <title>V-Smart Monitoring</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
   <style>
     body {
       margin: 0;
@@ -69,32 +80,12 @@
       background: linear-gradient(135deg, #3498db 0%, #2c5aa0 100%);
       color: white;
     }
-
-    @media (max-width: 600px) {
-      .btn {
-        font-size: 1rem;
-      }
-    }
   </style>
-<link rel="manifest" href="manifest.webmanifest" />
-<meta name="theme-color" content="#16a085" />
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(() => console.log("✅ Service Worker actif"))
-      .catch(err => console.error("❌ SW error:", err));
-  }
-</script>
-<meta name="mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-
-
-
 </head>
 <body>
   <div class="container home">
-    <h1>📋 Suivi Vaccination</h1>
-    <p>Système intelligent pour les centres de santé en RDC</p>
+    <h1>📋 V-Smart Monitoring</h1>
+    <p>Système intelligent de suivi de la vaccination en RDC – à la disposition du PEV et des structures de santé de base.</p>
 
     <div class="buttons">
       <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Personnel Médical</a>
@@ -103,7 +94,5 @@
   </div>
 </body>
 </html>
-
-
 
 
