@@ -1,15 +1,19 @@
-const CACHE_NAME = "vaccination-cache-v1";
+const CACHE_NAME = 'vsmart-monitoring-cache-v1';
+
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/login.html",
-  "/infirmiere.html",
-  "/superviseur.html",
-  "/styles.css",
-  "/script.js",
+  '/',
+  '/index.html',
+  '/login.html',
+  '/infirmiere.html',
+  '/superviseur.html',
+  '/styles.css',
+  '/script.js',
+  '/manifest.webmanifest',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
-// 🔃 Installation
+// 🔃 Installation du SW
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function (cache) {
