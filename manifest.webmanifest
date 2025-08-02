@@ -1,6 +1,6 @@
 {
-  "name": "Suivi Vaccination RDC",
-  "short_name": "Vaccination",
+  "name": "V-Smart Monitoring",
+  "short_name": "VSmart",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
