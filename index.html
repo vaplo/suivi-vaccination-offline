@@ -38,7 +38,7 @@
     }
 
     h1 {
-      font-size: 2rem;
+      font-size: 2.2rem;
       color: #2c5aa0;
       margin-bottom: 1rem;
     }
@@ -46,6 +46,7 @@
     p {
       margin-bottom: 2rem;
       font-size: 1.1rem;
+      line-height: 1.6;
     }
 
     .buttons {
@@ -80,12 +81,19 @@
       background: linear-gradient(135deg, #3498db 0%, #2c5aa0 100%);
       color: white;
     }
+
+    @media (max-width: 600px) {
+      .btn {
+        font-size: 1rem;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container home">
     <h1>📋 V-Smart Monitoring</h1>
-    <p>Système intelligent de suivi de la vaccination en RDC – à la disposition du PEV et des structures de santé de base.</p>
+    <p><strong>Système intelligent d’implémentation de la vaccination en RDC</strong><br>
+    à la disposition du PEV et des structures sanitaires de base.</p>
 
     <div class="buttons">
       <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Personnel Médical</a>
