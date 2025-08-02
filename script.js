@@ -1,4 +1,4 @@
-const BASE_URL = 'https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccination';
+const BASE_URL = 'https://n8n-automation-server-waz-production.up.railway.app/webhook-test';
 
 // ✅ Utilitaires
 function estEnLigne() {
@@ -26,13 +26,13 @@ function enregistrerLocalement(cle, data) {
 }
 
 // ✅ Synchronisation
-function synchroniserDonnees() {
+def synchroniserDonnees() {
   if (!estEnLigne()) return;
 
   // Enfants
   const enfants = JSON.parse(localStorage.getItem('enfants_offline') || '[]');
   enfants.forEach((enfant, index) => {
-    fetch(`${BASE_URL}/register`, {
+    fetch(`${BASE_URL}/register-child`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(enfant)
@@ -70,7 +70,7 @@ if (formEnfant) {
     if (!data.structure_sante) data.structure_sante = data.centre_sante || '';
 
     if (estEnLigne()) {
-      fetch(`${BASE_URL}/register`, {
+      fetch(`${BASE_URL}/register-child`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
