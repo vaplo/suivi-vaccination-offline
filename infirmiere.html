@@ -1,59 +1,163 @@
-const BASE_URL = 'https://votre-app.up.railway.app/webhook-test';
-
-const form = document.getElementById('form-enfant');
-if (form) {
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    // Génération ID unique type C123456
-    data.id_unique = "C" + Math.floor(100000 + Math.random() * 900000);
-
-    if (estEnLigne()) {
-      // Vérifier si doublon avant enregistrement
-      fetch(`${BASE_URL}/check-doublon`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          nom: data.nom,
-          date_naissance: data.date_naissance,
-          telephone_parent: data.telephone_parent,
-          structure_sante: data.structure_sante
-        })
-      })
-      .then(res => res.json())
-      .then(rep => {
-        if (rep.doublon === true) {
-          afficherMessage('message-form', '⚠️ Cet enfant est déjà enregistré dans cette structure de santé.', 'warning');
-        } else {
-          // Enregistrement réel
-          fetch(`${BASE_URL}/register-child`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          })
-          .then(() => {
-            afficherMessage('message-form', '✅ Enregistrement réussi', 'success');
-            form.reset();
-          })
-          .catch(() => {
-            afficherMessage('message-form', '❌ Erreur réseau. Réessayez.', 'error');
-          });
-        }
-      });
-    } else {
-      // Enregistrer offline si pas connecté
-      const enfantsOffline = JSON.parse(localStorage.getItem('enfants_offline') || '[]');
-      enfantsOffline.push(data);
-      localStorage.setItem('enfants_offline', JSON.stringify(enfantsOffline));
-      afficherMessage('message-form', '❌ Mode hors-ligne – données sauvegardées', 'error');
-      form.reset();
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>V-Smart Monitoring – Espace Médical</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ Service Worker actif"))
+        .catch(err => console.error("❌ SW error:", err));
     }
-  });
-}
+  </script>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      padding: 2rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      text-align: center;
+    }
+    form {
+      text-align: left;
+      margin-top: 2rem;
+    }
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    .btn {
+      width: 80%;
+    }
+    #formulaire-enfant,
+    #formulaire-grossesse {
+      display: none;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🩺 V-Smart Monitoring – Espace Médical</h2>
 
+    <div class="buttons">
+      <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">👶 Enregistrement Enfant</button>
+      <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">🤰 Enregistrement Femme Enceinte</button>
+    </div>
 
+    <!-- ✅ Formulaire ENFANT -->
+    <div id="formulaire-enfant">
+      <h3>👶 Enregistrement d’un enfant</h3>
+      <form id="form-enfant">
+        <label>Nom complet :
+          <input type="text" name="nom_complet" required />
+        </label>
+        <label>Date de naissance :
+          <input type="date" name="date_naissance" required />
+        </label>
+        <label>Sexe :
+          <select name="sexe" required>
+            <option value="">-- Choisir --</option>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+          </select>
+        </label>
+        <label>Numéro de téléphone parent :
+          <input type="tel" name="telephone_parent" required />
+        </label>
+        <label>Nombre de jumeaux (si applicable) :
+          <input type="number" name="nombre_jumeaux" min="1" placeholder="1 si unique, 2 ou plus sinon" />
+        </label>
+        <label>Province :
+          <input type="text" name="province" required />
+        </label>
+        <label>Structure de santé :
+          <input type="text" name="structure_sante" required />
+        </label>
+        <label>Langue préférée :
+          <select name="langue_preferee" required>
+            <option value="fr">Français</option>
+            <option value="ln">Lingala</option>
+            <option value="sw">Swahili</option>
+            <option value="ts">Tshiluba</option>
+            <option value="kg">Kikongo</option>
+          </select>
+        </label>
 
+        <button type="submit" class="btn btn-primary">✅ Enregistrer</button>
+        <div id="message-form"></div>
+      </form>
+    </div>
 
+    <!-- ✅ Vaccins du jour -->
+    <h3>📅 Vaccins à faire aujourd’hui</h3>
+    <div id="vaccins-jour">Chargement...</div>
 
+    <!-- ✅ Formulaire FEMME -->
+    <div id="formulaire-grossesse">
+      <h3>🤰 Enregistrement d’une femme enceinte</h3>
+      <form id="form-grossesse">
+        <label>Nom complet :
+          <input name="nom" required />
+        </label>
+        <label>Date de début de grossesse :
+          <input type="date" name="date_debut_grossesse" required />
+        </label>
+        <label>Numéro de téléphone :
+          <input type="tel" name="telephone" required />
+        </label>
+        <label>Province :
+          <input type="text" name="province" required />
+        </label>
+        <label>Structure de santé :
+          <input name="structure_sante" required />
+        </label>
+        <label>Langue préférée :
+          <select name="langue_preferee" required>
+            <option value="fr">Français</option>
+            <option value="ln">Lingala</option>
+            <option value="sw">Swahili</option>
+            <option value="ts">Tshiluba</option>
+            <option value="kg">Kikongo</option>
+          </select>
+        </label>
 
+        <button type="submit" class="btn btn-primary">✅ Enregistrer</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    function afficherFormulaire(type) {
+      const enfantDiv = document.getElementById('formulaire-enfant');
+      const grossesseDiv = document.getElementById('formulaire-grossesse');
+
+      if (type === 'enfant') {
+        enfantDiv.style.display = 'block';
+        grossesseDiv.style.display = 'none';
+        enfantDiv.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        enfantDiv.style.display = 'none';
+        grossesseDiv.style.display = 'block';
+        grossesseDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+</body>
+</html>
