@@ -52,33 +52,39 @@
     }
 
     .card {
-      background-color: white;
+      position: relative;
+      background-size: cover;
+      background-position: center;
       border-radius: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      padding: 1rem;
-      text-align: center;
+      color: white;
+      min-height: 300px;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      min-height: 380px; /* 🔽 Moins haut qu'avant */
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5); /* ✅ pour lisibilité du texte */
+      z-index: 0;
     }
 
-    .card img {
-      width: 100%;
-      max-height: 180px;
-      object-fit: contain; /* ✅ image entière visible */
-      border-radius: 12px;
-      margin-bottom: 1rem;
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3, .card p {
+      margin: 0 0 0.5rem 0;
     }
 
     .btn {
-      margin-top: 1rem;
+      margin-top: auto;
       padding: 0.6rem 1rem;
       background-color: #16a085;
       color: white;
@@ -100,25 +106,6 @@
       background-color: #216a94;
     }
 
-    h1 {
-      font-size: 1.8rem;
-      margin-bottom: 0.3rem;
-    }
-
-    h2 {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-    }
-
-    h3 {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-    }
-
-    p {
-      font-size: 0.95rem;
-    }
-
     @media (max-width: 600px) {
       h1 {
         font-size: 1.4rem;
@@ -127,11 +114,8 @@
         font-size: 1.1rem;
       }
       .card {
-        min-height: auto;
+        min-height: 240px;
         padding: 1rem;
-      }
-      .card img {
-        height: 160px;
       }
     }
   </style>
@@ -148,16 +132,14 @@
     <div class="grid-cards">
 
       <!-- ✅ Carte Espace Médical -->
-      <div class="card">
-        <img src="images/espacemedical.png" alt="Espace médical" />
+      <div class="card" style="background-image: url('images/espacemedical.png')">
         <h3>Espace Médical</h3>
         <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
         <a href="infirmiere.html" class="btn">🩺 Accéder à l’espace infirmière</a>
       </div>
 
       <!-- ✅ Carte Superviseur -->
-      <div class="card">
-        <img src="images/espacesuperviseur.png" alt="Superviseur" />
+      <div class="card" style="background-image: url('images/espacesuperviseur.png')">
         <h3>Supervision & retards</h3>
         <p>Statistiques, export, surveillance des soins par structure.</p>
         <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
@@ -167,6 +149,158 @@
   </main>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FlowLab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ SW actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      color: #333;
+      margin: 0;
+    }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .homepage {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      color: white;
+      min-height: 300px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5); /* ✅ pour lisibilité du texte */
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3, .card p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .btn {
+      margin-top: auto;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+      }
+      .card {
+        min-height: 240px;
+        padding: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <h1>FlowLab</h1>
+    <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
+    <p>Accueil du système. Choisissez votre espace selon votre rôle.</p>
+  </header>
+
+  <main class="homepage">
+    <div class="grid-cards">
+
+      <!-- ✅ Carte Espace Médical -->
+      <div class="card" style="background-image: url('images/espacemedical.png')">
+        <h3>Espace Médical</h3>
+        <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
+        <a href="infirmiere.html" class="btn">🩺 Accéder à l’espace infirmière</a>
+      </div>
+
+      <!-- ✅ Carte Superviseur -->
+      <div class="card" style="background-image: url('images/espacesuperviseur.png')">
+        <h3>Supervision & retards</h3>
+        <p>Statistiques, export, surveillance des soins par structure.</p>
+        <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
+
 
 
 
