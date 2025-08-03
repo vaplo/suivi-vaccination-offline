@@ -19,31 +19,29 @@
 </head>
 <body>
   <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" style="height: 70px;" />
     <h1>FlowLab</h1>
     <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
     <p>Accueil du système. Choisissez votre espace selon votre rôle.</p>
   </header>
 
   <main class="homepage">
-    <div class="cards-container">
+    <div class="grid-cards">
 
-      <div class="card">
-        <img src="images/espacemedical.png" alt="Espace Médical" />
-        <div class="card-content">
-          <h3>🩺 Espace Infirmière</h3>
-          <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
-          <a href="infirmiere.html" class="btn btn-primary">Accéder</a>
-        </div>
+      <!-- ✅ Espace Médical avec la bonne image -->
+      <div class="card" style="min-height: 320px;">
+        <img src="images/espacemedical.png" alt="Espace médical" style="height: 160px; object-fit: cover;" />
+        <h3>Espace Médical</h3>
+        <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
+        <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Infirmière</a>
       </div>
 
-      <div class="card">
-        <img src="images/espacesuperviseur.png" alt="Supervision" />
-        <div class="card-content">
-          <h3>📊 Supervision & retards</h3>
-          <p>Statistiques, export, surveillance des soins par structure.</p>
-          <a href="superviseur.html" class="btn btn-secondary">Accéder</a>
-        </div>
+      <!-- ✅ Espace Superviseur avec la bonne image -->
+      <div class="card" style="min-height: 320px;">
+        <img src="images/espacesuperviseur.png" alt="Supervision" style="height: 160px; object-fit: contain;" />
+        <h3>Supervision & retards</h3>
+        <p>Statistiques, export, surveillance des soins par structure.</p>
+        <a href="superviseur.html" class="btn btn-secondary">📊 Espace Superviseur</a>
       </div>
 
     </div>
