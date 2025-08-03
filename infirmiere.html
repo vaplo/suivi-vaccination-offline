@@ -19,30 +19,65 @@
   <style>
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      padding: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+      padding: 1rem;
     }
 
     .card {
-      background: #fff;
+      position: relative;
+      background-size: cover;
+      background-position: center;
       border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      text-align: center;
-      transition: transform 0.3s;
-      min-height: 480px;
+      color: white;
+      min-height: 280px;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     }
 
-    .card img {
-      width: 100%;
-      height: auto;
-      max-height: 220px;
-      object-fit: contain;
-      margin-bottom: 16px;
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3, .card p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .btn {
+      margin-top: auto;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
     }
   </style>
 </head>
@@ -58,24 +93,21 @@
     <div class="grid-cards">
 
       <!-- 👶 Enfants -->
-      <div class="card">
-        <img src="images/enfants.png" alt="Enregistrement Enfant" />
+      <div class="card" style="background-image: url('images/enfants.png')">
         <h3>👶 Enfants</h3>
         <p>Ajoutez un enfant dans le système avec son profil et téléphone du parent.</p>
-        <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">Enregistrer un enfant</button>
+        <button onclick="afficherFormulaire('enfant')" class="btn">Enregistrer un enfant</button>
       </div>
 
       <!-- 🤰 Grossesses -->
-      <div class="card">
-        <img src="images/grossesses.png" alt="Femme enceinte" />
+      <div class="card" style="background-image: url('images/grossesses.png')">
         <h3>🤰 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi des consultations prénatales.</p>
         <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
       </div>
 
       <!-- 📅 Vaccins du jour -->
-      <div class="card">
-        <img src="images/surveillance-soins.png" alt="Vaccins du jour" />
+      <div class="card" style="background-image: url('images/surveillance-soins.png')">
         <h3>📅 Vaccins aujourd’hui</h3>
         <p>Visualisez les vaccinations à effectuer aujourd’hui dans votre structure.</p>
         <div id="vaccins-jour">Chargement...</div>
@@ -83,13 +115,9 @@
 
     </div>
 
-    <!-- 📄 Formulaires (inchangés ici, tu les as déjà bien faits) -->
-    <!-- Si besoin, je te les remets complets avec webhooks -->
+    <!-- 🔁 Formulaires (restent inchangés ici) -->
 
     <script>
-      // Webhook pour enregistrement (déjà connus)
-      const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-      const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
       const webhookVaccinsJour = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
 
       function afficherFormulaire(type) {
@@ -97,7 +125,7 @@
         document.getElementById("formulaire-grossesse")?.style.display = (type === 'grossesse') ? 'block' : 'none';
       }
 
-      // Charger les vaccins à faire aujourd’hui
+      // 📅 Charger les vaccins du jour
       fetch(webhookVaccinsJour)
         .then(res => res.json())
         .then(data => {
