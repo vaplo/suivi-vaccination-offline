@@ -16,6 +16,35 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      padding: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+      transition: transform 0.3s;
+      min-height: 480px; /* ✅ hauteur plus grande */
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      max-height: 220px;
+      object-fit: contain; /* ✅ image non coupée */
+      margin-bottom: 16px;
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -29,24 +58,24 @@
     <div class="grid-cards">
 
       <!-- 👶 Enfants -->
-      <div class="card" style="min-height: 440px;">
-        <img src="images/enfants.png" alt="Enregistrement Enfant" style="width: 100%; max-height: 220px; object-fit: contain;" />
+      <div class="card">
+        <img src="images/enfants.png" alt="Enregistrement Enfant" />
         <h3>👶 Enfants</h3>
         <p>Ajoutez un enfant dans le système avec son profil et téléphone du parent.</p>
         <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">Enregistrer un enfant</button>
       </div>
 
       <!-- 🤰 Grossesses -->
-      <div class="card" style="min-height: 440px;">
-        <img src="images/grossesses.png" alt="Femme enceinte" style="width: 100%; max-height: 220px; object-fit: contain;" />
+      <div class="card">
+        <img src="images/grossesses.png" alt="Femme enceinte" />
         <h3>🤰 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi des consultations prénatales.</p>
         <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
       </div>
 
       <!-- 📅 Vaccins du jour -->
-      <div class="card" style="min-height: 440px;">
-        <img src="images/surveillance-soins.png" alt="Vaccins du jour" style="width: 100%; max-height: 220px; object-fit: contain;" />
+      <div class="card">
+        <img src="images/surveillance-soins.png" alt="Vaccins du jour" />
         <h3>📅 Vaccins aujourd’hui</h3>
         <p>Visualisez les vaccinations à effectuer aujourd’hui dans votre structure.</p>
         <div id="vaccins-jour">Chargement...</div>
@@ -54,107 +83,10 @@
 
     </div>
 
-    <!-- Formulaire Enfant -->
-    <section id="formulaire-enfant" style="display: none;">
-      <h2>👶 Enregistrement d’un enfant</h2>
-      <form id="form-enfant">
-        <label>Nom complet :<input type="text" name="nom_complet" required /></label>
-        <label>Date de naissance :<input type="date" name="date_naissance" required /></label>
-        <label>Sexe :
-          <select name="sexe" required>
-            <option value="">-- Choisir --</option>
-            <option value="M">Masculin</option>
-            <option value="F">Féminin</option>
-          </select>
-        </label>
-        <label>Numéro de téléphone :<input type="tel" name="telephone_parent" required /></label>
-        <label>Structure de santé :<input type="text" name="centre_sante" required /></label>
-        <label>Province :<input type="text" name="province" required /></label>
-        <label>Langue préférée :
-          <select name="langue_preferee" required>
-            <option value="fr">Français</option>
-            <option value="ln">Lingala</option>
-            <option value="sw">Swahili</option>
-            <option value="ts">Tshiluba</option>
-            <option value="kg">Kikongo</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-primary">✅ Enregistrer</button>
-        <div id="message-form"></div>
-      </form>
-    </section>
+    <!-- Formulaires... (inchangés) -->
+    <!-- ... tu peux garder le reste du code identique -->
 
-    <!-- Formulaire Grossesse -->
-    <section id="formulaire-grossesse" style="display: none;">
-      <h2>🤰 Enregistrement d'une grossesse</h2>
-      <form id="form-grossesse">
-        <label>Nom complet :<input type="text" name="nom" required /></label>
-        <label>Date d'accouchement prévue (DPA) :<input type="date" name="dpa" required /></label>
-        <label>Numéro de téléphone :<input type="tel" name="telephone" required /></label>
-        <label>Structure de santé :<input type="text" name="centre_sante" required /></label>
-        <label>Province :<input type="text" name="province" required /></label>
-        <label>Langue préférée :
-          <select name="langue_preferee" required>
-            <option value="fr">Français</option>
-            <option value="ln">Lingala</option>
-            <option value="sw">Swahili</option>
-            <option value="ts">Tshiluba</option>
-            <option value="kg">Kikongo</option>
-          </select>
-        </label>
-        <button type="submit" class="btn btn-primary">✅ Enregistrer</button>
-        <div id="message-form-grossesse"></div>
-      </form>
-    </section>
-
-    <div style="margin-top: 2rem;">
-      <a href="index.html" class="btn">⬅ Retour à l'accueil</a>
-    </div>
   </main>
-
-  <script>
-    const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
-
-    function afficherFormulaire(type) {
-      document.getElementById("formulaire-enfant").style.display = (type === 'enfant') ? 'block' : 'none';
-      document.getElementById("formulaire-grossesse").style.display = (type === 'grossesse') ? 'block' : 'none';
-    }
-
-    document.getElementById("form-enfant")?.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      fetch(webhookEnfant, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        document.getElementById("message-form").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
-        this.reset();
-      })
-      .catch(() => {
-        document.getElementById("message-form").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
-      });
-    });
-
-    document.getElementById("form-grossesse")?.addEventListener("submit", function (e) {
-      e.preventDefault();
-      const data = Object.fromEntries(new FormData(this).entries());
-      fetch(webhookGrossesse, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      })
-      .then(() => {
-        document.getElementById("message-form-grossesse").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
-        this.reset();
-      })
-      .catch(() => {
-        document.getElementById("message-form-grossesse").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
-      });
-    });
-  </script>
 </body>
 </html>
 
