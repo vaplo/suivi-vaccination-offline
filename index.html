@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>V-Smart Monitoring</title>
+  <title>FlowLab</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
@@ -16,91 +16,42 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f8fffe 0%, #e8f5f3 100%);
-      color: #2c3e50;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .container.home {
-      max-width: 600px;
-      text-align: center;
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    h1 {
-      font-size: 2.2rem;
-      color: #2c5aa0;
-      margin-bottom: 1rem;
-    }
-
-    p {
-      margin-bottom: 2rem;
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .btn {
-      padding: 1rem;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      display: inline-block;
-      width: 100%;
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #3498db 0%, #2c5aa0 100%);
-      color: white;
-    }
-
-    @media (max-width: 600px) {
-      .btn {
-        font-size: 1rem;
-      }
-    }
-  </style>
 </head>
 <body>
-  <div class="container home">
-    <h1>📋 V-Smart Monitoring</h1>
-    <p><strong>Système intelligent d’implémentation de la vaccination en RDC</strong><br>
-    à la disposition du PEV et des structures sanitaires de base.</p>
+  <header class="top-bar">
+    <img src="icon-192.png" alt="FlowLab Logo" class="logo" />
+    <h1>FlowLab</h1>
+  </header>
 
-    <div class="buttons">
-      <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Personnel Médical</a>
-      <a href="superviseur.html" class="btn btn-secondary">📊 Espace Superviseur</a>
+  <main class="homepage">
+    <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
+    <p>Suivez et gérez les vaccins des enfants et femmes enceintes dans chaque structure de santé.</p>
+
+    <div class="grid-cards">
+      <div class="card">
+        <img src="img/famille1.jpg" alt="Enfant famille">
+        <h3>Enregistrement et suivi</h3>
+        <p>Ajoutez un enfant ou une grossesse dans le système. Suivi intelligent, même hors-ligne.</p>
+        <a href="infirmiere.html" class="btn btn-primary">🩺 Espace Personnel Médical</a>
+      </div>
+
+      <div class="card">
+        <img src="img/dashboard.jpg" alt="Statistiques">
+        <h3>Supervision et retards</h3>
+        <p>Consultez les statistiques, exportez les retards, surveillez la performance par structure.</p>
+        <a href="superviseur.html" class="btn btn-secondary">📊 Espace Superviseur</a>
+      </div>
+
+      <div class="card">
+        <img src="img/mobile.jpg" alt="Mobile">
+        <h3>Accès mobile & hors-ligne</h3>
+        <p>Application 100% mobile, compatible Android basique. Fonctionne même sans Internet.</p>
+        <a href="#" class="btn">📱 Utilisation terrain</a>
+      </div>
     </div>
-  </div>
+  </main>
 </body>
 </html>
+
 
 
