@@ -22,6 +22,27 @@ body, html {
   font-size: 1.8rem;
 }
 
+.top-bar h2 {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+  color: #ecf0f1;
+}
+
+.top-bar p {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
+  color: #e0f7f3;
+}
+
+/* ✅ Logo */
+.logo {
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
 /* ✅ Conteneur principal */
 .container {
   max-width: 900px;
@@ -32,6 +53,11 @@ body, html {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+/* ✅ Section accueil */
+.homepage {
+  padding: 1rem 2rem;
 }
 
 /* ✅ Titres */
@@ -201,6 +227,7 @@ tr:hover td {
     width: 100%;
   }
 }
+
 
 
 
