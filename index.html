@@ -15,17 +15,11 @@
         .then(() => console.log("✅ Service Worker actif"))
         .catch(err => console.error("❌ SW error:", err));
     }
-
-    function appelerWebhook(url) {
-      fetch(url)
-        .then(() => alert("✅ Requête envoyée"))
-        .catch(() => alert("❌ Erreur de connexion"));
-    }
   </script>
 </head>
 <body>
   <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" style="height: 70px;" />
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
     <h1>FlowLab</h1>
     <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
     <p>Accueil du système. Choisissez votre espace selon votre rôle.</p>
@@ -34,31 +28,25 @@
   <main class="homepage">
     <div class="grid-cards">
 
-      <!-- 🩺 Espace Médical -->
-      <div class="card" style="min-height: 480px;">
-        <img src="images/espacemedical.png" alt="Espace médical" style="width: 100%; max-height: 220px; object-fit: contain;" />
+      <!-- ✅ Carte Espace Médical -->
+      <div class="card">
+        <img src="images/espacemedical.png" alt="Espace médical" />
         <h3>Espace Médical</h3>
         <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
-        <a href="infirmiere.html" class="btn btn-primary">🩺 Accéder à l'espace infirmière</a>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child')">👶 Tester Enregistrement Enfant</button>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy')">🤰 Tester Enregistrement Grossesse</button>
+        <a href="infirmiere.html" class="btn btn-primary">🩺 Accéder à l’espace infirmière</a>
       </div>
 
-      <!-- 📊 Supervision & retards -->
-      <div class="card" style="min-height: 480px;">
-        <img src="images/espacesuperviseur.png" alt="Supervision" style="width: 100%; max-height: 220px; object-fit: contain;" />
+      <!-- ✅ Carte Espace Superviseur -->
+      <div class="card">
+        <img src="images/espacesuperviseur.png" alt="Superviseur" />
         <h3>Supervision & retards</h3>
         <p>Statistiques, export, surveillance des soins par structure.</p>
-        <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l'espace superviseur</a>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins')">📅 Voir Vaccins à faire</button>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur')">📈 Voir Statistiques</button>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable')">🧭 Suivi équitable</button>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards')">📥 Export des retards</button>
-        <button class="btn" onclick="appelerWebhook('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/6c2763db-464e-4af1-849e-9eb2d2de30cb')">✅ Marquer un vaccin fait</button>
+        <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
       </div>
 
     </div>
   </main>
 </body>
 </html>
+
 
