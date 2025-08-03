@@ -19,27 +19,30 @@
 </head>
 <body>
   <header class="top-bar">
-    <h1>📊 Espace Superviseur – FlowLab</h1>
-    <p>Consultez les statistiques, exportez les retards, surveillez la performance.</p>
+    <img src="icon-192.png" alt="FlowLab Logo" class="logo" />
+    <h1>FlowLab</h1>
+    <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
+    <p>Supervision et retards</p>
+    <p>Consultez les statistiques, exportez les retards, surveillez la performance par structure.</p>
   </header>
 
   <main class="container">
     <section class="grid-cards">
       <div class="card">
-        <img src="img/suivi-equitable.jpg" alt="Suivi équitable">
+        <img src="img/stats.jpg" alt="Suivi équitable">
         <h3>Suivi équitable</h3>
         <p>Identifiez les inégalités de vaccination entre les structures et régions.</p>
       </div>
 
       <div class="card">
-        <img src="img/export-retards.jpg" alt="Export des retards">
+        <img src="img/graphs.jpg" alt="Export des retards">
         <h3>Export des retards</h3>
         <p>Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
         <button class="btn btn-secondary" onclick="telechargerRetards()">📂 Exporter</button>
       </div>
 
       <div class="card">
-        <img src="img/surveillance-soins.jpg" alt="Surveillance des soins">
+        <img src="img/telephone.jpg" alt="Surveillance des soins">
         <h3>Surveillance des soins</h3>
         <p>Vérifiez la couverture vaccinale et la qualité des soins par établissement.</p>
       </div>
@@ -49,6 +52,10 @@
       <h2>📊 Statistiques en temps réel</h2>
       <div id="stats-superviseur">Chargement...</div>
     </section>
+
+    <div style="margin-top: 2rem;">
+      <a href="index.html" class="btn">⬅ Retour à l'accueil</a>
+    </div>
   </main>
 
   <script>
@@ -92,6 +99,7 @@
   </script>
 </body>
 </html>
+
 
 
 
