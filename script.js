@@ -1,144 +1,168 @@
-// 🌍 Webhooks n8n
-const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
-const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-prevus-aujourdhui";
-
-// 📶 Vérifie si connecté
-function estEnLigne() {
-  return navigator.onLine;
+/* Reset simple */
+body, h1, h2, h3, p, ul {
+  margin: 0;
+  padding: 0;
 }
 
-// ✅ Affiche message
-function afficherMessage(id, texte, type = 'success') {
-  const el = document.getElementById(id);
-  if (el) el.innerHTML = `<p class="${type}">${texte}</p>`;
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4fdfc;
+  color: #333;
+  line-height: 1.6;
+  padding-bottom: 3rem;
 }
 
-// 🔁 Synchronise les enfants stockés offline
-function synchroniserEnfants() {
-  const enfants = JSON.parse(localStorage.getItem("enfants_offline") || "[]");
-  if (enfants.length === 0) return;
-
-  enfants.forEach((enfant, index) => {
-    fetch(webhookEnfant, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(enfant)
-    }).then(() => {
-      enfants.splice(index, 1);
-      localStorage.setItem("enfants_offline", JSON.stringify(enfants));
-    });
-  });
+.top-bar {
+  background-color: #16a085;
+  color: white;
+  text-align: center;
+  padding: 1rem;
+  border-bottom: 4px solid #138d75;
 }
 
-// 🔁 Synchronise les grossesses stockées offline
-function synchroniserGrossesses() {
-  const grossesses = JSON.parse(localStorage.getItem("grossesses_offline") || "[]");
-  if (grossesses.length === 0) return;
-
-  grossesses.forEach((femme, index) => {
-    fetch(webhookGrossesse, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(femme)
-    }).then(() => {
-      grossesses.splice(index, 1);
-      localStorage.setItem("grossesses_offline", JSON.stringify(grossesses));
-    });
-  });
+.top-bar .logo {
+  display: block;
+  margin: 0 auto 0.5rem;
 }
 
-// 🔁 Synchronisation globale (appelée manuellement ou au chargement)
-function synchroniserDonnees() {
-  if (!estEnLigne()) return;
-  synchroniserEnfants();
-  synchroniserGrossesses();
+/* Conteneur principal */
+.container, .homepage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
-// 🚼 ENREGISTREMENT ENFANT
-const formEnfant = document.getElementById("form-enfant");
-if (formEnfant) {
-  formEnfant.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(formEnfant).entries());
-
-    if (estEnLigne()) {
-      fetch(webhookEnfant, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(() => {
-        afficherMessage("message-form", "✅ Enregistrement réussi", "success");
-        formEnfant.reset();
-      }).catch(() => {
-        afficherMessage("message-form", "❌ Erreur réseau", "error");
-      });
-    } else {
-      const offline = JSON.parse(localStorage.getItem("enfants_offline") || "[]");
-      offline.push(data);
-      localStorage.setItem("enfants_offline", JSON.stringify(offline));
-      afficherMessage("message-form", "📴 Données enregistrées offline", "error");
-      formEnfant.reset();
-    }
-  });
+/* Grille responsive */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
-// 🤰 ENREGISTREMENT GROSSESSE
-const formGrossesse = document.getElementById("form-grossesse");
-if (formGrossesse) {
-  formGrossesse.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(formGrossesse).entries());
-
-    if (estEnLigne()) {
-      fetch(webhookGrossesse, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(() => {
-        afficherMessage("message-form-grossesse", "✅ Enregistrement réussi", "success");
-        formGrossesse.reset();
-      }).catch(() => {
-        afficherMessage("message-form-grossesse", "❌ Erreur réseau", "error");
-      });
-    } else {
-      const offline = JSON.parse(localStorage.getItem("grossesses_offline") || "[]");
-      offline.push(data);
-      localStorage.setItem("grossesses_offline", JSON.stringify(offline));
-      afficherMessage("message-form-grossesse", "📴 Données enregistrées offline", "error");
-      formGrossesse.reset();
-    }
-  });
+/* Cartes */
+.card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  padding: 1rem;
+  text-align: center;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-// 📅 VACCINS À FAIRE AUJOURD'HUI
-const divVaccins = document.getElementById("vaccins-jour");
-if (divVaccins) {
-  fetch(webhookVaccins)
-    .then(res => res.json())
-    .then(vaccins => {
-      divVaccins.innerHTML = "";
-      if (vaccins.length === 0) {
-        divVaccins.innerHTML = "<p>Aucun vaccin prévu aujourd’hui.</p>";
-      } else {
-        vaccins.forEach(v => {
-          const bloc = document.createElement("div");
-          bloc.className = "carte";
-          bloc.innerHTML = `
-            <p><strong>${v.nom_enfant}</strong> – ${v.nom_vaccin}</p>
-            <p>Date prévue : ${v.date_prevue}</p>
-          `;
-          divVaccins.appendChild(bloc);
-        });
-      }
-    })
-    .catch(() => {
-      divVaccins.innerHTML = "<p class='error'>Erreur de chargement.</p>";
-    });
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
 }
 
-// 🚀 Lancer synchro au démarrage
-window.addEventListener("load", synchroniserDonnees);
+.card img {
+  max-height: 160px;
+  margin-bottom: 1rem;
+  object-fit: contain;
+}
+
+/* Titres */
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+h2 {
+  font-size: 1.3rem;
+  margin: 0.5rem 0;
+}
+h3 {
+  font-size: 1.2rem;
+  margin: 0.5rem 0;
+}
+
+/* Paragraphes */
+p {
+  font-size: 0.95rem;
+}
+
+/* Boutons */
+.btn {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background-color: #16a085;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #138d75;
+}
+
+.btn-secondary {
+  background-color: #2980b9;
+}
+
+.btn-secondary:hover {
+  background-color: #216a94;
+}
+
+/* Formulaires */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+}
+form input, form select {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-top: 0.3rem;
+}
+
+/* Messages */
+.success {
+  color: green;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+/* Cartes vaccin du jour */
+.carte {
+  background: #eafaf1;
+  border-left: 5px solid #16a085;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .top-bar h1 {
+    font-size: 1.4rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+  }
+  .card {
+    min-height: auto;
+  }
+}
+
 
 
 
