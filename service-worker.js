@@ -1,22 +1,21 @@
-const CACHE_NAME = 'vsmart-monitoring-cache-v1';
+const CACHE_NAME = "flowlab-cache-v1";
 
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/login.html',
-  '/infirmiere.html',
-  '/superviseur.html',
-  '/styles.css',
-  '/script.js',
-  '/manifest.webmanifest',
-  '/icon-192.png',
-  '/icon-512.png'
+  "/",
+  "/index.html",
+  "/infirmiere.html",
+  "/superviseur.html",
+  "/styles.css",
+  "/script.js",
+  "/manifest.webmanifest",
+  "/icon-192.png",
+  "/icon-512.png"
 ];
 
-// 🔃 Installation du SW
+// 🔃 Installation : mise en cache
 self.addEventListener("install", function (event) {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
+    caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(urlsToCache);
     })
   );
@@ -25,23 +24,21 @@ self.addEventListener("install", function (event) {
 // ✅ Interception des requêtes
 self.addEventListener("fetch", function (event) {
   event.respondWith(
-    caches.match(event.request).then(function (response) {
-      return response || fetch(event.request);
-    }).catch(() => {
-      return caches.match("/index.html");
-    })
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+      .catch(() => caches.match("/index.html"))
   );
 });
 
-// 🧹 Mise à jour du cache
+// 🧹 Nettoyage anciens caches
 self.addEventListener("activate", function (event) {
-  const cacheWhitelist = [CACHE_NAME];
+  const keep = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then(function (cacheNames) {
+    caches.keys().then(keys => {
       return Promise.all(
-        cacheNames.map(function (cacheName) {
-          if (!cacheWhitelist.includes(cacheName)) {
-            return caches.delete(cacheName);
+        keys.map(key => {
+          if (!keep.includes(key)) {
+            return caches.delete(key);
           }
         })
       );
