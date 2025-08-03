@@ -1,6 +1,6 @@
 {
-  "name": "V-Smart Monitoring",
-  "short_name": "VSmart",
+  "name": "FlowLab – Suivi Vaccinal RDC",
+  "short_name": "FlowLab",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#ffffff",
