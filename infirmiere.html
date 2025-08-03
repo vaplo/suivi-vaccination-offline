@@ -139,6 +139,7 @@
       <h3>🤰 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
       <input id="telephone_grossesse" placeholder="Téléphone" />
+      <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
       <input type="date" id="dpa" />
       <input id="centre_sante_grossesse" placeholder="Structure de santé" />
       <input id="province_grossesse" placeholder="Province" />
@@ -227,6 +228,7 @@
       const data = {
         nom: document.getElementById("nom_grossesse").value,
         telephone: document.getElementById("telephone_grossesse").value,
+        semaines_grossesse: parseInt(document.getElementById("semaines_grossesse").value || "0", 10),
         dpa: document.getElementById("dpa").value,
         centre_sante: document.getElementById("centre_sante_grossesse").value,
         province: document.getElementById("province_grossesse").value,
@@ -245,5 +247,6 @@
   </script>
 </body>
 </html>
+
 
 
