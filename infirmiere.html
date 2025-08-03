@@ -19,17 +19,38 @@
 </head>
 <body>
   <header class="top-bar">
+    <img src="icon-192.png" alt="FlowLab Logo" class="logo" />
     <h1>🩺 Espace Médical – FlowLab</h1>
-    <p>Enregistrement des enfants et femmes enceintes dans votre structure de santé.</p>
   </header>
 
-  <main class="container">
-    <section class="buttons">
-      <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">👶 Enregistrer un enfant</button>
-      <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">🤰 Enregistrer une grossesse</button>
-    </section>
+  <main class="homepage">
+    <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
+    <p>Enregistrement des enfants et femmes enceintes dans votre structure de santé.</p>
 
-    <!-- 📋 Formulaire ENFANT -->
+    <div class="grid-cards">
+      <div class="card">
+        <img src="img/enfant-form.jpg" alt="Enregistrement Enfant">
+        <h3>👶 Enfants</h3>
+        <p>Ajoutez un enfant dans le système avec son profil et téléphone du parent.</p>
+        <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">Enregistrer un enfant</button>
+      </div>
+
+      <div class="card">
+        <img src="img/femme-grossesse.jpg" alt="Femme enceinte">
+        <h3>🤰 Grossesses</h3>
+        <p>Inscrivez une femme enceinte pour le suivi des consultations prénatales.</p>
+        <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
+      </div>
+
+      <div class="card">
+        <img src="img/vaccins-jour.jpg" alt="Vaccins du jour">
+        <h3>📅 Vaccins aujourd’hui</h3>
+        <p>Visualisez les vaccinations à effectuer aujourd’hui dans votre structure.</p>
+        <div id="vaccins-jour">Chargement...</div>
+      </div>
+    </div>
+
+    <!-- Formulaires cachés -->
     <section id="formulaire-enfant" style="display: none;">
       <h2>👶 Enregistrement d’un enfant</h2>
       <form id="form-enfant">
@@ -59,7 +80,6 @@
       </form>
     </section>
 
-    <!-- 📋 Formulaire FEMME ENCEINTE -->
     <section id="formulaire-grossesse" style="display: none;">
       <h2>🤰 Enregistrement d'une grossesse</h2>
       <form id="form-grossesse">
@@ -81,12 +101,6 @@
         <div id="message-form-grossesse"></div>
       </form>
     </section>
-
-    <!-- 📅 Vaccins à faire aujourd’hui -->
-    <section>
-      <h2>📅 Vaccins à faire aujourd’hui</h2>
-      <div id="vaccins-jour">Chargement...</div>
-    </section>
   </main>
 
   <script>
@@ -98,49 +112,39 @@
       document.getElementById("formulaire-grossesse").style.display = (type === 'grossesse') ? 'block' : 'none';
     }
 
-    // 📤 Envoi ENFANT
-    const formEnfant = document.getElementById("form-enfant");
-    if (formEnfant) {
-      formEnfant.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(formEnfant).entries());
-
-        fetch(webhookEnfant, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        })
-        .then(() => {
-          document.getElementById("message-form").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
-          formEnfant.reset();
-        })
-        .catch(() => {
-          document.getElementById("message-form").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
-        });
+    document.getElementById("form-enfant")?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(this).entries());
+      fetch(webhookEnfant, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.getElementById("message-form").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
+        this.reset();
+      })
+      .catch(() => {
+        document.getElementById("message-form").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
       });
-    }
+    });
 
-    // 📤 Envoi GROSSESSE
-    const formGrossesse = document.getElementById("form-grossesse");
-    if (formGrossesse) {
-      formGrossesse.addEventListener("submit", function (e) {
-        e.preventDefault();
-        const data = Object.fromEntries(new FormData(formGrossesse).entries());
-
-        fetch(webhookGrossesse, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        })
-        .then(() => {
-          document.getElementById("message-form-grossesse").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
-          formGrossesse.reset();
-        })
-        .catch(() => {
-          document.getElementById("message-form-grossesse").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
-        });
+    document.getElementById("form-grossesse")?.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const data = Object.fromEntries(new FormData(this).entries());
+      fetch(webhookGrossesse, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(() => {
+        document.getElementById("message-form-grossesse").innerHTML = "<p class='success'>✅ Enregistrement réussi</p>";
+        this.reset();
+      })
+      .catch(() => {
+        document.getElementById("message-form-grossesse").innerHTML = "<p class='error'>❌ Erreur réseau</p>";
       });
-    }
+    });
   </script>
 </body>
 </html>
