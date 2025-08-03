@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>V-Smart Monitoring – Supervision</title>
+  <title>FlowLab – Supervision</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
@@ -12,180 +12,96 @@
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker actif"))
+        .then(() => console.log("✅ SW actif"))
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #f8fffe 0%, #e8f5f3 100%);
-      color: #2c3e50;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      max-width: 900px;
-      width: 95%;
-      background: white;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      text-align: center;
-    }
-
-    h2 {
-      color: #2c5aa0;
-      margin-bottom: 1.5rem;
-    }
-
-    h3 {
-      margin-top: 2rem;
-      color: #16a085;
-      font-size: 1.2rem;
-    }
-
-    #stats p {
-      font-size: 1.1rem;
-      margin: 0.5rem 0;
-    }
-
-    label {
-      display: block;
-      margin: 1.5rem 0 0.8rem;
-      font-weight: 500;
-      font-size: 1rem;
-      color: #34495e;
-      text-align: left;
-    }
-
-    select {
-      padding: 0.8rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid #bdc3c7;
-      width: 100%;
-      max-width: 300px;
-      margin-bottom: 1rem;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    th {
-      background: linear-gradient(135deg, #2c5aa0 0%, #16a085 100%);
-      color: white;
-      padding: 1rem;
-      text-align: left;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    td {
-      border-bottom: 1px solid #ecf0f1;
-      padding: 1rem;
-      text-align: left;
-    }
-
-    tr:hover td {
-      background-color: #f8f9fa;
-    }
-
-    button {
-      margin-top: 1rem;
-      margin-right: 0.5rem;
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #27ae60, #16a085);
-      color: white;
-    }
-
-    .btn-secondary {
-      background: linear-gradient(135deg, #3498db, #2c5aa0);
-      color: white;
-    }
-
-    .btn-danger {
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
-      color: white;
-    }
-
-    #bonjour-user {
-      font-weight: bold;
-      color: #2c5aa0;
-      margin-bottom: 1rem;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📊 V-Smart Monitoring – Supervision</h2>
-    <p id="bonjour-user">Bonjour</p>
+  <header class="top-bar">
+    <h1>📊 Espace Superviseur – FlowLab</h1>
+    <p>Suivi des performances par structure de santé</p>
+  </header>
 
-    <div id="stats">
-      <p>👶 Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
-      <p>📅 Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
-      <p>⏳ Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
-      <p>🛑 Cas zéros dose : <strong id="zeros-dose">...</strong></p>
-    </div>
+  <main class="container">
+    <section id="stats">
+      <h2>📈 Statistiques globales</h2>
+      <p>Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
+      <p>Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
+      <p>Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+    </section>
 
-    <div>
+    <section>
       <button onclick="synchroniserDonnees()" class="btn btn-primary">🔄 Synchroniser</button>
       <button onclick="exporterCSV()" class="btn btn-secondary">⬇️ Exporter CSV</button>
       <button onclick="logout()" class="btn btn-danger">🚪 Déconnexion</button>
-    </div>
+    </section>
 
-    <h3>📍 Enfants en retard (filtrage par structure de santé)</h3>
-    <label>Filtrer par structure :
-      <select id="filtre-centre">
-        <option value="">Toutes</option>
-      </select>
-    </label>
+    <section>
+      <h2>⚠️ Enfants en retard de vaccination</h2>
+      <label>Filtrer par structure de santé :
+        <select id="filtre-centre">
+          <option value="">Toutes</option>
+        </select>
+      </label>
 
-    <table id="table-retards">
-      <thead>
-        <tr>
-          <th>Nom</th>
-          <th>Structure</th>
-          <th>Vaccin</th>
-          <th>Date prévue</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+      <table id="table-retards">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Structure</th>
+            <th>Vaccin</th>
+            <th>Date prévue</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </main>
 
-  <script src="script.js"></script>
   <script>
-    const username = localStorage.getItem("username");
-    if (username) {
-      document.getElementById("bonjour-user").textContent = "👋 Bonjour " + username;
-    }
+    const webhookStats = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur";
 
-    function logout() {
-      localStorage.removeItem("session_token");
-      localStorage.removeItem("user_role");
-      localStorage.removeItem("username");
-      window.location.href = "login.html";
-    }
+    // Charger les statistiques au démarrage
+    fetch(webhookStats)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("total-enfants").textContent = data.total_enfants || 0;
+        document.getElementById("vaccins-aujourdhui").textContent = data.vaccins_aujourdhui || 0;
+        document.getElementById("vaccins-retard").textContent = data.vaccins_retard || 0;
+
+        const centres = new Set();
+        const tbody = document.querySelector("#table-retards tbody");
+        tbody.innerHTML = "";
+
+        data.enfants_retard?.forEach(enfant => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${enfant.nom}</td>
+            <td>${enfant.centre_sante}</td>
+            <td>${enfant.vaccin}</td>
+            <td>${enfant.date_prevue}</td>
+          `;
+          tbody.appendChild(tr);
+          centres.add(enfant.centre_sante);
+        });
+
+        const select = document.getElementById("filtre-centre");
+        centres.forEach(cs => {
+          const opt = document.createElement("option");
+          opt.value = cs;
+          opt.textContent = cs;
+          select.appendChild(opt);
+        });
+
+        select.addEventListener("change", () => {
+          const filtre = select.value;
+          Array.from(tbody.children).forEach(tr => {
+            const centre = tr.children[1].textContent;
+            tr.style.display = (filtre === "" || filtre === centre) ? "table-row" : "none";
+          });
+        });
+      });
 
     function exporterCSV() {
       let rows = [["Nom", "Structure", "Vaccin", "Date prévue"]];
@@ -201,9 +117,21 @@
       link.click();
       document.body.removeChild(link);
     }
+
+    function logout() {
+      localStorage.removeItem("session_token");
+      localStorage.removeItem("user_role");
+      localStorage.removeItem("username");
+      window.location.href = "login.html";
+    }
+
+    function synchroniserDonnees() {
+      location.reload(); // simple pour ce cas
+    }
   </script>
 </body>
 </html>
+
 
 
 
