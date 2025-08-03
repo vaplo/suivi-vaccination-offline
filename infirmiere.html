@@ -14,6 +14,85 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      position: relative;
+      min-height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      color: white;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .formulaire {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .formulaire input,
+    .formulaire select {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .formulaire button {
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+    }
+
+    .success, .error {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+
+    #liste-vaccins {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -27,7 +106,7 @@
       <a href="index.html" class="btn">⬅ Retour</a>
     </div>
 
-    <div id="liste-vaccins" style="display: none;">
+    <div id="liste-vaccins">
       <h3>📅 Vaccins à faire aujourd’hui</h3>
       <ul id="vaccins"></ul>
     </div>
@@ -60,7 +139,7 @@
       <h3>🤰 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
       <input id="telephone_grossesse" placeholder="Téléphone" />
-      <input type="number" id="semaines_grossesse" placeholder="ex: 17" />
+      <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
       <input type="date" id="dpa" />
       <input id="centre_sante_grossesse" placeholder="Structure de santé" />
       <input id="province_grossesse" placeholder="Province" />
@@ -97,7 +176,7 @@
 
   <script>
     const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
+    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-grossesse";
     const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
 
     function afficherFormulaire(type) {
@@ -168,6 +247,8 @@
   </script>
 </body>
 </html>
+
+
 
 
 
