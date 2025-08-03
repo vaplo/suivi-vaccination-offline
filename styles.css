@@ -1,14 +1,30 @@
-/* ====== Base ====== */
-body {
+/* Reset minimal */
+body, html {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f8fffe 0%, #e8f5f3 100%);
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background: #f4fbf9;
   color: #2c3e50;
   line-height: 1.6;
 }
 
+/* ✅ Top bar (logo ou titre) */
+.top-bar {
+  background: linear-gradient(135deg, #16a085, #1abc9c);
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.top-bar h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* ✅ Conteneur principal */
 .container {
-  max-width: 800px;
+  max-width: 900px;
   margin: auto;
   padding: 2rem;
   background: white;
@@ -18,157 +34,102 @@ body {
   margin-bottom: 2rem;
 }
 
-h1, h2, h3 {
-  color: #2c5aa0;
-  text-align: center;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-h1 {
-  font-size: 2.2rem;
-  border-bottom: 3px solid #16a085;
-  padding-bottom: 1rem;
-  position: relative;
-}
-
-h1::before {
-  content: "⚕";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  top: -2rem;
-  font-size: 2.5rem;
-  color: #16a085;
-}
-
+/* ✅ Titres */
 h2 {
-  font-size: 1.5rem;
   color: #16a085;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 h3 {
+  color: #2c3e50;
   font-size: 1.2rem;
-  color: #2c5aa0;
 }
 
-label {
-  display: block;
-  margin: 1.5rem 0 0.8rem;
-  font-weight: 500;
-  color: #34495e;
-  font-size: 1rem;
-}
-
-input, select, textarea {
-  width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 2px solid #bdc3c7;
-  box-sizing: border-box;
-  background-color: #fdfdfd;
-  transition: all 0.3s ease;
-}
-
-input:focus, select:focus, textarea:focus {
-  outline: none;
-  border-color: #16a085;
-  box-shadow: 0 0 0 3px rgba(22, 160, 133, 0.1);
-  background-color: white;
-}
-
-/* ====== Boutons ====== */
+/* ✅ Boutons */
 .btn {
-  display: block;
-  margin-top: 1.5rem;
-  padding: 1.2rem 2rem;
+  display: inline-block;
+  padding: 0.9rem 1.4rem;
   border: none;
   border-radius: 8px;
-  font-size: 1.1rem;
-  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  text-align: center;
   transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: auto;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #27ae60, #16a085);
+  color: white;
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #3498db, #2c5aa0);
+  color: white;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #27ae60 0%, #16a085 100%);
-  color: white;
-}
-.btn-primary:hover {
-  background: linear-gradient(135deg, #219a52 0%, #138d75 100%);
-}
-
-.btn-secondary {
-  background: linear-gradient(135deg, #3498db 0%, #2c5aa0 100%);
-  color: white;
-}
-.btn-secondary:hover {
-  background: linear-gradient(135deg, #2980b9 0%, #1e4085 100%);
+/* ✅ Formulaire */
+form label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+  color: #34495e;
 }
 
-.btn-danger {
-  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
-  color: white;
-}
-.btn-danger:hover {
-  background: linear-gradient(135deg, #d62c1a 0%, #a93226 100%);
-}
-
-/* ====== Alertes ====== */
-.success {
-  color: #27ae60;
-  font-weight: 600;
-  background-color: #d5f4e6;
-  padding: 1rem;
+input, select {
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1rem;
   border-radius: 8px;
-  border-left: 4px solid #27ae60;
-  margin: 1rem 0;
+  border: 2px solid #bdc3c7;
+  margin-top: 0.3rem;
+  box-sizing: border-box;
+}
+
+input:focus, select:focus {
+  border-color: #16a085;
+  outline: none;
+  background: #fefefe;
+}
+
+/* ✅ Message */
+.success {
+  background: #d5f4e6;
+  color: #27ae60;
+  border-left: 5px solid #27ae60;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 8px;
 }
 
 .error {
+  background: #fcecec;
   color: #e74c3c;
-  font-weight: 600;
-  background-color: #fdf2f2;
+  border-left: 5px solid #e74c3c;
   padding: 1rem;
+  margin-top: 1rem;
   border-radius: 8px;
-  border-left: 4px solid #e74c3c;
-  margin: 1rem 0;
 }
 
-.warning {
-  color: #f39c12;
-  font-weight: 600;
-  background-color: #fef9e7;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #f39c12;
-  margin: 1rem 0;
-}
-
-.info {
-  color: #3498db;
-  font-weight: 600;
-  background-color: #eaf2f8;
-  padding: 1rem;
-  border-radius: 8px;
-  border-left: 4px solid #3498db;
-  margin: 1rem 0;
-}
-
-/* ====== Tables (retards, supervision) ====== */
+/* ✅ Tableaux */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 2rem;
+  margin-top: 1.5rem;
   background: white;
   border-radius: 8px;
   overflow: hidden;
@@ -176,119 +137,71 @@ table {
 }
 
 th {
-  background: linear-gradient(135deg, #2c5aa0 0%, #16a085 100%);
+  background: linear-gradient(135deg, #2c5aa0, #16a085);
   color: white;
   padding: 1rem;
   text-align: left;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-size: 0.9rem;
 }
 
 td {
   border-bottom: 1px solid #ecf0f1;
   padding: 1rem;
   text-align: left;
-  transition: background-color 0.3s ease;
 }
 
 tr:hover td {
   background-color: #f8f9fa;
 }
 
-/* ====== Cartes médicales (vaccins du jour, fiches) ====== */
-.carte {
-  border: 1px solid #bdc3c7;
-  border-left: 6px solid #16a085;
-  background: #ffffff;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 8px;
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+/* ✅ Cartes d'accueil */
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
 }
 
-/* ====== Médical : fiche patient, signes vitaux, planning ====== */
-.medical-card {
+.card {
   background: white;
   border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   padding: 1.5rem;
-  margin: 1rem 0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  border-left: 4px solid #16a085;
-}
-
-.patient-info {
-  background-color: #eaf2f8;
-  border: 1px solid #3498db;
-  border-radius: 8px;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-
-.vital-signs {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin: 1rem 0;
-}
-
-.vital-sign {
-  background: white;
-  padding: 1rem;
-  border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  border-top: 3px solid #16a085;
+  transition: all 0.2s ease;
 }
 
-.vital-sign h4 {
-  margin: 0 0 0.5rem 0;
-  color: #2c5aa0;
-  font-size: 0.9rem;
-  text-transform: uppercase;
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
-.vital-sign .value {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #27ae60;
-}
-
-/* ====== Créneaux de RDV (à venir avec IA) ====== */
-.appointment-slot {
-  background: white;
-  border: 1px solid #bdc3c7;
+.card img {
+  width: 100%;
   border-radius: 8px;
-  padding: 1rem;
-  margin: 0.5rem 0;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.appointment-slot:hover {
-  border-color: #16a085;
-  background-color: #f8fffe;
-}
-.appointment-slot.selected {
-  border-color: #16a085;
-  background-color: #d5f4e6;
+  margin-bottom: 1rem;
 }
 
-/* ====== Responsive mobile-first ====== */
+.card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* ✅ Responsive */
 @media (max-width: 768px) {
   .container {
-    margin: 1rem;
     padding: 1rem;
   }
-
-  .vital-signs {
-    grid-template-columns: 1fr;
-  }
-
-  h1 {
-    font-size: 1.8rem;
+  .btn {
+    width: 100%;
   }
 }
+
 
 
 
