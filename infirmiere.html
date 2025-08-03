@@ -17,7 +17,7 @@
   <style>
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
       margin-top: 1rem;
       padding: 1rem;
@@ -29,7 +29,7 @@
       background-position: center;
       border-radius: 16px;
       color: white;
-      min-height: 280px;
+      min-height: 320px;
       padding: 1.5rem;
       display: flex;
       flex-direction: column;
@@ -87,7 +87,6 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 0.6rem;
     }
 
     .success, .error {
@@ -106,8 +105,10 @@
   </header>
 
   <main class="homepage">
-    <!-- 📦 Choix principal -->
-    <div class="grid-cards" id="choix-cartes">
+    <!-- 🔙 Retour -->
+    <a href="index.html" class="btn" style="margin: 1rem;">⬅️ Retour à l'accueil</a>
+
+    <div class="grid-cards">
       <div class="card" style="background-image: url('images/enfants.png')">
         <button class="btn" onclick="afficherFormulaire('enfant')">👶 Enfant</button>
       </div>
@@ -119,15 +120,15 @@
       </div>
     </div>
 
-    <!-- 👶 Formulaire Enfant -->
+    <!-- 📋 Formulaire Enfant -->
     <div id="formulaire-enfant" class="formulaire">
       <h3>👶 Formulaire Enfant</h3>
       <input type="text" id="nom_complet" placeholder="Nom complet" />
       <input type="date" id="date_naissance" />
       <select id="sexe">
         <option value="">Sexe</option>
-        <option value="F">F</option>
-        <option value="M">M</option>
+        <option>F</option>
+        <option>M</option>
       </select>
       <input type="text" id="telephone_parent" placeholder="Téléphone du parent" />
       <input type="text" id="centre_sante" placeholder="Structure de santé" />
@@ -141,16 +142,15 @@
         <option value="kikongo">Kikongo</option>
       </select>
       <button onclick="enregistrerEnfant()">📩 Envoyer</button>
-      <button onclick="retourCartes()">🔙 Retour</button>
       <div id="message-enfant"></div>
     </div>
 
-    <!-- 🤰 Formulaire Grossesse -->
+    <!-- 📋 Formulaire Grossesse -->
     <div id="formulaire-grossesse" class="formulaire">
       <h3>🤰 Formulaire Grossesse</h3>
       <input type="text" id="nom_grossesse" placeholder="Nom complet" />
       <input type="text" id="telephone_grossesse" placeholder="Téléphone" />
-      <input type="date" id="dpa" />
+      <input type="date" id="dpa" placeholder="Date d'accouchement prévue" />
       <input type="text" id="centre_sante_grossesse" placeholder="Structure de santé" />
       <select id="langue_preferee_grossesse">
         <option value="">Langue préférée</option>
@@ -161,34 +161,23 @@
         <option value="kikongo">Kikongo</option>
       </select>
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
-      <button onclick="retourCartes()">🔙 Retour</button>
       <div id="message-grossesse"></div>
     </div>
 
-    <!-- 📅 Vaccins du jour -->
+    <!-- 📋 Vaccins du jour -->
     <div class="formulaire" id="vaccins-jour" style="display:none;">
       <h3>📅 Vaccins aujourd’hui</h3>
       <div id="liste-vaccins">Chargement...</div>
-      <button onclick="retourCartes()">🔙 Retour</button>
     </div>
 
-    <!-- ✅ JS -->
     <script>
       const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
       const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-grossesse";
       const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
 
       function afficherFormulaire(type) {
-        document.getElementById("choix-cartes").style.display = "none";
         document.getElementById("formulaire-enfant").style.display = (type === "enfant") ? "block" : "none";
         document.getElementById("formulaire-grossesse").style.display = (type === "grossesse") ? "block" : "none";
-        document.getElementById("vaccins-jour").style.display = "none";
-      }
-
-      function retourCartes() {
-        document.getElementById("choix-cartes").style.display = "grid";
-        document.getElementById("formulaire-enfant").style.display = "none";
-        document.getElementById("formulaire-grossesse").style.display = "none";
         document.getElementById("vaccins-jour").style.display = "none";
       }
 
@@ -233,7 +222,6 @@
       }
 
       function chargerVaccins() {
-        document.getElementById("choix-cartes").style.display = "none";
         document.getElementById("formulaire-enfant").style.display = "none";
         document.getElementById("formulaire-grossesse").style.display = "none";
         document.getElementById("vaccins-jour").style.display = "block";
