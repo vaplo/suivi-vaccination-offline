@@ -24,7 +24,7 @@
 
     .card {
       position: relative;
-      min-height: 320px;
+      min-height: 400px;
       border-radius: 16px;
       overflow: hidden;
       display: flex;
@@ -49,97 +49,15 @@
       position: relative;
       z-index: 1;
     }
-
-    .formulaire {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-
-    .formulaire input,
-    .formulaire select {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .formulaire button {
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 0.7rem 1.2rem;
-      cursor: pointer;
-    }
-
-    .success, .error {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    .success { color: green; }
-    .error { color: red; }
-
-    #liste-vaccins {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-      display: none;
-    }
   </style>
 </head>
 <body>
-  <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
-    <h1>FlowLab</h1>
-    <h2>Espace Médical – Suivi et enregistrement</h2>
-  </header>
-
   <main class="container">
-    <div style="margin-top: 1rem;">
-      <a href="index.html" class="btn">⬅ Retour</a>
-    </div>
-
-    <div id="liste-vaccins">
-      <h3>📅 Vaccins à faire aujourd’hui</h3>
-      <ul id="vaccins"></ul>
-    </div>
-
-    <div id="formulaire-enfant" class="formulaire" style="display:none;">
-      <h3>👶 Formulaire Enfant</h3>
-      <input id="nom_complet" placeholder="Nom complet" />
-      <input type="date" id="date_naissance" />
-      <select id="sexe">
-        <option value="">Sexe</option>
-        <option>F</option>
-        <option>M</option>
-      </select>
-      <input id="telephone_parent" placeholder="Téléphone du parent" />
-      <input id="centre_sante" placeholder="Structure de santé" />
-      <input id="province" placeholder="Province" />
-      <select id="langue_preferee">
-        <option value="">Langue préférée</option>
-        <option value="francais">Français</option>
-        <option value="lingala">Lingala</option>
-        <option value="swahili">Swahili</option>
-        <option value="tshiluba">Tshiluba</option>
-        <option value="kikongo">Kikongo</option>
-      </select>
-      <button onclick="enregistrerEnfant()">📩 Envoyer</button>
-      <div id="message-enfant"></div>
-    </div>
-
-    <div id="formulaire-grossesse" class="formulaire" style="display:none;">
+    <div id="formulaire-grossesse" class="formulaire">
       <h3>🤰 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
       <input id="telephone_grossesse" placeholder="Téléphone" />
-      <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
+      <input type="number" id="semaines_grossesse" placeholder="ex: 17" />
       <input type="date" id="dpa" />
       <input id="centre_sante_grossesse" placeholder="Structure de santé" />
       <input id="province_grossesse" placeholder="Province" />
@@ -154,75 +72,10 @@
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
       <div id="message-grossesse"></div>
     </div>
-
-    <section class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png')">
-        <h3>👶 Enfants</h3>
-        <p>Ajoutez un enfant dans le système avec ses informations.</p>
-        <button class="btn" onclick="afficherFormulaire('enfant')">Enregistrer un enfant</button>
-      </div>
-      <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🤰 Grossesses</h3>
-        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-        <button class="btn btn-secondary" onclick="afficherFormulaire('grossesse')">Enregistrer une grossesse</button>
-      </div>
-      <div class="card" style="background-image: url('images/surveillance-soins.png')">
-        <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-        <button class="btn" onclick="chargerVaccins()">Voir vaccins</button>
-      </div>
-    </section>
   </main>
 
   <script>
-    const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-grossesse";
-    const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
-
-    function afficherFormulaire(type) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById("formulaire-enfant").style.display = (type === "enfant") ? "block" : "none";
-      document.getElementById("formulaire-grossesse").style.display = (type === "grossesse") ? "block" : "none";
-      document.getElementById("liste-vaccins").style.display = "none";
-    }
-
-    function chargerVaccins() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById("formulaire-enfant").style.display = "none";
-      document.getElementById("formulaire-grossesse").style.display = "none";
-      fetch(webhookVaccins)
-        .then(r => r.json())
-        .then(data => {
-          const liste = data.map(v => `<li>${v.nom} — ${v.vaccin}</li>`).join('');
-          document.getElementById("vaccins").innerHTML = liste;
-          document.getElementById("liste-vaccins").style.display = "block";
-        })
-        .catch(() => {
-          document.getElementById("vaccins").innerHTML = "<li>❌ Erreur lors du chargement</li>";
-          document.getElementById("liste-vaccins").style.display = "block";
-        });
-    }
-
-    function enregistrerEnfant() {
-      const data = {
-        nom_complet: document.getElementById("nom_complet").value,
-        date_naissance: document.getElementById("date_naissance").value,
-        sexe: document.getElementById("sexe").value,
-        telephone_parent: document.getElementById("telephone_parent").value,
-        centre_sante: document.getElementById("centre_sante").value,
-        province: document.getElementById("province").value,
-        langue_preferee: document.getElementById("langue_preferee").value
-      };
-      fetch(webhookEnfant, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(res => {
-        document.getElementById("message-enfant").innerHTML = res.ok ? "<p class='success'>✅ Enfant enregistré</p>" : "<p class='error'>❌ Échec</p>";
-      }).catch(() => {
-        document.getElementById("message-enfant").innerHTML = "<p class='error'>❌ Erreur de réseau</p>";
-      });
-    }
+    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
 
     function enregistrerGrossesse() {
       const data = {
@@ -247,6 +100,7 @@
   </script>
 </body>
 </html>
+
 
 
 
