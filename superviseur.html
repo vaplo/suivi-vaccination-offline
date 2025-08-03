@@ -12,34 +12,33 @@
   <style>
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 24px;
       padding: 24px;
     }
 
     .card {
-      background: #fff;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: top;
+      background-color: white;
       border-radius: 16px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+      padding: 140px 20px 20px;
       text-align: center;
-      transition: transform 0.3s;
-      min-height: 480px;
+      min-height: 400px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .card img {
-      width: 100%;
-      height: auto;
-      max-height: 220px;
-      object-fit: contain;
-      margin-bottom: 16px;
+      justify-content: flex-start;
     }
 
     .btn {
       margin-top: auto;
+    }
+
+    .error {
+      color: red;
+      font-weight: bold;
     }
   </style>
   <script>
@@ -63,24 +62,21 @@
     <section class="grid-cards">
 
       <!-- Suivi équitable -->
-      <div class="card">
-        <img src="images/suiviequitable.png" alt="Suivi équitable" />
+      <div class="card" style="background-image: url('images/suiviequitable.png')">
         <h3>Suivi équitable</h3>
         <p>Identifiez les inégalités de vaccination entre les structures et régions.</p>
         <button class="btn btn-primary" onclick="window.open('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable')">📈 Voir Suivi</button>
       </div>
 
       <!-- Export des retards -->
-      <div class="card">
-        <img src="images/exportdesretards.png" alt="Export des retards" />
+      <div class="card" style="background-image: url('images/exportdesretards.png')">
         <h3>Export des retards</h3>
         <p>Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
         <button class="btn btn-secondary" onclick="telechargerRetards()">📂 Exporter</button>
       </div>
 
       <!-- Surveillance des soins -->
-      <div class="card">
-        <img src="images/surveillancesoin.png" alt="Surveillance des soins" />
+      <div class="card" style="background-image: url('images/surveillancesoin.png')">
         <h3>Surveillance des soins</h3>
         <p>Vérifiez la couverture vaccinale et la qualité des soins par établissement.</p>
         <button class="btn btn-primary" onclick="window.open('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins')">🔍 Voir Soins</button>
@@ -88,7 +84,7 @@
 
     </section>
 
-    <!-- Statistiques en temps réel -->
+    <!-- Statistiques -->
     <section>
       <h2>📊 Statistiques en temps réel</h2>
       <div id="stats-superviseur">Chargement...</div>
@@ -118,7 +114,7 @@
           document.getElementById("stats-superviseur").innerHTML = stats;
         })
         .catch(() => {
-          document.getElementById("stats-superviseur").innerHTML = "<p class='error'>Impossible de charger les données</p>";
+          document.getElementById("stats-superviseur").innerHTML = "<p class='error'>❌ Impossible de charger les données</p>";
         });
     }
 
