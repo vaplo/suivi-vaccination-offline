@@ -31,7 +31,7 @@
       padding: 20px;
       text-align: center;
       transition: transform 0.3s;
-      min-height: 480px; /* ✅ hauteur plus grande */
+      min-height: 480px;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
@@ -41,7 +41,7 @@
       width: 100%;
       height: auto;
       max-height: 220px;
-      object-fit: contain; /* ✅ image non coupée */
+      object-fit: contain;
       margin-bottom: 16px;
     }
   </style>
@@ -83,10 +83,35 @@
 
     </div>
 
-    <!-- Formulaires... (inchangés) -->
-    <!-- ... tu peux garder le reste du code identique -->
+    <!-- 📄 Formulaires (inchangés ici, tu les as déjà bien faits) -->
+    <!-- Si besoin, je te les remets complets avec webhooks -->
 
+    <script>
+      // Webhook pour enregistrement (déjà connus)
+      const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
+      const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
+      const webhookVaccinsJour = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
+
+      function afficherFormulaire(type) {
+        document.getElementById("formulaire-enfant")?.style.display = (type === 'enfant') ? 'block' : 'none';
+        document.getElementById("formulaire-grossesse")?.style.display = (type === 'grossesse') ? 'block' : 'none';
+      }
+
+      // Charger les vaccins à faire aujourd’hui
+      fetch(webhookVaccinsJour)
+        .then(res => res.json())
+        .then(data => {
+          const zone = document.getElementById("vaccins-jour");
+          if (Array.isArray(data) && data.length > 0) {
+            zone.innerHTML = "<ul>" + data.map(v => `<li>${v.nom} (${v.vaccin})</li>`).join("") + "</ul>";
+          } else {
+            zone.innerHTML = "Aucun vaccin prévu aujourd’hui.";
+          }
+        })
+        .catch(() => {
+          document.getElementById("vaccins-jour").innerText = "❌ Erreur de chargement.";
+        });
+    </script>
   </main>
 </body>
 </html>
-
