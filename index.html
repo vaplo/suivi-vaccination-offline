@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FlowLab – Accueil</title>
+  <title>FlowLab</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
@@ -16,10 +16,74 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    .homepage {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 1.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .card img {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" style="max-height: 70px;" />
     <h1>FlowLab</h1>
     <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
     <p>Accueil du système. Choisissez votre espace selon votre rôle.</p>
@@ -28,20 +92,20 @@
   <main class="homepage">
     <div class="grid-cards">
 
-      <!-- ✅ Espace Médical -->
+      <!-- ✅ Carte Espace Médical (corrigée avec la bonne image) -->
       <div class="card">
         <img src="images/espacemedical.png" alt="Espace médical" />
-        <h3>🩺 Espace Médical</h3>
+        <h3>Espace Médical</h3>
         <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
-        <a href="infirmiere.html" class="btn btn-primary">Accéder à l’espace infirmière</a>
+        <a href="infirmiere.html" class="btn">🩺 Accéder à l’espace infirmière</a>
       </div>
 
-      <!-- ✅ Superviseur -->
+      <!-- ✅ Carte Superviseur -->
       <div class="card">
-        <img src="images/espacesuperviseur.png" alt="Espace superviseur" />
-        <h3>📊 Supervision & retards</h3>
-        <p>Statistiques, export, suivi des soins et performances par structure.</p>
-        <a href="superviseur.html" class="btn btn-secondary">Accéder à l’espace superviseur</a>
+        <img src="images/espacesuperviseur.png" alt="Superviseur" />
+        <h3>Supervision & retards</h3>
+        <p>Statistiques, export, surveillance des soins par structure.</p>
+        <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
       </div>
 
     </div>
