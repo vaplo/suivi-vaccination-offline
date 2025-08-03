@@ -28,22 +28,25 @@
   <main class="homepage">
     <div class="grid-cards">
 
-      <div class="card">
-        <img src="images/enfants.png" alt="Enregistrement Enfant" />
+      <!-- 👶 Enfants -->
+      <div class="card" style="min-height: 440px;">
+        <img src="images/enfants.png" alt="Enregistrement Enfant" style="width: 100%; max-height: 220px; object-fit: contain;" />
         <h3>👶 Enfants</h3>
         <p>Ajoutez un enfant dans le système avec son profil et téléphone du parent.</p>
         <button onclick="afficherFormulaire('enfant')" class="btn btn-primary">Enregistrer un enfant</button>
       </div>
 
-      <div class="card">
-        <img src="images/grossesses.png" alt="Femme enceinte" />
+      <!-- 🤰 Grossesses -->
+      <div class="card" style="min-height: 440px;">
+        <img src="images/grossesses.png" alt="Femme enceinte" style="width: 100%; max-height: 220px; object-fit: contain;" />
         <h3>🤰 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi des consultations prénatales.</p>
         <button onclick="afficherFormulaire('grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
       </div>
 
-      <div class="card">
-        <img src="images/surveillance-soins.png" alt="Vaccins du jour" />
+      <!-- 📅 Vaccins du jour -->
+      <div class="card" style="min-height: 440px;">
+        <img src="images/surveillance-soins.png" alt="Vaccins du jour" style="width: 100%; max-height: 220px; object-fit: contain;" />
         <h3>📅 Vaccins aujourd’hui</h3>
         <p>Visualisez les vaccinations à effectuer aujourd’hui dans votre structure.</p>
         <div id="vaccins-jour">Chargement...</div>
@@ -51,7 +54,7 @@
 
     </div>
 
-    <!-- Formulaires -->
+    <!-- Formulaire Enfant -->
     <section id="formulaire-enfant" style="display: none;">
       <h2>👶 Enregistrement d’un enfant</h2>
       <form id="form-enfant">
@@ -81,6 +84,7 @@
       </form>
     </section>
 
+    <!-- Formulaire Grossesse -->
     <section id="formulaire-grossesse" style="display: none;">
       <h2>🤰 Enregistrement d'une grossesse</h2>
       <form id="form-grossesse">
@@ -153,3 +157,4 @@
   </script>
 </body>
 </html>
+
