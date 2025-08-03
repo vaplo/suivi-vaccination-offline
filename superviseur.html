@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FlowLab – Supervision</title>
+  <title>FlowLab – Espace Superviseur</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
@@ -20,114 +20,75 @@
 <body>
   <header class="top-bar">
     <h1>📊 Espace Superviseur – FlowLab</h1>
-    <p>Suivi des performances par structure de santé</p>
+    <p>Consultez les statistiques, exportez les retards, surveillez la performance.</p>
   </header>
 
   <main class="container">
-    <section id="stats">
-      <h2>📈 Statistiques globales</h2>
-      <p>Total enfants enregistrés : <strong id="total-enfants">...</strong></p>
-      <p>Vaccins prévus aujourd’hui : <strong id="vaccins-aujourdhui">...</strong></p>
-      <p>Vaccins en retard : <strong id="vaccins-retard">...</strong></p>
+    <section class="grid-cards">
+      <div class="card">
+        <img src="img/suivi-equitable.jpg" alt="Suivi équitable">
+        <h3>Suivi équitable</h3>
+        <p>Identifiez les inégalités de vaccination entre les structures et régions.</p>
+      </div>
+
+      <div class="card">
+        <img src="img/export-retards.jpg" alt="Export des retards">
+        <h3>Export des retards</h3>
+        <p>Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
+        <button class="btn btn-secondary" onclick="telechargerRetards()">📂 Exporter</button>
+      </div>
+
+      <div class="card">
+        <img src="img/surveillance-soins.jpg" alt="Surveillance des soins">
+        <h3>Surveillance des soins</h3>
+        <p>Vérifiez la couverture vaccinale et la qualité des soins par établissement.</p>
+      </div>
     </section>
 
     <section>
-      <button onclick="synchroniserDonnees()" class="btn btn-primary">🔄 Synchroniser</button>
-      <button onclick="exporterCSV()" class="btn btn-secondary">⬇️ Exporter CSV</button>
-      <button onclick="logout()" class="btn btn-danger">🚪 Déconnexion</button>
-    </section>
-
-    <section>
-      <h2>⚠️ Enfants en retard de vaccination</h2>
-      <label>Filtrer par structure de santé :
-        <select id="filtre-centre">
-          <option value="">Toutes</option>
-        </select>
-      </label>
-
-      <table id="table-retards">
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Structure</th>
-            <th>Vaccin</th>
-            <th>Date prévue</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <h2>📊 Statistiques en temps réel</h2>
+      <div id="stats-superviseur">Chargement...</div>
     </section>
   </main>
 
   <script>
     const webhookStats = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur";
+    const webhookRetards = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards";
 
-    // Charger les statistiques au démarrage
-    fetch(webhookStats)
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("total-enfants").textContent = data.total_enfants || 0;
-        document.getElementById("vaccins-aujourdhui").textContent = data.vaccins_aujourdhui || 0;
-        document.getElementById("vaccins-retard").textContent = data.vaccins_retard || 0;
-
-        const centres = new Set();
-        const tbody = document.querySelector("#table-retards tbody");
-        tbody.innerHTML = "";
-
-        data.enfants_retard?.forEach(enfant => {
-          const tr = document.createElement("tr");
-          tr.innerHTML = `
-            <td>${enfant.nom}</td>
-            <td>${enfant.centre_sante}</td>
-            <td>${enfant.vaccin}</td>
-            <td>${enfant.date_prevue}</td>
+    function chargerStats() {
+      fetch(webhookStats)
+        .then(r => r.json())
+        .then(data => {
+          const stats = `
+            <ul>
+              <li>🏥 Structures de santé actives : <strong>${data.structures || "?"}</strong></li>
+              <li>📅 Vaccins à faire aujourd’hui : <strong>${data.vaccins_aujourdhui || "?"}</strong></li>
+              <li>⚠️ Cas de retards : <strong>${data.retards || "?"}</strong></li>
+              <li>🌍 Taux de réponse SMS : <strong>${data.taux_reponse || "?"}%</strong></li>
+            </ul>
           `;
-          tbody.appendChild(tr);
-          centres.add(enfant.centre_sante);
+          document.getElementById("stats-superviseur").innerHTML = stats;
+        })
+        .catch(() => {
+          document.getElementById("stats-superviseur").innerHTML = "<p class='error'>Impossible de charger les données</p>";
         });
-
-        const select = document.getElementById("filtre-centre");
-        centres.forEach(cs => {
-          const opt = document.createElement("option");
-          opt.value = cs;
-          opt.textContent = cs;
-          select.appendChild(opt);
-        });
-
-        select.addEventListener("change", () => {
-          const filtre = select.value;
-          Array.from(tbody.children).forEach(tr => {
-            const centre = tr.children[1].textContent;
-            tr.style.display = (filtre === "" || filtre === centre) ? "table-row" : "none";
-          });
-        });
-      });
-
-    function exporterCSV() {
-      let rows = [["Nom", "Structure", "Vaccin", "Date prévue"]];
-      document.querySelectorAll("#table-retards tbody tr").forEach(tr => {
-        const cells = Array.from(tr.children).map(td => td.textContent);
-        rows.push(cells);
-      });
-      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
-      const link = document.createElement("a");
-      link.setAttribute("href", encodeURI(csvContent));
-      link.setAttribute("download", "retards_vaccination.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     }
 
-    function logout() {
-      localStorage.removeItem("session_token");
-      localStorage.removeItem("user_role");
-      localStorage.removeItem("username");
-      window.location.href = "login.html";
+    function telechargerRetards() {
+      fetch(webhookRetards)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = "retards_vaccination.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        });
     }
 
-    function synchroniserDonnees() {
-      location.reload(); // simple pour ce cas
-    }
+    window.addEventListener("load", chargerStats);
   </script>
 </body>
 </html>
