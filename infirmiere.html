@@ -2,95 +2,111 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FlowLab – Espace Médical</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
-</head>
-<body>
-  <header>
-    <img src="logo.png" alt="FlowLab logo" class="logo" />
-    <h1>FlowLab</h1>
-    <h2>Espace Médical – Suivi et enregistrement</h2>
-  </header>
-
-  <button onclick="history.back()" class="btn retour">⬅ Retour</button>
-
-  <div class="grid-cards">
-    <div class="card">
-      <img src="enfants.png" alt="Enfant" />
-      <h3>👶 Enfants</h3>
-      <p>Ajoutez un enfant dans le système avec ses informations.</p>
-      <button onclick="scrollToForm('form-enfant')" class="btn">Enregistrer un enfant</button>
-    </div>
-
-    <div class="card">
-      <img src="grossesses.png" alt="Femme enceinte" />
-      <h3>🤰 Grossesses</h3>
-      <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-      <button onclick="scrollToForm('form-grossesse')" class="btn-secondary">Enregistrer une grossesse</button>
-    </div>
-
-    <div class="card">
-      <h3>📅 Vaccins aujourd’hui</h3>
-      <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-      <button onclick="document.getElementById('vaccins-jour').scrollIntoView({behavior: 'smooth'})" class="btn">Voir vaccins</button>
-    </div>
-  </div>
-
-  <section id="form-enfant">
-    <h3>👶 Formulaire Enfant</h3>
-    <form id="enfantForm">
-      <input type="text" name="nom_complet" placeholder="Nom complet" required />
-      <input type="date" name="date_naissance" placeholder="Date de naissance" required />
-      <select name="sexe" required>
-        <option value="">Sexe</option>
-        <option value="F">Fille</option>
-        <option value="M">Garçon</option>
-      </select>
-      <input type="text" name="telephone" placeholder="Téléphone du parent" required />
-      <input type="text" name="centre_sante" placeholder="Structure de santé" required />
-      <input type="text" name="province" placeholder="Province" required />
-      <select name="langue_preferee">
-        <option value="francais">Français</option>
-        <option value="lingala">Lingala</option>
-        <option value="swahili">Swahili</option>
-      </select>
-      <button type="submit" class="btn">📅 Envoyer</button>
-    </form>
-  </section>
-
-  <section id="form-grossesse">
-    <h3>🤰 Formulaire Grossesse</h3>
-    <form id="grossesseForm">
-      <input type="text" name="nom" placeholder="Nom complet" required />
-      <input type="text" name="telephone" placeholder="Téléphone" required />
-      <input type="number" name="semaines_grossesse" placeholder="Semaines de grossesse" required />
-      <input type="date" name="dpa" placeholder="Date prévue d’accouchement" required />
-      <input type="text" name="centre_sante" placeholder="Structure de santé" required />
-      <input type="text" name="province" placeholder="Province" required />
-      <select name="langue_preferee">
-        <option value="francais">Français</option>
-        <option value="lingala">Lingala</option>
-        <option value="swahili">Swahili</option>
-      </select>
-      <button type="submit" class="btn">📅 Envoyer</button>
-    </form>
-  </section>
-
-  <section id="vaccins-jour" class="carte">
-    <h3>📅 Vaccins à faire aujourd’hui</h3>
-    <div id="liste-vaccins">
-      <p>Chargement...</p>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
   <script>
-    function scrollToForm(id) {
-      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ SW actif"))
+        .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <h1>FlowLab</h1>
+    <h2>Espace Médical – Suivi et enregistrement</h2>
+    <button onclick="window.location.href='index.html'" class="btn btn-secondary">⬅ Retour</button>
+  </header>
+
+  <main class="homepage">
+    <div class="grid-cards">
+      <div class="card">
+        <img src="images/enfants.png" alt="Enfants">
+        <h3>👶 Enfants</h3>
+        <p>Ajoutez un enfant dans le système avec ses informations.</p>
+        <button class="btn" onclick="document.getElementById('form-enfant').scrollIntoView({ behavior: 'smooth' })">
+          Enregistrer un enfant
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="images/grossesses.png" alt="Grossesses">
+        <h3>🤰 Grossesses</h3>
+        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
+        <button class="btn btn-secondary" onclick="document.getElementById('form-grossesse').scrollIntoView({ behavior: 'smooth' })">
+          Enregistrer une grossesse
+        </button>
+      </div>
+
+      <div class="card">
+        <img src="images/vaccins.png" alt="Vaccins aujourd'hui">
+        <h3>📅 Vaccins aujourd’hui</h3>
+        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
+        <a href="#liste-vaccins" class="btn">Voir vaccins</a>
+      </div>
+    </div>
+
+    <section id="form-enfant">
+      <h3>👶 Formulaire Enfant</h3>
+      <form id="form-child">
+        <input type="text" name="nom_complet" placeholder="Nom complet" required />
+        <input type="date" name="date_naissance" placeholder="Date de naissance" required />
+        <select name="sexe" required>
+          <option value="">Sexe</option>
+          <option value="M">Masculin</option>
+          <option value="F">Féminin</option>
+        </select>
+        <input type="text" name="telephone" placeholder="Téléphone du parent" required />
+        <input type="text" name="centre_sante" placeholder="Structure de santé" required />
+        <input type="text" name="province" placeholder="Province" required />
+        <select name="langue_preferee" required>
+          <option value="francais">Français</option>
+          <option value="lingala">Lingala</option>
+          <option value="swahili">Swahili</option>
+          <option value="kiluba">Kiluba</option>
+          <option value="tshiluba">Tshiluba</option>
+        </select>
+        <button type="submit" class="btn">📅 Envoyer</button>
+      </form>
+    </section>
+
+    <section id="form-grossesse">
+      <h3>🤰 Formulaire Grossesse</h3>
+      <form id="form-pregnancy">
+        <input type="text" name="nom" placeholder="Nom complet" required />
+        <input type="text" name="telephone" placeholder="Téléphone" required />
+        <input type="number" name="semaines_grossesse" placeholder="Semaines de grossesse" required />
+        <input type="date" name="dpa" placeholder="Date prévue d’accouchement" required />
+        <input type="text" name="centre_sante" placeholder="Structure de santé" required />
+        <input type="text" name="province" placeholder="Province" required />
+        <select name="langue_preferee" required>
+          <option value="francais">Français</option>
+          <option value="lingala">Lingala</option>
+          <option value="swahili">Swahili</option>
+          <option value="kiluba">Kiluba</option>
+          <option value="tshiluba">Tshiluba</option>
+        </select>
+        <button type="submit" class="btn">📅 Envoyer</button>
+      </form>
+    </section>
+
+    <section id="liste-vaccins">
+      <h3>📅 Vaccins à faire aujourd’hui</h3>
+      <p>Voici les enfants attendus aujourd’hui pour la vaccination.</p>
+      <ul>
+        <li>👶 <strong>Mbala Joséphine</strong>, 6 semaines – 📍 CS Kintambo – 💉 Pentavalent 1</li>
+        <li>💡 Vaccin essentiel pour la protection contre la coqueluche.</li>
+        <li>👶 <strong>Ngoma Pierre</strong>, 9 mois – 📍 CS Gombe – 💉 Rougeole</li>
+        <li>⚠️ Assurez-vous que l’enfant n’a pas de fièvre avant administration.</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
