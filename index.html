@@ -16,6 +16,112 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      color: #333;
+      margin: 0;
+    }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .homepage {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center top;
+      border-radius: 16px;
+      color: white;
+      min-height: 220px;
+      max-height: 260px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3, .card p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .btn {
+      margin-top: auto;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+      }
+      .card {
+        min-height: 180px;
+        max-height: 220px;
+        padding: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -37,7 +143,7 @@
 
       <!-- ✅ Carte Superviseur -->
       <div class="card" style="background-image: url('images/espacesuperviseur.png')">
-        <h3>Supervision & retards</h3>
+        <h3>Supervision & Retards</h3>
         <p>Statistiques, export, surveillance des soins par structure.</p>
         <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
       </div>
@@ -49,7 +155,7 @@
         <a href="terrain.html" class="btn">🚐 Suivi des opérations</a>
       </div>
 
-      <!-- ✅ Carte Tableaux de bord exécutifs -->
+      <!-- ✅ Carte Dashboards Exécutifs -->
       <div class="card" style="background-image: url('images/tableauxdebordexecutifs.webp')">
         <h3>Dashboards Exécutifs</h3>
         <p>Vue nationale, KPIs, prévisions, performances par province.</p>
@@ -67,6 +173,7 @@
   </main>
 </body>
 </html>
+
 
 
 
