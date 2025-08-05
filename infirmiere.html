@@ -24,14 +24,18 @@
 
     .card {
       position: relative;
-      min-height: 240px;
-      background: #ffffff;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       border-radius: 16px;
+      color: white;
+      min-height: 240px;
       padding: 1rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       transition: transform 0.2s ease;
     }
 
