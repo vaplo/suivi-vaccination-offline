@@ -4,11 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FlowLab</title>
+
+  <!-- ✅ PWA + thème -->
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+
+  <!-- ✅ Service Worker -->
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -16,12 +20,31 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+
+  <!-- ✅ Styles internes améliorés -->
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
       background-color: #f4fdfc;
       color: #333;
       margin: 0;
+    }
+
+    /* ✅ Lien d'accessibilité (invisible sauf focus) */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #16a085;
+      color: white;
+      padding: 0.5rem 1rem;
+      z-index: 1000;
+      text-decoration: none;
+      transition: top 0.3s ease;
+    }
+
+    .skip-link:focus {
+      top: 0;
     }
 
     .top-bar {
@@ -53,12 +76,12 @@
 
     .card {
       position: relative;
-      background-size: cover; /* ✅ corrigé */
+      background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       border-radius: 16px;
       color: white;
-      min-height: 240px; /* ✅ corrigé */
+      min-height: 240px;
       padding: 1rem;
       display: flex;
       flex-direction: column;
@@ -70,6 +93,17 @@
 
     .card:hover {
       transform: scale(1.01);
+    }
+
+    .card:active {
+      transform: scale(0.99);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: -4px;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6);
     }
 
     .card::before {
@@ -112,6 +146,11 @@
       background-color: #216a94;
     }
 
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: 2px;
+    }
+
     @media (max-width: 600px) {
       h1 {
         font-size: 1.4rem;
@@ -124,49 +163,74 @@
         padding: 0.8rem;
       }
     }
+
+    /* ✅ Dark mode natif */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #f4fdfc;
+      }
+      .top-bar {
+        background-color: #0e5e4f;
+        border-bottom-color: #0a463b;
+      }
+      .card::before {
+        background: rgba(0, 0, 0, 0.5);
+      }
+    }
   </style>
 </head>
 <body>
-  <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+
+  <!-- ✅ Lien d’accès rapide pour la navigation clavier -->
+  <a href="#maincontent" class="skip-link">Aller au contenu principal</a>
+
+  <!-- ✅ Barre supérieure -->
+  <header class="top-bar" role="banner">
+    <img src="images/logo.png" alt="Logo FlowLab" class="logo" />
     <h1>FlowLab</h1>
     <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
     <p>Accueil du système. Choisissez votre espace selon votre rôle.</p>
   </header>
 
-  <main class="homepage">
+  <!-- ✅ Zone principale accessible -->
+  <main class="homepage" id="maincontent" role="main" aria-label="Menu principal des espaces FlowLab">
+
+    <!-- ✅ Zone dynamique lue par lecteur d’écran -->
+    <div aria-live="polite" class="sr-only">Bienvenue sur FlowLab. Choisissez votre espace.</div>
+
     <div class="grid-cards">
 
       <!-- ✅ Carte Espace Médical -->
-      <div class="card" style="background-image: url('images/espacemedical.png')">
+      <div class="card" style="background-image: url('images/espacemedical.png')" tabindex="0" aria-label="Espace médical. Ajouter un enfant ou une grossesse.">
         <h3>Espace Médical</h3>
         <p>Ajoutez un enfant ou une grossesse. Suivi intelligent, même hors-ligne.</p>
         <a href="infirmiere.html" class="btn">🩺 Accéder à l’espace infirmière</a>
       </div>
 
       <!-- ✅ Carte Superviseur -->
-      <div class="card" style="background-image: url('images/espacesuperviseur.png')">
+      <div class="card" style="background-image: url('images/espacesuperviseur.png')" tabindex="0" aria-label="Supervision et retards. Statistiques et surveillance par structure.">
         <h3>Supervision & retards</h3>
         <p>Statistiques, export, surveillance des soins par structure.</p>
         <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
       </div>
 
       <!-- ✅ Carte Opérations terrain -->
-      <div class="card" style="background-image: url('images/operationterrain.webp')">
+      <div class="card" style="background-image: url('images/operationterrain.webp')" tabindex="0" aria-label="Opérations de terrain. Suivi des campagnes et logistique.">
         <h3>Opérations de terrain</h3>
         <p>Suivi des campagnes, stocks vaccinaux et logistique en temps réel.</p>
         <a href="operation.html" class="btn">🚚 Accéder à l’espace logistique</a>
       </div>
 
       <!-- ✅ Carte Tableaux de bord -->
-      <div class="card" style="background-image: url('images/tableauxdebordexecutifs.webp')">
+      <div class="card" style="background-image: url('images/tableauxdebordexecutifs.webp')" tabindex="0" aria-label="Tableaux de bord exécutifs. Visualisation des indicateurs nationaux.">
         <h3>Tableaux de bord exécutifs</h3>
         <p>Visualisation des KPIs nationaux, alertes, couverture vaccinale.</p>
         <a href="dashboard.html" class="btn btn-secondary">📈 Accéder aux tableaux</a>
       </div>
 
       <!-- ✅ Carte Centre Système & Sécurité -->
-      <div class="card" style="background-image: url('images/centresystemesecurite.webp')">
+      <div class="card" style="background-image: url('images/centresystemesecurite.webp')" tabindex="0" aria-label="Centre système et sécurité. Supervision technique, confidentialité et RGPD.">
         <h3>Centre Système & Sécurité</h3>
         <p>Supervision technique, confidentialité, audit et conformité RGPD.</p>
         <a href="systeme.html" class="btn">🛡️ Accéder au système</a>
@@ -176,6 +240,7 @@
   </main>
 </body>
 </html>
+
 
 
 
