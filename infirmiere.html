@@ -1,6 +1,3 @@
-from pathlib import Path
-
-html_content = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,113 +7,90 @@ html_content = """
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ SW actif"))
-        .catch(err => console.error("❌ SW error:", err));
-    }
-  </script>
 </head>
 <body>
-  <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+  <header>
+    <img src="logo.png" alt="FlowLab logo" class="logo" />
     <h1>FlowLab</h1>
     <h2>Espace Médical – Suivi et enregistrement</h2>
   </header>
 
-  <main class="container">
-    <div style="margin-top: 1rem;">
-      <a href="index.html" class="btn">⬅ Retour</a>
+  <button onclick="history.back()" class="btn retour">⬅ Retour</button>
+
+  <div class="grid-cards">
+    <div class="card">
+      <img src="enfants.png" alt="Enfant" />
+      <h3>👶 Enfants</h3>
+      <p>Ajoutez un enfant dans le système avec ses informations.</p>
+      <button onclick="scrollToForm('form-enfant')" class="btn">Enregistrer un enfant</button>
     </div>
 
-    <div class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
-        <h3>Nouvel Enfant</h3>
-        <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
-        <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
-        <h3>Nouvelle Grossesse</h3>
-        <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
-        <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/vaccins.png'); background-size: contain;">
-        <h3>Vaccins du jour</h3>
-        <p>Affiche les enfants à vacciner aujourd’hui selon le centre.</p>
-        <a href="#liste-vaccins" class="btn">📅 Voir</a>
-      </div>
+    <div class="card">
+      <img src="grossesses.png" alt="Femme enceinte" />
+      <h3>🤰 Grossesses</h3>
+      <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
+      <button onclick="scrollToForm('form-grossesse')" class="btn-secondary">Enregistrer une grossesse</button>
     </div>
 
-    <section id="liste-vaccins" class="carte" style="margin-top: 2rem;">
-      <h3>📅 Vaccins à faire aujourd’hui</h3>
-      <p>Voici les enfants attendus aujourd’hui pour la vaccination.</p>
-      <ul id="vaccins">
-        <li>
-          👶 <strong>Mbala Joséphine</strong>, 6 semaines – 📍CS Kintambo – 💉 Pentavalent 1
-          <br><em>⚠️ Vaccin essentiel pour la protection contre la coqueluche.</em>
-        </li>
-        <li>
-          👶 <strong>Ngoma Pierre</strong>, 9 mois – 📍CS Gombe – 💉 Rougeole
-          <br><em>🎯 Assurez-vous que l’enfant n’a pas de fièvre avant administration.</em>
-        </li>
-      </ul>
-    </section>
+    <div class="card">
+      <h3>📅 Vaccins aujourd’hui</h3>
+      <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
+      <button onclick="document.getElementById('vaccins-jour').scrollIntoView({behavior: 'smooth'})" class="btn">Voir vaccins</button>
+    </div>
+  </div>
 
-    <div id="formulaire-enfant" class="formulaire" style="display:none;">
-      <h3>👶 Formulaire Enfant</h3>
-      <input id="nom_complet" placeholder="Nom complet" />
-      <label for="date_naissance">Date de naissance</label>
-      <input type="date" id="date_naissance" />
-      <select id="sexe">
+  <section id="form-enfant">
+    <h3>👶 Formulaire Enfant</h3>
+    <form id="enfantForm">
+      <input type="text" name="nom_complet" placeholder="Nom complet" required />
+      <input type="date" name="date_naissance" placeholder="Date de naissance" required />
+      <select name="sexe" required>
         <option value="">Sexe</option>
-        <option>F</option>
-        <option>M</option>
+        <option value="F">Fille</option>
+        <option value="M">Garçon</option>
       </select>
-      <input id="telephone_parent" placeholder="Téléphone du parent" />
-      <input id="centre_sante" placeholder="Structure de santé" />
-      <input id="province" placeholder="Province" />
-      <select id="langue_preferee">
-        <option value="">Langue préférée</option>
+      <input type="text" name="telephone" placeholder="Téléphone du parent" required />
+      <input type="text" name="centre_sante" placeholder="Structure de santé" required />
+      <input type="text" name="province" placeholder="Province" required />
+      <select name="langue_preferee">
         <option value="francais">Français</option>
         <option value="lingala">Lingala</option>
         <option value="swahili">Swahili</option>
-        <option value="tshiluba">Tshiluba</option>
-        <option value="kikongo">Kikongo</option>
       </select>
-      <button onclick="enregistrerEnfant()">📩 Envoyer</button>
-      <div id="message-enfant"></div>
-    </div>
+      <button type="submit" class="btn">📅 Envoyer</button>
+    </form>
+  </section>
 
-    <div id="formulaire-grossesse" class="formulaire" style="display:none;">
-      <h3>🤰 Formulaire Grossesse</h3>
-      <input id="nom_grossesse" placeholder="Nom complet" />
-      <input id="telephone_grossesse" placeholder="Téléphone" />
-      <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
-      <label for="dpa">Date prévue d’accouchement (DPA)</label>
-      <input type="date" id="dpa" />
-      <input id="centre_sante_grossesse" placeholder="Structure de santé" />
-      <input id="province_grossesse" placeholder="Province" />
-      <select id="langue_preferee_grossesse">
-        <option value="">Langue préférée</option>
+  <section id="form-grossesse">
+    <h3>🤰 Formulaire Grossesse</h3>
+    <form id="grossesseForm">
+      <input type="text" name="nom" placeholder="Nom complet" required />
+      <input type="text" name="telephone" placeholder="Téléphone" required />
+      <input type="number" name="semaines_grossesse" placeholder="Semaines de grossesse" required />
+      <input type="date" name="dpa" placeholder="Date prévue d’accouchement" required />
+      <input type="text" name="centre_sante" placeholder="Structure de santé" required />
+      <input type="text" name="province" placeholder="Province" required />
+      <select name="langue_preferee">
         <option value="francais">Français</option>
         <option value="lingala">Lingala</option>
         <option value="swahili">Swahili</option>
-        <option value="tshiluba">Tshiluba</option>
-        <option value="kikongo">Kikongo</option>
       </select>
-      <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
-      <div id="message-grossesse"></div>
+      <button type="submit" class="btn">📅 Envoyer</button>
+    </form>
+  </section>
+
+  <section id="vaccins-jour" class="carte">
+    <h3>📅 Vaccins à faire aujourd’hui</h3>
+    <div id="liste-vaccins">
+      <p>Chargement...</p>
     </div>
-  </main>
+  </section>
+
+  <script src="script.js"></script>
+  <script>
+    function scrollToForm(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>
-"""
-
-file_path = Path("/mnt/data/infirmiere.html")
-file_path.write_text(html_content, encoding="utf-8")
-file_path.name
-
-
