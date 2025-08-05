@@ -1,10 +1,8 @@
-from pathlib import Path
-
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FlowLab – Espace Médical</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -16,120 +14,6 @@ html_content = """<!DOCTYPE html>
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
-  <style>
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .card {
-      position: relative;
-      min-height: 320px;
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.5rem;
-      color: white;
-      background-size: contain;
-      background-position: center;
-      background-repeat: no-repeat;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 0;
-    }
-
-    .card * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .formulaire {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-
-    .formulaire input,
-    .formulaire select {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .formulaire button {
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 0.7rem 1.2rem;
-      cursor: pointer;
-    }
-
-    .success, .error {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    .success { color: green; }
-    .error { color: red; }
-
-    #liste-vaccins {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-      display: none;
-    }
-
-    .top-bar {
-      background-color: #16a085;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      border-bottom: 4px solid #138d75;
-    }
-
-    .top-bar .logo {
-      display: block;
-      margin: 0 auto 0.5rem;
-      max-height: 60px;
-    }
-
-    .btn {
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1.2rem;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .btn:hover {
-      background-color: #138d75;
-    }
-
-    .container {
-      max-width: 960px;
-      margin: auto;
-      padding: 1rem;
-    }
-  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -143,11 +27,10 @@ html_content = """<!DOCTYPE html>
       <a href="index.html" class="btn">⬅ Retour</a>
     </div>
 
-    <div id="liste-vaccins">
-      <h3>📅 Vaccins à faire aujourd’hui</h3>
-      <ul id="vaccins"></ul>
-    </div>
+    <!-- SECTION : Vaccins à faire aujourd’hui -->
+    <section id="vaccins-jour" class="grid-cards" style="margin-top: 2rem; display: none;"></section>
 
+    <!-- FORMULAIRE ENFANT -->
     <div id="formulaire-enfant" class="formulaire" style="display:none;">
       <h3>👶 Formulaire Enfant</h3>
       <input id="nom_complet" placeholder="Nom complet" />
@@ -173,6 +56,7 @@ html_content = """<!DOCTYPE html>
       <div id="message-enfant"></div>
     </div>
 
+    <!-- FORMULAIRE GROSSESSE -->
     <div id="formulaire-grossesse" class="formulaire" style="display:none;">
       <h3>🤰 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
@@ -194,30 +78,82 @@ html_content = """<!DOCTYPE html>
       <div id="message-grossesse"></div>
     </div>
 
+    <!-- Cartes accès formulaires -->
+    <div class="grid-cards">
+      <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
+        <h3>Nouvel Enfant</h3>
+        <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
+        <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
+        <h3>Nouvelle Grossesse</h3>
+        <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
+        <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
+      </div>
+    </div>
   </main>
-<div class="grid-cards">
 
-  <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
-    <h3>Nouvel Enfant</h3>
-    <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
-    <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
-  </div>
+  <!-- SCRIPT : Vaccins du jour -->
+  <script>
+    const donneesVaccins = [
+      {
+        nom: "Amina",
+        vaccin: "Rougeole",
+        date_prevue: "2025-08-06",
+        langue: "francais"
+      },
+      {
+        nom: "Koffi",
+        vaccin: "BCG",
+        date_prevue: "2025-08-06",
+        langue: "francais"
+      }
+    ];
 
-  <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
-    <h3>Nouvelle Grossesse</h3>
-    <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
-    <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
-  </div>
+    function genererMessageIA(nom, vaccin, date, langue) {
+      if (langue === "francais") {
+        return `Bonjour, veuillez administrer le vaccin <strong>${vaccin}</strong> à <strong>${nom}</strong> aujourd’hui (${date}). Ce rappel est essentiel pour assurer sa protection. Merci pour votre engagement.`;
+      }
+      return "Message non disponible.";
+    }
 
-</div>
+    function afficherVaccinsDuJour() {
+      const section = document.getElementById("vaccins-jour");
+      if (!section || donneesVaccins.length === 0) return;
 
+      donneesVaccins.forEach(enfant => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.style.backgroundImage = "url('images/vaccin.png')";
+        card.style.backgroundSize = "contain";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = enfant.nom;
+
+        const p = document.createElement("p");
+        p.innerHTML = genererMessageIA(enfant.nom, enfant.vaccin, enfant.date_prevue, enfant.langue);
+
+        const bouton = document.createElement("button");
+        bouton.textContent = "✅ Vaccin fait";
+        bouton.className = "btn";
+        bouton.onclick = () => alert(`Vaccin "${enfant.vaccin}" marqué comme fait pour ${enfant.nom}`);
+
+        card.appendChild(h3);
+        card.appendChild(p);
+        card.appendChild(bouton);
+        section.appendChild(card);
+      });
+
+      section.style.display = "grid";
+    }
+
+    window.addEventListener("DOMContentLoaded", afficherVaccinsDuJour);
+  </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
-"""
-
-output_path = Path("/mnt/data/infirmiere.html")
-output_path.write_text(html_content, encoding="utf-8")
-output_path.name
 
 
 
