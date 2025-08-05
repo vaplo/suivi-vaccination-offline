@@ -53,12 +53,12 @@
 
     .card {
       position: relative;
-      background-size: cover;
+      background-size: contain; /* ✅ image non coupée */
       background-position: center;
-      background-repeat: no-repeat;
+      background-repeat: no-repeat; /* ✅ pas de répétition */
       border-radius: 16px;
       color: white;
-      height: 240px;
+      height: 180px; /* ✅ plus petit */
       padding: 1rem;
       display: flex;
       flex-direction: column;
@@ -76,7 +76,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.25); /* ✅ moins foncé pour mieux voir l’image */
       z-index: 0;
     }
 
@@ -120,7 +120,7 @@
         font-size: 1.1rem;
       }
       .card {
-        height: 200px;
+        height: 160px;
         padding: 0.8rem;
       }
     }
