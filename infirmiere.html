@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FlowLab – Espace Médical</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#16a085" />
+  <link rel="stylesheet" href="styles.css">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#16a085">
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -16,97 +16,88 @@
   </script>
 </head>
 <body>
-  <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+  <header>
+    <img src="icon.png" alt="Logo FlowLab" style="height: 60px;">
     <h1>FlowLab</h1>
     <h2>Espace Médical – Suivi et enregistrement</h2>
-    <button onclick="window.location.href='index.html'" class="btn btn-secondary">⬅ Retour</button>
   </header>
 
-  <main class="homepage">
-    <div class="grid-cards">
-      <div class="card">
-        <img src="images/enfants.png" alt="Enfants">
+  <button onclick="window.location.href='index.html'" class="btn btn-secondary">⬅ Retour</button>
+
+  <section class="grid-cards">
+    <div class="card">
+      <img src="baby.jpg" alt="Enfant">
+      <div class="card-content">
         <h3>👶 Enfants</h3>
         <p>Ajoutez un enfant dans le système avec ses informations.</p>
-        <button class="btn" onclick="document.getElementById('form-enfant').scrollIntoView({ behavior: 'smooth' })">
-          Enregistrer un enfant
-        </button>
-      </div>
-
-      <div class="card">
-        <img src="images/grossesses.png" alt="Grossesses">
-        <h3>🤰 Grossesses</h3>
-        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-        <button class="btn btn-secondary" onclick="document.getElementById('form-grossesse').scrollIntoView({ behavior: 'smooth' })">
-          Enregistrer une grossesse
-        </button>
-      </div>
-
-      <div class="card">
-        <img src="images/vaccins.png" alt="Vaccins aujourd'hui">
-        <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-        <a href="#liste-vaccins" class="btn">Voir vaccins</a>
+        <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
       </div>
     </div>
+    <div class="card">
+      <img src="pregnant.jpg" alt="Grossesse">
+      <div class="card-content">
+        <h3>🤰 Grossesses</h3>
+        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
+        <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
+      </div>
+    </div>
+    <div class="card">
+      <img src="calendar.jpg" alt="Vaccins">
+      <div class="card-content">
+        <h3>📅 Vaccins aujourd’hui</h3>
+        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
+        <button onclick="window.location.href='vaccins.html'" class="btn">Voir vaccins</button>
+      </div>
+    </div>
+  </section>
 
-    <section id="form-enfant">
-      <h3>👶 Formulaire Enfant</h3>
-      <form id="form-child">
-        <input type="text" name="nom_complet" placeholder="Nom complet" required />
-        <input type="date" name="date_naissance" placeholder="Date de naissance" required />
-        <select name="sexe" required>
-          <option value="">Sexe</option>
-          <option value="M">Masculin</option>
-          <option value="F">Féminin</option>
-        </select>
-        <input type="text" name="telephone" placeholder="Téléphone du parent" required />
-        <input type="text" name="centre_sante" placeholder="Structure de santé" required />
-        <input type="text" name="province" placeholder="Province" required />
-        <select name="langue_preferee" required>
-          <option value="francais">Français</option>
-          <option value="lingala">Lingala</option>
-          <option value="swahili">Swahili</option>
-          <option value="kiluba">Kiluba</option>
-          <option value="tshiluba">Tshiluba</option>
-        </select>
-        <button type="submit" class="btn">📅 Envoyer</button>
-      </form>
-    </section>
+  <section id="form-enfant" class="formulaire" style="display: none">
+    <h3>👶 Formulaire Enfant</h3>
+    <form id="form-enfant-form">
+      <input name="nom_complet" type="text" placeholder="Nom complet" required>
+      <input name="date_naissance" type="date" required>
+      <select name="sexe" required>
+        <option value="">Sexe</option>
+        <option value="M">Masculin</option>
+        <option value="F">Féminin</option>
+      </select>
+      <input name="telephone" type="tel" placeholder="Téléphone du parent" required>
+      <input name="centre_sante" type="text" placeholder="Structure de santé" required>
+      <input name="province" type="text" placeholder="Province" required>
+      <select name="langue_preferee" required>
+        <option value="">Langue préférée</option>
+        <option value="Franais">Français</option>
+        <option value="Lingala">Lingala</option>
+        <option value="Swahili">Swahili</option>
+        <option value="Kikongo">Kikongo</option>
+        <option value="Tshiluba">Tshiluba</option>
+      </select>
+      <button type="submit" class="btn">📅 Envoyer</button>
+    </form>
+  </section>
 
-    <section id="form-grossesse">
-      <h3>🤰 Formulaire Grossesse</h3>
-      <form id="form-pregnancy">
-        <input type="text" name="nom" placeholder="Nom complet" required />
-        <input type="text" name="telephone" placeholder="Téléphone" required />
-        <input type="number" name="semaines_grossesse" placeholder="Semaines de grossesse" required />
-        <input type="date" name="dpa" placeholder="Date prévue d’accouchement" required />
-        <input type="text" name="centre_sante" placeholder="Structure de santé" required />
-        <input type="text" name="province" placeholder="Province" required />
-        <select name="langue_preferee" required>
-          <option value="francais">Français</option>
-          <option value="lingala">Lingala</option>
-          <option value="swahili">Swahili</option>
-          <option value="kiluba">Kiluba</option>
-          <option value="tshiluba">Tshiluba</option>
-        </select>
-        <button type="submit" class="btn">📅 Envoyer</button>
-      </form>
-    </section>
-
-    <section id="liste-vaccins">
-      <h3>📅 Vaccins à faire aujourd’hui</h3>
-      <p>Voici les enfants attendus aujourd’hui pour la vaccination.</p>
-      <ul>
-        <li>👶 <strong>Mbala Joséphine</strong>, 6 semaines – 📍 CS Kintambo – 💉 Pentavalent 1</li>
-        <li>💡 Vaccin essentiel pour la protection contre la coqueluche.</li>
-        <li>👶 <strong>Ngoma Pierre</strong>, 9 mois – 📍 CS Gombe – 💉 Rougeole</li>
-        <li>⚠️ Assurez-vous que l’enfant n’a pas de fièvre avant administration.</li>
-      </ul>
-    </section>
-  </main>
+  <section id="form-grossesse" class="formulaire" style="display: none">
+    <h3>🤰 Formulaire Grossesse</h3>
+    <form id="form-grossesse-form">
+      <input name="nom" type="text" placeholder="Nom complet" required>
+      <input name="telephone" type="tel" placeholder="Téléphone" required>
+      <input name="semaines_grossesse" type="number" placeholder="Semaines de grossesse" required>
+      <input name="dpa" type="date" required>
+      <input name="centre_sante" type="text" placeholder="Structure de santé" required>
+      <input name="province" type="text" placeholder="Province" required>
+      <select name="langue_preferee" required>
+        <option value="">Langue préférée</option>
+        <option value="Franais">Français</option>
+        <option value="Lingala">Lingala</option>
+        <option value="Swahili">Swahili</option>
+        <option value="Kikongo">Kikongo</option>
+        <option value="Tshiluba">Tshiluba</option>
+      </select>
+      <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
+    </form>
+  </section>
 
   <script src="script.js"></script>
 </body>
 </html>
+
