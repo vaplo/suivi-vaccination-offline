@@ -17,42 +17,37 @@
   <style>
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
-      margin: 2rem 0;
+      padding: 2rem;
     }
 
     .card {
       position: relative;
       background-size: cover;
       background-position: center;
-      background-repeat: no-repeat;
       border-radius: 16px;
-      color: white;
-      min-height: 240px;
-      padding: 1rem;
+      min-height: 280px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease;
+      padding: 1.5rem;
+      color: white;
     }
 
-    .card:hover {
-      transform: scale(1.01);
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
     }
 
-    .card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
-  border-radius: 12px 12px 0 0;
-}
-
-
-    .card-content {
-      margin-top: 1rem;
+    .card * {
+      position: relative;
+      z-index: 1;
     }
 
     form label {
