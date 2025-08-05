@@ -1,8 +1,11 @@
+from pathlib import Path
+
+html_content = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FlowLab – Espace Médical</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
@@ -27,10 +30,41 @@
       <a href="index.html" class="btn">⬅ Retour</a>
     </div>
 
-    <!-- SECTION : Vaccins à faire aujourd’hui -->
-    <section id="vaccins-jour" class="grid-cards" style="margin-top: 2rem; display: none;"></section>
+    <div class="grid-cards">
+      <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
+        <h3>Nouvel Enfant</h3>
+        <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
+        <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
+      </div>
 
-    <!-- FORMULAIRE ENFANT -->
+      <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
+        <h3>Nouvelle Grossesse</h3>
+        <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
+        <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/vaccins.png'); background-size: contain;">
+        <h3>Vaccins du jour</h3>
+        <p>Affiche les enfants à vacciner aujourd’hui selon le centre.</p>
+        <a href="#liste-vaccins" class="btn">📅 Voir</a>
+      </div>
+    </div>
+
+    <section id="liste-vaccins" class="carte" style="margin-top: 2rem;">
+      <h3>📅 Vaccins à faire aujourd’hui</h3>
+      <p>Voici les enfants attendus aujourd’hui pour la vaccination.</p>
+      <ul id="vaccins">
+        <li>
+          👶 <strong>Mbala Joséphine</strong>, 6 semaines – 📍CS Kintambo – 💉 Pentavalent 1
+          <br><em>⚠️ Vaccin essentiel pour la protection contre la coqueluche.</em>
+        </li>
+        <li>
+          👶 <strong>Ngoma Pierre</strong>, 9 mois – 📍CS Gombe – 💉 Rougeole
+          <br><em>🎯 Assurez-vous que l’enfant n’a pas de fièvre avant administration.</em>
+        </li>
+      </ul>
+    </section>
+
     <div id="formulaire-enfant" class="formulaire" style="display:none;">
       <h3>👶 Formulaire Enfant</h3>
       <input id="nom_complet" placeholder="Nom complet" />
@@ -56,7 +90,6 @@
       <div id="message-enfant"></div>
     </div>
 
-    <!-- FORMULAIRE GROSSESSE -->
     <div id="formulaire-grossesse" class="formulaire" style="display:none;">
       <h3>🤰 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
@@ -77,83 +110,13 @@
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
       <div id="message-grossesse"></div>
     </div>
-
-    <!-- Cartes accès formulaires -->
-    <div class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
-        <h3>Nouvel Enfant</h3>
-        <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
-        <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
-        <h3>Nouvelle Grossesse</h3>
-        <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
-        <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
-      </div>
-    </div>
   </main>
-
-  <!-- SCRIPT : Vaccins du jour -->
-  <script>
-    const donneesVaccins = [
-      {
-        nom: "Amina",
-        vaccin: "Rougeole",
-        date_prevue: "2025-08-06",
-        langue: "francais"
-      },
-      {
-        nom: "Koffi",
-        vaccin: "BCG",
-        date_prevue: "2025-08-06",
-        langue: "francais"
-      }
-    ];
-
-    function genererMessageIA(nom, vaccin, date, langue) {
-      if (langue === "francais") {
-        return `Bonjour, veuillez administrer le vaccin <strong>${vaccin}</strong> à <strong>${nom}</strong> aujourd’hui (${date}). Ce rappel est essentiel pour assurer sa protection. Merci pour votre engagement.`;
-      }
-      return "Message non disponible.";
-    }
-
-    function afficherVaccinsDuJour() {
-      const section = document.getElementById("vaccins-jour");
-      if (!section || donneesVaccins.length === 0) return;
-
-      donneesVaccins.forEach(enfant => {
-        const card = document.createElement("div");
-        card.className = "card";
-        card.style.backgroundImage = "url('images/vaccin.png')";
-        card.style.backgroundSize = "contain";
-
-        const h3 = document.createElement("h3");
-        h3.textContent = enfant.nom;
-
-        const p = document.createElement("p");
-        p.innerHTML = genererMessageIA(enfant.nom, enfant.vaccin, enfant.date_prevue, enfant.langue);
-
-        const bouton = document.createElement("button");
-        bouton.textContent = "✅ Vaccin fait";
-        bouton.className = "btn";
-        bouton.onclick = () => alert(`Vaccin "${enfant.vaccin}" marqué comme fait pour ${enfant.nom}`);
-
-        card.appendChild(h3);
-        card.appendChild(p);
-        card.appendChild(bouton);
-        section.appendChild(card);
-      });
-
-      section.style.display = "grid";
-    }
-
-    window.addEventListener("DOMContentLoaded", afficherVaccinsDuJour);
-  </script>
-
-  <script src="script.js"></script>
 </body>
 </html>
+"""
 
+file_path = Path("/mnt/data/infirmiere.html")
+file_path.write_text(html_content, encoding="utf-8")
+file_path.name
 
 
