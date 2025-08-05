@@ -53,12 +53,12 @@
 
     .card {
       position: relative;
-      background-size: contain; /* ✅ image non coupée */
+      background-size: cover; /* ✅ corrigé */
       background-position: center;
-      background-repeat: no-repeat; /* ✅ pas de répétition */
+      background-repeat: no-repeat;
       border-radius: 16px;
       color: white;
-      height: 180px; /* ✅ plus petit */
+      min-height: 240px; /* ✅ corrigé */
       padding: 1rem;
       display: flex;
       flex-direction: column;
@@ -76,7 +76,7 @@
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.25); /* ✅ moins foncé pour mieux voir l’image */
+      background: rgba(0, 0, 0, 0.25);
       z-index: 0;
     }
 
@@ -120,7 +120,7 @@
         font-size: 1.1rem;
       }
       .card {
-        height: 160px;
+        min-height: 200px;
         padding: 0.8rem;
       }
     }
@@ -155,27 +155,28 @@
       <div class="card" style="background-image: url('images/operationterrain.webp')">
         <h3>Opérations de terrain</h3>
         <p>Suivi des campagnes, stocks vaccinaux et logistique en temps réel.</p>
-        <a href="#" class="btn">🚚 Accéder à l’espace logistique</a>
+        <a href="operation.html" class="btn">🚚 Accéder à l’espace logistique</a>
       </div>
 
       <!-- ✅ Carte Tableaux de bord -->
       <div class="card" style="background-image: url('images/tableauxdebordexecutifs.webp')">
         <h3>Tableaux de bord exécutifs</h3>
         <p>Visualisation des KPIs nationaux, alertes, couverture vaccinale.</p>
-        <a href="#" class="btn btn-secondary">📈 Accéder aux tableaux</a>
+        <a href="dashboard.html" class="btn btn-secondary">📈 Accéder aux tableaux</a>
       </div>
 
       <!-- ✅ Carte Centre Système & Sécurité -->
       <div class="card" style="background-image: url('images/centresystemesecurite.webp')">
         <h3>Centre Système & Sécurité</h3>
         <p>Supervision technique, confidentialité, audit et conformité RGPD.</p>
-        <a href="#" class="btn">🛡️ Accéder au système</a>
+        <a href="systeme.html" class="btn">🛡️ Accéder au système</a>
       </div>
 
     </div>
   </main>
 </body>
 </html>
+
 
 
 
