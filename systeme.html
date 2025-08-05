@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Centre Système – FlowLab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ SW actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <h1>Centre Système & Sécurité</h1>
+    <h2>Supervision technique, conformité, intégrations</h2>
+    <p>Gérez la stabilité et l'intégrité du système FlowLab.</p>
+  </header>
+
+  <main class="homepage">
+    <div class="grid-cards">
+
+      <div class="card" style="background-image: url('images/adminpanel.webp')">
+        <h3>Panneau d’administration</h3>
+        <p>Utilisateurs, rôles, permissions et configuration globale.</p>
+        <a href="#" class="btn">🛠️ Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/security.webp')">
+        <h3>Centre sécurité</h3>
+        <p>Menaces, logs d’accès, conformité RGPD et alertes.</p>
+        <a href="#" class="btn">🔒 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/backup.webp')">
+        <h3>Backups & recovery</h3>
+        <p>Sauvegardes automatiques, restauration, tests DRP.</p>
+        <a href="#" class="btn">💾 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/integration.webp')">
+        <h3>Hub d’intégration</h3>
+        <p>API, webhooks, DHIS2, SMS, systèmes partenaires.</p>
+        <a href="#" class="btn">🔗 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/diagnostics.webp')">
+        <h3>Diagnostics système</h3>
+        <p>Vérifications de santé, erreurs, logs, performances.</p>
+        <a href="#" class="btn">📟 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/maintenance.webp')">
+        <h3>Maintenance programmée</h3>
+        <p>Planification des interruptions, mises à jour, correctifs.</p>
+        <a href="#" class="btn">🧰 Accéder</a>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
