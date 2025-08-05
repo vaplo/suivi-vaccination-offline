@@ -64,12 +64,12 @@ body {
 /* 🖼️ Images dans cartes */
 .card img {
   width: 100%;
-  height: auto;
-  max-height: 220px;
-  object-fit: contain;
+  height: 220px;
+  object-fit: cover;
   border-radius: 12px;
   margin-bottom: 1rem;
 }
+
 
 /* 📌 Titres */
 h1 {
