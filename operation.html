@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Opérations de terrain – FlowLab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ SW actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <h1>Opérations de terrain</h1>
+    <h2>Coordination des campagnes, stocks, chaînes du froid, et plus</h2>
+    <p>Sélectionnez une action à réaliser sur le terrain.</p>
+  </header>
+
+  <main class="homepage">
+    <div class="grid-cards">
+
+      <div class="card" style="background-image: url('images/mobileteam.webp')">
+        <h3>Dispatch équipes mobiles</h3>
+        <p>Optimisation des trajets et planification automatique.</p>
+        <a href="#" class="btn">🚐 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/stock.webp')">
+        <h3>Gestion des stocks</h3>
+        <p>Prédictions, redistributions, suivi des péremptions.</p>
+        <a href="#" class="btn">📦 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/coldchain.webp')">
+        <h3>Chaîne du froid</h3>
+        <p>Surveillance des températures et maintenance préventive.</p>
+        <a href="#" class="btn">❄️ Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/qualite.webp')">
+        <h3>Contrôle qualité</h3>
+        <p>Validation des données, corrections et audit automatique.</p>
+        <a href="#" class="btn">✅ Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/outbreak.webp')">
+        <h3>Réponse épidémies</h3>
+        <p>Activation de plans d’urgence, mobilisation rapide.</p>
+        <a href="#" class="btn">🚨 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/community.webp')">
+        <h3>Engagement communautaire</h3>
+        <p>Campagnes, feedback terrain, écoute sociale.</p>
+        <a href="#" class="btn">🤝 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/training.webp')">
+        <h3>Académie de formation</h3>
+        <p>Cours, certificats, évaluations et badges numériques.</p>
+        <a href="#" class="btn">🎓 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/formulaires.webp')">
+        <h3>Formulaires terrain</h3>
+        <p>Collecte de données mobile, validation instantanée.</p>
+        <a href="#" class="btn">📝 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/campagnes.webp')">
+        <h3>Campagnes de vaccination</h3>
+        <p>Planification, logistique et suivi des résultats.</p>
+        <a href="#" class="btn">📅 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/agents.webp')">
+        <h3>Support agents santé</h3>
+        <p>Centre d’aide, FAQ, base de connaissances mobile.</p>
+        <a href="#" class="btn">🆘 Accéder</a>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
