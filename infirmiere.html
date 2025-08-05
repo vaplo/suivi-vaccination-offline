@@ -1,3 +1,6 @@
+from pathlib import Path
+
+html_content = """
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -14,6 +17,86 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      position: relative;
+      min-height: 320px;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 1.5rem;
+      color: white;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .formulaire {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .formulaire input,
+    .formulaire select {
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.6rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    .formulaire button {
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0.7rem 1.2rem;
+      cursor: pointer;
+    }
+
+    .success, .error {
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+
+    #liste-vaccins {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: none;
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -27,36 +110,24 @@
       <a href="index.html" class="btn">⬅ Retour</a>
     </div>
 
-    <div id="liste-vaccins" class="formulaire" style="display: none;">
+    <div id="liste-vaccins">
       <h3>📅 Vaccins à faire aujourd’hui</h3>
       <ul id="vaccins"></ul>
     </div>
 
     <div id="formulaire-enfant" class="formulaire" style="display:none;">
       <h3>👶 Formulaire Enfant</h3>
-      <label for="nom_complet">Nom complet</label>
       <input id="nom_complet" placeholder="Nom complet" />
-      
       <label for="date_naissance">Date de naissance</label>
       <input type="date" id="date_naissance" />
-
-      <label for="sexe">Sexe</label>
       <select id="sexe">
-        <option value="">Sélectionner le sexe</option>
+        <option value="">Sexe</option>
         <option>F</option>
         <option>M</option>
       </select>
-
-      <label for="telephone_parent">Téléphone du parent</label>
       <input id="telephone_parent" placeholder="Téléphone du parent" />
-
-      <label for="centre_sante">Structure de santé</label>
       <input id="centre_sante" placeholder="Structure de santé" />
-
-      <label for="province">Province</label>
       <input id="province" placeholder="Province" />
-
-      <label for="langue_preferee">Langue préférée</label>
       <select id="langue_preferee">
         <option value="">Langue préférée</option>
         <option value="francais">Français</option>
@@ -65,32 +136,19 @@
         <option value="tshiluba">Tshiluba</option>
         <option value="kikongo">Kikongo</option>
       </select>
-
       <button onclick="enregistrerEnfant()">📩 Envoyer</button>
       <div id="message-enfant"></div>
     </div>
 
     <div id="formulaire-grossesse" class="formulaire" style="display:none;">
       <h3>🤰 Formulaire Grossesse</h3>
-      <label for="nom_grossesse">Nom complet</label>
       <input id="nom_grossesse" placeholder="Nom complet" />
-
-      <label for="telephone_grossesse">Téléphone</label>
       <input id="telephone_grossesse" placeholder="Téléphone" />
-
-      <label for="semaines_grossesse">Semaines de grossesse</label>
       <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
-
       <label for="dpa">Date prévue d’accouchement (DPA)</label>
       <input type="date" id="dpa" />
-
-      <label for="centre_sante_grossesse">Structure de santé</label>
       <input id="centre_sante_grossesse" placeholder="Structure de santé" />
-
-      <label for="province_grossesse">Province</label>
       <input id="province_grossesse" placeholder="Province" />
-
-      <label for="langue_preferee_grossesse">Langue préférée</label>
       <select id="langue_preferee_grossesse">
         <option value="">Langue préférée</option>
         <option value="francais">Français</option>
@@ -99,103 +157,18 @@
         <option value="tshiluba">Tshiluba</option>
         <option value="kikongo">Kikongo</option>
       </select>
-
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
       <div id="message-grossesse"></div>
     </div>
-
-    <section class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png')">
-        <h3>👶 Enfants</h3>
-        <p>Ajoutez un enfant dans le système avec ses informations.</p>
-        <button class="btn" onclick="afficherFormulaire('enfant')">Enregistrer un enfant</button>
-      </div>
-      <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🤰 Grossesses</h3>
-        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-        <button class="btn btn-secondary" onclick="afficherFormulaire('grossesse')">Enregistrer une grossesse</button>
-      </div>
-      <div class="card" style="background-image: url('images/surveillance-soins.png')">
-        <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-        <button class="btn" onclick="chargerVaccins()">Voir vaccins</button>
-      </div>
-    </section>
   </main>
-
-  <script>
-    const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
-    const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
-    const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
-
-    function afficherFormulaire(type) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById("formulaire-enfant").style.display = (type === "enfant") ? "block" : "none";
-      document.getElementById("formulaire-grossesse").style.display = (type === "grossesse") ? "block" : "none";
-      document.getElementById("liste-vaccins").style.display = "none";
-    }
-
-    function chargerVaccins() {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.getElementById("formulaire-enfant").style.display = "none";
-      document.getElementById("formulaire-grossesse").style.display = "none";
-      fetch(webhookVaccins)
-        .then(r => r.json())
-        .then(data => {
-          const liste = data.map(v => `<li>${v.nom} — ${v.vaccin}</li>`).join('');
-          document.getElementById("vaccins").innerHTML = liste;
-          document.getElementById("liste-vaccins").style.display = "block";
-        })
-        .catch(() => {
-          document.getElementById("vaccins").innerHTML = "<li>❌ Erreur lors du chargement</li>";
-          document.getElementById("liste-vaccins").style.display = "block";
-        });
-    }
-
-    function enregistrerEnfant() {
-      const data = {
-        nom_complet: document.getElementById("nom_complet").value,
-        date_naissance: document.getElementById("date_naissance").value,
-        sexe: document.getElementById("sexe").value,
-        telephone_parent: document.getElementById("telephone_parent").value,
-        centre_sante: document.getElementById("centre_sante").value,
-        province: document.getElementById("province").value,
-        langue_preferee: document.getElementById("langue_preferee").value
-      };
-      fetch(webhookEnfant, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(res => {
-        document.getElementById("message-enfant").innerHTML = res.ok ? "<p class='success'>✅ Enfant enregistré</p>" : "<p class='error'>❌ Échec</p>";
-      }).catch(() => {
-        document.getElementById("message-enfant").innerHTML = "<p class='error'>❌ Erreur de réseau</p>";
-      });
-    }
-
-    function enregistrerGrossesse() {
-      const data = {
-        nom: document.getElementById("nom_grossesse").value,
-        telephone: document.getElementById("telephone_grossesse").value,
-        semaines_grossesse: parseInt(document.getElementById("semaines_grossesse").value || "0", 10),
-        dpa: document.getElementById("dpa").value,
-        centre_sante: document.getElementById("centre_sante_grossesse").value,
-        province: document.getElementById("province_grossesse").value,
-        langue_preferee: document.getElementById("langue_preferee_grossesse").value
-      };
-      fetch(webhookGrossesse, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      }).then(res => {
-        document.getElementById("message-grossesse").innerHTML = res.ok ? "<p class='success'>✅ Grossesse enregistrée</p>" : "<p class='error'>❌ Échec</p>";
-      }).catch(() => {
-        document.getElementById("message-grossesse").innerHTML = "<p class='error'>❌ Erreur de réseau</p>";
-      });
-    }
-  </script>
 </body>
 </html>
+"""
+
+output_path = Path("/mnt/data/infirmiere.html")
+output_path.write_text(html_content, encoding="utf-8")
+output_path.name
+
 
 
 
