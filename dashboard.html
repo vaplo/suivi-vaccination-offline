@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tableaux de bord – FlowLab</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("✅ SW actif"))
+        .catch(err => console.error("❌ SW error:", err));
+    }
+  </script>
+</head>
+<body>
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
+    <h1>Tableaux de bord exécutifs</h1>
+    <h2>Vue stratégique nationale, KPIs, planification intelligente</h2>
+    <p>Choisissez un tableau pour visualiser les performances en temps réel.</p>
+  </header>
+
+  <main class="homepage">
+    <div class="grid-cards">
+
+      <div class="card" style="background-image: url('images/vue360.webp')">
+        <h3>Vue nationale 360°</h3>
+        <p>KPIs en temps réel, tendances, alertes nationales.</p>
+        <a href="#" class="btn">🌍 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/commandeprovince.webp')">
+        <h3>Centre de commande provincial</h3>
+        <p>Coordination par province, alertes critiques, équipes terrain.</p>
+        <a href="#" class="btn">🏢 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/zonehealth.webp')">
+        <h3>Vue par zone sanitaire</h3>
+        <p>Performance, stocks, qualité, alertes locales.</p>
+        <a href="#" class="btn">🗺️ Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/statsnationales.webp')">
+        <h3>Statistiques nationales</h3>
+        <p>Comparaison avec benchmarks OMS, tendances historiques.</p>
+        <a href="#" class="btn">📊 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/analytics.webp')">
+        <h3>Analytics prédictives</h3>
+        <p>Prédictions IA, risques, scénarios, planification avancée.</p>
+        <a href="#" class="btn">📈 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/monitoring.webp')">
+        <h3>Monitoring temps réel</h3>
+        <p>Suivi en direct, alertes automatiques, indicateurs critiques.</p>
+        <a href="#" class="btn">⏱️ Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/classement.webp')">
+        <h3>Classement performance</h3>
+        <p>Score des structures, gamification, taux de couverture.</p>
+        <a href="#" class="btn">🏆 Accéder</a>
+      </div>
+
+      <div class="card" style="background-image: url('images/planning.webp')">
+        <h3>Planification stratégique</h3>
+        <p>Budgets, scénarios, projections intelligentes par zone.</p>
+        <a href="#" class="btn">🧠 Accéder</a>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>
