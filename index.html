@@ -46,33 +46,37 @@
 
     .grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 1.5rem;
       margin-top: 2rem;
     }
 
     .card {
       position: relative;
-      background-size: contain;
+      background-size: cover;
+      background-position: center;
       background-repeat: no-repeat;
-      background-position: center top;
       border-radius: 16px;
       color: white;
-      min-height: 220px;
-      max-height: 260px;
+      height: 240px;
       padding: 1rem;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       overflow: hidden;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
     }
 
     .card::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       z-index: 0;
     }
 
@@ -116,8 +120,7 @@
         font-size: 1.1rem;
       }
       .card {
-        min-height: 180px;
-        max-height: 220px;
+        height: 200px;
         padding: 0.8rem;
       }
     }
@@ -143,36 +146,16 @@
 
       <!-- ✅ Carte Superviseur -->
       <div class="card" style="background-image: url('images/espacesuperviseur.png')">
-        <h3>Supervision & Retards</h3>
+        <h3>Supervision & retards</h3>
         <p>Statistiques, export, surveillance des soins par structure.</p>
         <a href="superviseur.html" class="btn btn-secondary">📊 Accéder à l’espace superviseur</a>
-      </div>
-
-      <!-- ✅ Carte Opérations Terrain -->
-      <div class="card" style="background-image: url('images/operationterrain.webp')">
-        <h3>Opérations Terrain</h3>
-        <p>Suivi des campagnes mobiles et actions communautaires.</p>
-        <a href="terrain.html" class="btn">🚐 Suivi des opérations</a>
-      </div>
-
-      <!-- ✅ Carte Dashboards Exécutifs -->
-      <div class="card" style="background-image: url('images/tableauxdebordexecutifs.webp')">
-        <h3>Dashboards Exécutifs</h3>
-        <p>Vue nationale, KPIs, prévisions, performances par province.</p>
-        <a href="executifs.html" class="btn btn-secondary">📈 Accès aux tableaux</a>
-      </div>
-
-      <!-- ✅ Carte Centre Système & Sécurité -->
-      <div class="card" style="background-image: url('images/centresystemesecurite.webp')">
-        <h3>Centre Système & Sécurité</h3>
-        <p>Suivi résilience, audit, conformité RGPD, alertes critiques.</p>
-        <a href="securite.html" class="btn">🔒 Centre sécurité</a>
       </div>
 
     </div>
   </main>
 </body>
 </html>
+
 
 
 
