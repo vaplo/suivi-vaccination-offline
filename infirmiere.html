@@ -1,7 +1,6 @@
 from pathlib import Path
 
-html_content = """
-<!DOCTYPE html>
+html_content = """<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
@@ -96,6 +95,40 @@ html_content = """
       margin-bottom: 2rem;
       display: none;
     }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .btn {
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.2rem;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 1rem;
+    }
   </style>
 </head>
 <body>
@@ -160,7 +193,24 @@ html_content = """
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
       <div id="message-grossesse"></div>
     </div>
+
   </main>
+<div class="grid-cards">
+
+  <div class="card" style="background-image: url('images/enfants.png'); background-size: contain;">
+    <h3>Nouvel Enfant</h3>
+    <p>Enregistrez un enfant pour générer un calendrier vaccinal personnalisé.</p>
+    <a href="#formulaire-enfant" class="btn">👶 Remplir le formulaire</a>
+  </div>
+
+  <div class="card" style="background-image: url('images/grossesses.png'); background-size: contain;">
+    <h3>Nouvelle Grossesse</h3>
+    <p>Ajoutez une femme enceinte pour un suivi prénatal automatisé.</p>
+    <a href="#formulaire-grossesse" class="btn">🤰 Remplir le formulaire</a>
+  </div>
+
+</div>
+
 </body>
 </html>
 """
@@ -168,8 +218,6 @@ html_content = """
 output_path = Path("/mnt/data/infirmiere.html")
 output_path.write_text(html_content, encoding="utf-8")
 output_path.name
-
-
 
 
 
