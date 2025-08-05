@@ -27,23 +27,36 @@
       <a href="index.html" class="btn">⬅ Retour</a>
     </div>
 
-    <div id="liste-vaccins">
-      <h3>🗓 Vaccins à faire aujourd’hui</h3>
-      <table id="vaccins" class="table-vaccins"></table>
+    <div id="liste-vaccins" class="formulaire" style="display: none;">
+      <h3>📅 Vaccins à faire aujourd’hui</h3>
+      <ul id="vaccins"></ul>
     </div>
 
     <div id="formulaire-enfant" class="formulaire" style="display:none;">
       <h3>👶 Formulaire Enfant</h3>
+      <label for="nom_complet">Nom complet</label>
       <input id="nom_complet" placeholder="Nom complet" />
+      
+      <label for="date_naissance">Date de naissance</label>
       <input type="date" id="date_naissance" />
+
+      <label for="sexe">Sexe</label>
       <select id="sexe">
-        <option value="">Sexe</option>
+        <option value="">Sélectionner le sexe</option>
         <option>F</option>
         <option>M</option>
       </select>
+
+      <label for="telephone_parent">Téléphone du parent</label>
       <input id="telephone_parent" placeholder="Téléphone du parent" />
+
+      <label for="centre_sante">Structure de santé</label>
       <input id="centre_sante" placeholder="Structure de santé" />
+
+      <label for="province">Province</label>
       <input id="province" placeholder="Province" />
+
+      <label for="langue_preferee">Langue préférée</label>
       <select id="langue_preferee">
         <option value="">Langue préférée</option>
         <option value="francais">Français</option>
@@ -52,18 +65,32 @@
         <option value="tshiluba">Tshiluba</option>
         <option value="kikongo">Kikongo</option>
       </select>
+
       <button onclick="enregistrerEnfant()">📩 Envoyer</button>
       <div id="message-enfant"></div>
     </div>
 
     <div id="formulaire-grossesse" class="formulaire" style="display:none;">
-      <h3>🧐 Formulaire Grossesse</h3>
+      <h3>🤰 Formulaire Grossesse</h3>
+      <label for="nom_grossesse">Nom complet</label>
       <input id="nom_grossesse" placeholder="Nom complet" />
+
+      <label for="telephone_grossesse">Téléphone</label>
       <input id="telephone_grossesse" placeholder="Téléphone" />
+
+      <label for="semaines_grossesse">Semaines de grossesse</label>
       <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
+
+      <label for="dpa">Date prévue d’accouchement (DPA)</label>
       <input type="date" id="dpa" />
+
+      <label for="centre_sante_grossesse">Structure de santé</label>
       <input id="centre_sante_grossesse" placeholder="Structure de santé" />
+
+      <label for="province_grossesse">Province</label>
       <input id="province_grossesse" placeholder="Province" />
+
+      <label for="langue_preferee_grossesse">Langue préférée</label>
       <select id="langue_preferee_grossesse">
         <option value="">Langue préférée</option>
         <option value="francais">Français</option>
@@ -72,6 +99,7 @@
         <option value="tshiluba">Tshiluba</option>
         <option value="kikongo">Kikongo</option>
       </select>
+
       <button onclick="enregistrerGrossesse()">📩 Envoyer</button>
       <div id="message-grossesse"></div>
     </div>
@@ -83,12 +111,12 @@
         <button class="btn" onclick="afficherFormulaire('enfant')">Enregistrer un enfant</button>
       </div>
       <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🧐 Grossesses</h3>
+        <h3>🤰 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
         <button class="btn btn-secondary" onclick="afficherFormulaire('grossesse')">Enregistrer une grossesse</button>
       </div>
       <div class="card" style="background-image: url('images/surveillance-soins.png')">
-        <h3>🗓 Vaccins aujourd’hui</h3>
+        <h3>📅 Vaccins aujourd’hui</h3>
         <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
         <button class="btn" onclick="chargerVaccins()">Voir vaccins</button>
       </div>
@@ -99,7 +127,6 @@
     const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
     const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
     const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
-    const webhookVaccinFait = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccin-fait";
 
     function afficherFormulaire(type) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -115,30 +142,14 @@
       fetch(webhookVaccins)
         .then(r => r.json())
         .then(data => {
-          const lignes = data.map(v => `
-            <tr>
-              <td>${v.nom}</td>
-              <td>${v.vaccin}</td>
-              <td>${v.date_prevue}</td>
-              <td><button onclick="marquerVaccinFait('${v.id}')">✅ Fait</button></td>
-            </tr>`).join('');
-          document.getElementById("vaccins").innerHTML = `
-            <tr><th>Nom</th><th>Vaccin</th><th>Date</th><th>Action</th></tr>
-            ${lignes}`;
+          const liste = data.map(v => `<li>${v.nom} — ${v.vaccin}</li>`).join('');
+          document.getElementById("vaccins").innerHTML = liste;
           document.getElementById("liste-vaccins").style.display = "block";
         })
         .catch(() => {
-          document.getElementById("vaccins").innerHTML = "<tr><td colspan='4'>❌ Erreur lors du chargement</td></tr>";
+          document.getElementById("vaccins").innerHTML = "<li>❌ Erreur lors du chargement</li>";
           document.getElementById("liste-vaccins").style.display = "block";
         });
-    }
-
-    function marquerVaccinFait(id) {
-      fetch(webhookVaccinFait, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id })
-      }).then(() => chargerVaccins());
     }
 
     function enregistrerEnfant() {
@@ -185,7 +196,6 @@
   </script>
 </body>
 </html>
-
 
 
 
