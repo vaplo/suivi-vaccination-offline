@@ -14,85 +14,6 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
-  <style>
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5rem;
-      margin: 2rem 0;
-    }
-
-    .card {
-      position: relative;
-      min-height: 320px;
-      border-radius: 16px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 1.5rem;
-      color: white;
-      background-size: cover;
-      background-position: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 0;
-    }
-
-    .card * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .formulaire {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-
-    .formulaire input,
-    .formulaire select {
-      width: 100%;
-      margin-bottom: 1rem;
-      padding: 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
-
-    .formulaire button {
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 0.7rem 1.2rem;
-      cursor: pointer;
-    }
-
-    .success, .error {
-      font-weight: bold;
-      margin-top: 0.5rem;
-    }
-
-    .success { color: green; }
-    .error { color: red; }
-
-    #liste-vaccins {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-      display: none;
-    }
-  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -107,8 +28,8 @@
     </div>
 
     <div id="liste-vaccins">
-      <h3>📅 Vaccins à faire aujourd’hui</h3>
-      <ul id="vaccins"></ul>
+      <h3>🗓 Vaccins à faire aujourd’hui</h3>
+      <table id="vaccins" class="table-vaccins"></table>
     </div>
 
     <div id="formulaire-enfant" class="formulaire" style="display:none;">
@@ -136,7 +57,7 @@
     </div>
 
     <div id="formulaire-grossesse" class="formulaire" style="display:none;">
-      <h3>🤰 Formulaire Grossesse</h3>
+      <h3>🧐 Formulaire Grossesse</h3>
       <input id="nom_grossesse" placeholder="Nom complet" />
       <input id="telephone_grossesse" placeholder="Téléphone" />
       <input type="number" id="semaines_grossesse" placeholder="Semaines de grossesse" />
@@ -162,12 +83,12 @@
         <button class="btn" onclick="afficherFormulaire('enfant')">Enregistrer un enfant</button>
       </div>
       <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🤰 Grossesses</h3>
+        <h3>🧐 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
         <button class="btn btn-secondary" onclick="afficherFormulaire('grossesse')">Enregistrer une grossesse</button>
       </div>
       <div class="card" style="background-image: url('images/surveillance-soins.png')">
-        <h3>📅 Vaccins aujourd’hui</h3>
+        <h3>🗓 Vaccins aujourd’hui</h3>
         <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
         <button class="btn" onclick="chargerVaccins()">Voir vaccins</button>
       </div>
@@ -178,6 +99,7 @@
     const webhookEnfant = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child";
     const webhookGrossesse = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy";
     const webhookVaccins = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins";
+    const webhookVaccinFait = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccin-fait";
 
     function afficherFormulaire(type) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -193,14 +115,30 @@
       fetch(webhookVaccins)
         .then(r => r.json())
         .then(data => {
-          const liste = data.map(v => `<li>${v.nom} — ${v.vaccin}</li>`).join('');
-          document.getElementById("vaccins").innerHTML = liste;
+          const lignes = data.map(v => `
+            <tr>
+              <td>${v.nom}</td>
+              <td>${v.vaccin}</td>
+              <td>${v.date_prevue}</td>
+              <td><button onclick="marquerVaccinFait('${v.id}')">✅ Fait</button></td>
+            </tr>`).join('');
+          document.getElementById("vaccins").innerHTML = `
+            <tr><th>Nom</th><th>Vaccin</th><th>Date</th><th>Action</th></tr>
+            ${lignes}`;
           document.getElementById("liste-vaccins").style.display = "block";
         })
         .catch(() => {
-          document.getElementById("vaccins").innerHTML = "<li>❌ Erreur lors du chargement</li>";
+          document.getElementById("vaccins").innerHTML = "<tr><td colspan='4'>❌ Erreur lors du chargement</td></tr>";
           document.getElementById("liste-vaccins").style.display = "block";
         });
+    }
+
+    function marquerVaccinFait(id) {
+      fetch(webhookVaccinFait, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      }).then(() => chargerVaccins());
     }
 
     function enregistrerEnfant() {
