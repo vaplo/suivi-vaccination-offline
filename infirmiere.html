@@ -246,80 +246,85 @@
       </div>
     </section>
 
-    <!-- Formulaire Enfant -->
-    <section class="formulaire" id="form-enfant">
-      <h3>👶 Formulaire Enfant</h3>
-      <form id="form-enfant-form">
-        <label for="nom_complet">Nom complet</label>
-        <input id="nom_complet" name="nom_complet" type="text" required placeholder="Nom complet de l'enfant" />
+    <!-- Formulaire Enfant --><!-- Formulaire Enfant -->
+<section class="formulaire" id="form-enfant">
+  <h3>👶 Formulaire Enfant</h3>
+  <form id="form-enfant-form">
+    <label for="nom_complet">Nom complet</label>
+    <input id="nom_complet" name="nom_complet" type="text" required placeholder="Nom complet de l'enfant" />
 
-        <label for="telephone">Téléphone</label>
-        <input id="telephone" name="telephone" type="tel" required placeholder="jj/mm/aaaa" />
+    <label for="date_naissance">Date de naissance</label>
+    <input id="date_naissance" name="date_naissance" type="date" required />
 
-        <label for="semaines_grossesse">Semaines de grossesse</label>
-        <input id="semaines_grossesse" name="semaines_grossesse" type="text" required placeholder="jj/mm/aaaa" />
+    <label for="sexe">Sexe</label>
+    <select id="sexe" name="sexe" required>
+      <option value="">Sélectionner</option>
+      <option value="M">Masculin</option>
+      <option value="F">Féminin</option>
+    </select>
 
-        <label for="structure_sante">Structure de santé</label>
-        <input id="structure_sante" name="structure_sante" type="text" required />
+    <label for="telephone_parent">Téléphone du parent</label>
+    <input id="telephone_parent" name="telephone_parent" type="tel" required />
 
-        <label for="province">Province</label>
-        <input id="province" name="province" type="text" required />
+    <label for="centre_sante">Structure de santé</label>
+    <input id="centre_sante" name="centre_sante" type="text" required />
 
-        <label for="langue_preferee">Langue préférée</label>
-        <select id="langue_preferee" name="langue_preferee" required>
-          <option value="">Langue préférée</option>
-          <option value="Français">Français</option>
-          <option value="Lingala">Lingala</option>
-          <option value="Swahili">Swahili</option>
-          <option value="Kikongo">Kikongo</option>
-          <option value="Tshiluba">Tshiluba</option>
-        </select>
+    <label for="province">Province</label>
+    <input id="province" name="province" type="text" required />
 
-        <button type="submit" class="btn">📅 Envoyer</button>
-      </form>
-      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
-    </section>
+    <label for="langue_preferee">Langue préférée</label>
+    <select id="langue_preferee" name="langue_preferee" required>
+      <option value="">Langue préférée</option>
+      <option value="Français">Français</option>
+      <option value="Lingala">Lingala</option>
+      <option value="Swahili">Swahili</option>
+      <option value="Kikongo">Kikongo</option>
+      <option value="Tshiluba">Tshiluba</option>
+    </select>
+
+    <button type="submit" class="btn">📅 Envoyer</button>
+  </form>
+  <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+</section>
 
     <!-- Formulaire Grossesse -->
-    <section class="formulaire" id="form-grossesse">
-      <h3>🤰 Formulaire Grossesse</h3>
-      <form id="form-grossesse-form">
-        <label for="nom_grossesse">Nom complet</label>
-        <input id="nom_grossesse" name="nom" type="text" required />
+   <!-- Formulaire Grossesse -->
+<section class="formulaire" id="form-grossesse">
+  <h3>🤰 Formulaire Grossesse</h3>
+  <form id="form-grossesse-form">
+    <label for="nom_grossesse">Nom complet</label>
+    <input id="nom_grossesse" name="nom" type="text" required />
 
-        <label for="date_naissance">Date de naissance</label>
-        <input id="date_naissance" name="date_naissance" type="text" required placeholder="jj/mm/aaaa" />
+    <label for="telephone">Téléphone</label>
+    <input id="telephone" name="telephone" type="tel" required />
 
-        <label for="sexe">Sexe</label>
-        <select id="sexe" name="sexe" required>
-          <option value="">Sélectionner</option>
-          <option value="M">Masculin</option>
-          <option value="F">Féminin</option>
-        </select>
+    <label for="semaines_grossesse">Semaines de grossesse</label>
+    <input id="semaines_grossesse" name="semaines_grossesse" type="number" min="1" required />
 
-        <label for="telephone_parent">Téléphone du parent</label>
-        <input id="telephone_parent" name="telephone_parent" type="tel" required />
+    <label for="dpa">Date prévue d’accouchement (DPA)</label>
+    <input id="dpa" name="dpa" type="date" required />
 
-        <label for="structure_sante_grossesse">Structure de santé</label>
-        <input id="structure_sante_grossesse" name="structure_sante" type="text" required />
+    <label for="centre_sante_grossesse">Structure de santé</label>
+    <input id="centre_sante_grossesse" name="centre_sante" type="text" required />
 
-        <label for="province_grossesse">Province</label>
-        <input id="province_grossesse" name="province" type="text" required />
+    <label for="province_grossesse">Province</label>
+    <input id="province_grossesse" name="province" type="text" required />
 
-        <label for="langue_preferee_grossesse">Langue préférée</label>
-        <select id="langue_preferee_grossesse" name="langue_preferee" required>
-          <option value="">Langue préférée</option>
-          <option value="Français">Français</option>
-          <option value="Lingala">Lingala</option>
-          <option value="Swahili">Swahili</option>
-          <option value="Kikongo">Kikongo</option>
-          <option value="Tshiluba">Tshiluba</option>
-        </select>
+    <label for="langue_preferee_grossesse">Langue préférée</label>
+    <select id="langue_preferee_grossesse" name="langue_preferee" required>
+      <option value="">Langue préférée</option>
+      <option value="Français">Français</option>
+      <option value="Lingala">Lingala</option>
+      <option value="Swahili">Swahili</option>
+      <option value="Kikongo">Kikongo</option>
+      <option value="Tshiluba">Tshiluba</option>
+    </select>
 
-        <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
-      </form>
-      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
-    </section>
+    <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
+  </form>
+  <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+</section>
+
 
     <!-- Section Vaccins -->
     <section class="vaccins-section" id="vaccins-section" style="display: none;">
