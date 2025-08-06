@@ -2,11 +2,214 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FlowLab – Espace Médical</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowLab – Espace Médical Infirmière</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      margin: 0;
+      color: #333;
+    }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .formulaire {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+
+    .formulaire.active {
+      display: block;
+    }
+
+    .formulaire h3 {
+      color: #16a085;
+      margin-bottom: 1rem;
+    }
+
+    .formulaire form {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .formulaire label {
+      font-weight: bold;
+      color: #333;
+    }
+
+    .formulaire input,
+    .formulaire select {
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .formulaire input:focus,
+    .formulaire select:focus {
+      outline: none;
+      border-color: #16a085;
+      box-shadow: 0 0 0 2px rgba(22, 160, 133, 0.2);
+    }
+
+    .table-stats {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .table-stats th, .table-stats td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .table-stats th {
+      background-color: #16a085;
+      color: white;
+    }
+
+    .table-stats tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .vaccins-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 2rem;
+    }
+
+    .vaccin-table-container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .vaccin-table-container h3 {
+      color: #16a085;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 900px) {
+      .vaccins-section {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 1rem;
+      }
+      .grid-cards {
+        padding: 1rem;
+      }
+      .formulaire {
+        margin: 1rem;
+      }
+      .vaccins-section {
+        margin: 1rem;
+      }
+    }
+  </style>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -17,45 +220,75 @@
 </head>
 <body>
   <header class="top-bar">
-    <img src="images/logo.png" alt="Logo FlowLab" class="logo" />
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
     <h1>FlowLab</h1>
     <h2>Espace Médical – Suivi et enregistrement</h2>
   </header>
 
-  <main class="homepage" role="main" aria-label="Espace infirmière FlowLab">
-    <a href="index.html" class="btn btn-secondary">⬅ Retour</a>
-
-    <!-- ✅ Cartes -->
-    <section id="cartes" class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png')" tabindex="0" aria-label="Carte enfants">
+  <main class="container">
+    <section class="grid-cards">
+      <div class="card" style="background-image: url('images/enfants.png')">
         <h3>👶 Enfants</h3>
         <p>Ajoutez un enfant dans le système avec ses informations.</p>
-        <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
+        <button class="btn" onclick="afficherFormulaire('form-enfant')">Enregistrer un enfant</button>
       </div>
 
-      <div class="card" style="background-image: url('images/grossesses.png')" tabindex="0" aria-label="Carte grossesses">
+      <div class="card" style="background-image: url('images/grossesses.png')">
         <h3>🤰 Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-        <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
+        <button class="btn btn-secondary" onclick="afficherFormulaire('form-grossesse')">Enregistrer une grossesse</button>
       </div>
 
-      <div class="card" style="background-image: url('images/vaccination-ville.webp')" tabindex="0" aria-label="Carte vaccins aujourd'hui">
-        <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez la liste des enfants à vacciner ou déjà vaccinés aujourd’hui.</p>
-        <button onclick="afficherFormulaire('vaccins-prevus')" class="btn">📌 Vaccins à faire</button>
-        <button onclick="afficherFormulaire('vaccins-administres')" class="btn btn-vaccin">✅ Vaccins faits</button>
+      <div class="card" style="background-image: url('images/vaccination-ville.webp')">
+        <h3>📅 Vaccins aujourd'hui</h3>
+        <p>Consultez la liste des enfants à vacciner ou déjà vaccinés aujourd'hui.</p>
+        <button class="btn" onclick="afficherVaccins()">📌 Voir les vaccinations</button>
       </div>
     </section>
 
-    <!-- ✅ Formulaires Masqués -->
-    <section id="form-enfant" class="formulaire" style="display: none;">
+    <!-- Formulaire Enfant -->
+    <section class="formulaire" id="form-enfant">
       <h3>👶 Formulaire Enfant</h3>
       <form id="form-enfant-form">
         <label for="nom_complet">Nom complet</label>
-        <input id="nom_complet" name="nom_complet" type="text" required />
+        <input id="nom_complet" name="nom_complet" type="text" required placeholder="Nom complet de l'enfant" />
+
+        <label for="telephone">Téléphone</label>
+        <input id="telephone" name="telephone" type="tel" required placeholder="jj/mm/aaaa" />
+
+        <label for="semaines_grossesse">Semaines de grossesse</label>
+        <input id="semaines_grossesse" name="semaines_grossesse" type="text" required placeholder="jj/mm/aaaa" />
+
+        <label for="structure_sante">Structure de santé</label>
+        <input id="structure_sante" name="structure_sante" type="text" required />
+
+        <label for="province">Province</label>
+        <input id="province" name="province" type="text" required />
+
+        <label for="langue_preferee">Langue préférée</label>
+        <select id="langue_preferee" name="langue_preferee" required>
+          <option value="">Langue préférée</option>
+          <option value="Français">Français</option>
+          <option value="Lingala">Lingala</option>
+          <option value="Swahili">Swahili</option>
+          <option value="Kikongo">Kikongo</option>
+          <option value="Tshiluba">Tshiluba</option>
+        </select>
+
+        <button type="submit" class="btn">📅 Envoyer</button>
+      </form>
+      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+    </section>
+
+    <!-- Formulaire Grossesse -->
+    <section class="formulaire" id="form-grossesse">
+      <h3>🤰 Formulaire Grossesse</h3>
+      <form id="form-grossesse-form">
+        <label for="nom_grossesse">Nom complet</label>
+        <input id="nom_grossesse" name="nom" type="text" required />
 
         <label for="date_naissance">Date de naissance</label>
-        <input id="date_naissance" name="date_naissance" type="date" required />
+        <input id="date_naissance" name="date_naissance" type="text" required placeholder="jj/mm/aaaa" />
 
         <label for="sexe">Sexe</label>
         <select id="sexe" name="sexe" required>
@@ -67,44 +300,8 @@
         <label for="telephone_parent">Téléphone du parent</label>
         <input id="telephone_parent" name="telephone_parent" type="tel" required />
 
-        <label for="centre_sante_enfant">Structure de santé</label>
-        <input id="centre_sante_enfant" name="centre_sante" type="text" required />
-
-        <label for="province_enfant">Province</label>
-        <input id="province_enfant" name="province" type="text" required />
-
-        <label for="langue_preferee_enfant">Langue préférée</label>
-        <select id="langue_preferee_enfant" name="langue_preferee" required>
-          <option value="">Langue préférée</option>
-          <option value="Français">Français</option>
-          <option value="Lingala">Lingala</option>
-          <option value="Swahili">Swahili</option>
-          <option value="Kikongo">Kikongo</option>
-          <option value="Tshiluba">Tshiluba</option>
-        </select>
-
-        <button type="submit" class="btn">📅 Envoyer</button>
-        <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
-      </form>
-    </section>
-
-    <section id="form-grossesse" class="formulaire" style="display: none;">
-      <h3>🤰 Formulaire Grossesse</h3>
-      <form id="form-grossesse-form">
-        <label for="nom_grossesse">Nom complet</label>
-        <input id="nom_grossesse" name="nom" type="text" required />
-
-        <label for="telephone_grossesse">Téléphone</label>
-        <input id="telephone_grossesse" name="telephone" type="tel" required />
-
-        <label for="semaines_grossesse">Semaines de grossesse</label>
-        <input id="semaines_grossesse" name="semaines_grossesse" type="number" required />
-
-        <label for="dpa">Date prévue d’accouchement</label>
-        <input id="dpa" name="dpa" type="date" required />
-
-        <label for="centre_sante_grossesse">Structure de santé</label>
-        <input id="centre_sante_grossesse" name="centre_sante" type="text" required />
+        <label for="structure_sante_grossesse">Structure de santé</label>
+        <input id="structure_sante_grossesse" name="structure_sante" type="text" required />
 
         <label for="province_grossesse">Province</label>
         <input id="province_grossesse" name="province" type="text" required />
@@ -120,55 +317,125 @@
         </select>
 
         <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
-        <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
       </form>
+      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
     </section>
 
-    <!-- ✅ Tableau Vaccins Prévus -->
-    <section id="vaccins-prevus" class="formulaire" style="display: none;">
-      <h3>📌 Vaccins à faire aujourd’hui</h3>
-      <table class="table-stats">
-        <thead>
-          <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th></tr>
-        </thead>
-        <tbody id="table-vaccins-prevus">
-          <tr><td colspan="4">Chargement...</td></tr>
-        </tbody>
-      </table>
+    <!-- Section Vaccins -->
+    <section class="vaccins-section" id="vaccins-section" style="display: none;">
+      <div class="vaccin-table-container">
+        <h3>📌 Vaccins à faire aujourd'hui</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th></tr>
+          </thead>
+          <tbody id="table-vaccins-prevus">
+            <tr><td>Jean Mukamba</td><td>15/03/2023</td><td>BCG</td><td>1ère dose</td></tr>
+            <tr><td>Marie Nsimba</td><td>28/02/2023</td><td>DTC</td><td>2ème dose</td></tr>
+            <tr><td>Pierre Kabamba</td><td>10/04/2023</td><td>Polio</td><td>1ère dose</td></tr>
+            <tr><td>Grace Mbuyi</td><td>05/01/2023</td><td>Rougeole</td><td>1ère dose</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="vaccin-table-container">
+        <h3>✅ Vaccins déjà administrés</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Nom</th><th>Date</th><th>Vaccin</th><th>Dose</th></tr>
+          </thead>
+          <tbody id="table-vaccins-administres">
+            <tr><td>Joseph Kilolo</td><td>12/11/2024</td><td>BCG</td><td>1ère dose</td></tr>
+            <tr><td>Sarah Mwamba</td><td>12/11/2024</td><td>DTC</td><td>3ème dose</td></tr>
+            <tr><td>Daniel Kasongo</td><td>11/11/2024</td><td>Polio</td><td>2ème dose</td></tr>
+            <tr><td>Esther Ngandu</td><td>11/11/2024</td><td>Pneumocoque</td><td>1ère dose</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="grid-column: 1/-1; text-align: center; margin-top: 1rem;">
+        <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+      </div>
     </section>
 
-    <!-- ✅ Tableau Vaccins Administrés -->
-    <section id="vaccins-administres" class="formulaire" style="display: none;">
-      <h3>✅ Vaccins déjà administrés</h3>
-      <table class="table-stats">
-        <thead>
-          <tr><th>Nom</th><th>Date</th><th>Vaccin</th><th>Dose</th></tr>
-        </thead>
-        <tbody id="table-vaccins-administres">
-          <tr><td colspan="4">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </section>
+    <footer>
+      <a href="index.html" class="btn">⬅ Retour à l'accueil</a>
+    </footer>
   </main>
 
-  <!-- ✅ Script intégré -->
   <script>
     function afficherFormulaire(id) {
-      document.querySelectorAll('.formulaire').forEach(f => f.style.display = "none");
-      document.getElementById("cartes").style.display = "none";
-      document.getElementById(id).style.display = "block";
+      document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
+      document.getElementById('vaccins-section').style.display = 'none';
+      document.querySelector('.grid-cards').style.display = 'none';
+      document.getElementById(id).classList.add('active');
+    }
+
+    function afficherVaccins() {
+      document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
+      document.querySelector('.grid-cards').style.display = 'none';
+      document.getElementById('vaccins-section').style.display = 'grid';
     }
 
     function retourAccueil() {
-      document.querySelectorAll('.formulaire').forEach(f => f.style.display = "none");
-      document.getElementById("cartes").style.display = "grid";
+      document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
+      document.getElementById('vaccins-section').style.display = 'none';
+      document.querySelector('.grid-cards').style.display = 'grid';
     }
 
+    // Gestion des formulaires
+    document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/enfant', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Enfant enregistré avec succès!');
+        this.reset();
+        retourAccueil();
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'enregistrement');
+      });
+    });
+
+    document.getElementById('form-grossesse-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/grossesse', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert('Grossesse enregistrée avec succès!');
+        this.reset();
+        retourAccueil();
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors de l\'enregistrement');
+      });
+    });
+
+    // Chargement des données de vaccination
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-prevus")
       .then(r => r.json())
       .then(data => {
         const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_naissance}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
         document.getElementById("table-vaccins-prevus").innerHTML = rows;
+      })
+      .catch(() => {
+        console.log("Utilisation des données par défaut pour vaccins prévus");
       });
 
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-administres")
@@ -176,7 +443,11 @@
       .then(data => {
         const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_administration}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
         document.getElementById("table-vaccins-administres").innerHTML = rows;
+      })
+      .catch(() => {
+        console.log("Utilisation des données par défaut pour vaccins administrés");
       });
   </script>
 </body>
 </html>
+
