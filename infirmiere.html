@@ -41,13 +41,13 @@
 
       <div class="card" style="background-image: url('images/vaccination-ville.webp')" tabindex="0" aria-label="Carte vaccins aujourd'hui">
         <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-        <button onclick="window.location.href='vaccins.html'" class="btn">Voir vaccins</button>
-        <button onclick="window.location.href='vaccins-administres.html'" class="btn btn-vaccin">✅ Vaccin fait</button>
+        <p>Consultez la liste des enfants à vacciner ou déjà vaccinés aujourd’hui.</p>
+        <button onclick="afficherFormulaire('vaccins-prevus')" class="btn">📌 Vaccins à faire</button>
+        <button onclick="afficherFormulaire('vaccins-administres')" class="btn btn-vaccin">✅ Vaccins faits</button>
       </div>
     </section>
 
-    <!-- ✅ Formulaire Enfant -->
+    <!-- ✅ Formulaires Masqués -->
     <section id="form-enfant" class="formulaire" style="display: none;">
       <h3>👶 Formulaire Enfant</h3>
       <form id="form-enfant-form">
@@ -88,7 +88,6 @@
       </form>
     </section>
 
-    <!-- ✅ Formulaire Grossesse -->
     <section id="form-grossesse" class="formulaire" style="display: none;">
       <h3>🤰 Formulaire Grossesse</h3>
       <form id="form-grossesse-form">
@@ -124,93 +123,60 @@
         <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
       </form>
     </section>
+
+    <!-- ✅ Tableau Vaccins Prévus -->
+    <section id="vaccins-prevus" class="formulaire" style="display: none;">
+      <h3>📌 Vaccins à faire aujourd’hui</h3>
+      <table class="table-stats">
+        <thead>
+          <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th></tr>
+        </thead>
+        <tbody id="table-vaccins-prevus">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ✅ Tableau Vaccins Administrés -->
+    <section id="vaccins-administres" class="formulaire" style="display: none;">
+      <h3>✅ Vaccins déjà administrés</h3>
+      <table class="table-stats">
+        <thead>
+          <tr><th>Nom</th><th>Date</th><th>Vaccin</th><th>Dose</th></tr>
+        </thead>
+        <tbody id="table-vaccins-administres">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
   </main>
 
   <!-- ✅ Script intégré -->
   <script>
     function afficherFormulaire(id) {
+      document.querySelectorAll('.formulaire').forEach(f => f.style.display = "none");
       document.getElementById("cartes").style.display = "none";
-      document.getElementById("form-enfant").style.display = "none";
-      document.getElementById("form-grossesse").style.display = "none";
       document.getElementById(id).style.display = "block";
     }
 
     function retourAccueil() {
-      document.getElementById("form-enfant").style.display = "none";
-      document.getElementById("form-grossesse").style.display = "none";
+      document.querySelectorAll('.formulaire').forEach(f => f.style.display = "none");
       document.getElementById("cartes").style.display = "grid";
     }
 
-    document.getElementById("form-enfant-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const data = {
-        nom_complet: nom_complet.value,
-        date_naissance: date_naissance.value,
-        sexe: sexe.value,
-        telephone_parent: telephone_parent.value,
-        centre_sante: centre_sante_enfant.value,
-        province: province_enfant.value,
-        langue_preferee: langue_preferee_enfant.value
-      };
-      envoyerDonnees("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", data);
-    });
-
-    document.getElementById("form-grossesse-form").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const data = {
-        nom: nom_grossesse.value,
-        telephone: telephone_grossesse.value,
-        semaines_grossesse: semaines_grossesse.value,
-        dpa: dpa.value,
-        centre_sante: centre_sante_grossesse.value,
-        province: province_grossesse.value,
-        langue_preferee: langue_preferee_grossesse.value
-      };
-      envoyerDonnees("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy", data);
-    });
-
-    function envoyerDonnees(url, data) {
-      if (navigator.onLine) {
-        fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
-        }).then(() => alert("✅ Données envoyées !"))
-          .catch(() => stockerOffline(url, data));
-      } else {
-        stockerOffline(url, data);
-      }
-    }
-
-    function stockerOffline(url, data) {
-      let file = url.includes("pregnancy") ? "grossesses_offline" : "enfants_offline";
-      const existing = JSON.parse(localStorage.getItem(file) || "[]");
-      existing.push(data);
-      localStorage.setItem(file, JSON.stringify(existing));
-      alert("📦 Données stockées localement !");
-    }
-
-    setInterval(() => {
-      if (navigator.onLine) {
-        synchroniser("enfants_offline", "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child");
-        synchroniser("grossesses_offline", "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy");
-      }
-    }, 15000);
-
-    function synchroniser(key, url) {
-      const data = JSON.parse(localStorage.getItem(key) || "[]");
-      if (data.length === 0) return;
-      data.forEach((d, i) => {
-        fetch(url, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(d)
-        }).then(() => {
-          data.splice(i, 1);
-          localStorage.setItem(key, JSON.stringify(data));
-        });
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-prevus")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_naissance}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
+        document.getElementById("table-vaccins-prevus").innerHTML = rows;
       });
-    }
+
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-administres")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_administration}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
+        document.getElementById("table-vaccins-administres").innerHTML = rows;
+      });
   </script>
 </body>
 </html>
