@@ -99,6 +99,29 @@
       margin: 0 auto;
     }
 
+    .formulaire {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .table-stats {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .table-stats th, .table-stats td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    .table-stats th {
+      background-color: #16a085;
+      color: white;
+    }
+
     .error {
       color: red;
       font-weight: bold;
@@ -133,34 +156,57 @@
 
   <main class="container">
     <section class="grid-cards">
-
-      <!-- Suivi équitable -->
       <div class="card" style="background-image: url('images/suiviequitable.png')">
         <h3>📊 Suivi équitable</h3>
         <p>Identifiez les inégalités de vaccination entre les structures et régions.</p>
         <button class="btn" onclick="window.open('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable')">📈 Voir Suivi</button>
       </div>
-
-      <!-- Export des retards -->
       <div class="card" style="background-image: url('images/exportdesretards.png')">
         <h3>📂 Export des retards</h3>
         <p>Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
         <button class="btn btn-secondary" onclick="telechargerRetards()">📥 Exporter</button>
       </div>
-
-      <!-- Surveillance des soins -->
       <div class="card" style="background-image: url('images/surveillancesoin.png')">
         <h3>🩺 Surveillance des soins</h3>
         <p>Vérifiez la couverture vaccinale et la qualité des soins par établissement.</p>
         <button class="btn" onclick="window.open('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins')">🔍 Voir Soins</button>
       </div>
-
     </section>
 
-    <!-- Statistiques -->
-    <section class="container" style="padding: 1rem 2rem;">
-      <h2>📊 Statistiques en temps réel</h2>
-      <div id="stats-superviseur">Chargement...</div>
+    <section class="formulaire">
+      <h3>📊 Tableau de Suivi Équitable</h3>
+      <table class="table-stats">
+        <thead>
+          <tr><th>Structure</th><th>Enfants inscrits</th><th>Enfants vaccinés</th><th>Couverture (%)</th></tr>
+        </thead>
+        <tbody id="table-equite">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="formulaire">
+      <h3>📂 Enfants en Retard de Vaccination</h3>
+      <table class="table-stats">
+        <thead>
+          <tr><th>Nom</th><th>Date naissance</th><th>Centre</th><th>Vaccin manquant</th></tr>
+        </thead>
+        <tbody id="table-retards">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="formulaire">
+      <h3>🩺 Surveillance des Soins par Structure</h3>
+      <table class="table-stats">
+        <thead>
+          <tr><th>Structure</th><th>Enfants</th><th>Grossesses</th><th>Vaccins effectués</th></tr>
+        </thead>
+        <tbody id="table-soins">
+          <tr><td colspan="4">Chargement...</td></tr>
+        </tbody>
+      </table>
     </section>
 
     <footer>
@@ -171,25 +217,6 @@
   <script>
     const webhookStats = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur";
     const webhookRetards = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards";
-
-    function chargerStats() {
-      fetch(webhookStats)
-        .then(r => r.json())
-        .then(data => {
-          const stats = `
-            <ul>
-              <li>🏥 Structures actives : <strong>${data.structures || "?"}</strong></li>
-              <li>📅 Vaccins à faire aujourd’hui : <strong>${data.vaccins_aujourdhui || "?"}</strong></li>
-              <li>⚠️ Cas de retards : <strong>${data.retards || "?"}</strong></li>
-              <li>📨 Taux de réponse SMS : <strong>${data.taux_reponse || "?"}%</strong></li>
-            </ul>
-          `;
-          document.getElementById("stats-superviseur").innerHTML = stats;
-        })
-        .catch(() => {
-          document.getElementById("stats-superviseur").innerHTML = "<p class='error'>❌ Impossible de charger les données</p>";
-        });
-    }
 
     function telechargerRetards() {
       fetch(webhookRetards)
@@ -205,7 +232,32 @@
         });
     }
 
-    window.addEventListener("load", chargerStats);
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.structure}</td><td>${e.enfants_total}</td><td>${e.enfants_vaccines}</td><td>${e.taux_couverture}%</td></tr>
+        `).join("");
+        document.getElementById("table-equite").innerHTML = rows;
+      });
+
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.nom_complet}</td><td>${e.date_naissance}</td><td>${e.centre_sante}</td><td>${e.vaccin_non_fait}</td></tr>
+        `).join("");
+        document.getElementById("table-retards").innerHTML = rows;
+      });
+
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.structure}</td><td>${e.total_enfants}</td><td>${e.total_grossesses}</td><td>${e.vaccins_realises}</td></tr>
+        `).join("");
+        document.getElementById("table-soins").innerHTML = rows;
+      });
   </script>
 </body>
 </html>
