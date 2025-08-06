@@ -9,6 +9,7 @@
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -21,79 +22,110 @@
   <header class="top-bar">
     <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
     <h1>Opérations de terrain</h1>
-    <h2>Coordination des campagnes, stocks, chaînes du froid, et plus</h2>
-    <p>Sélectionnez une action à réaliser sur le terrain.</p>
+    <h2>Coordination des campagnes, stocks, performances et plus</h2>
+    <p>Sélectionnez une action ou consultez les statistiques terrain.</p>
   </header>
 
   <main class="homepage">
     <div class="grid-cards">
-
+      <!-- Cartes d'action -->
       <div class="card" style="background-image: url('images/mobileteam.webp')">
         <h3>Dispatch équipes mobiles</h3>
         <p>Optimisation des trajets et planification automatique.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/optimize-routes" class="btn">🚐 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/stock.webp')">
-        <h3>Gestion des stocks</h3>
-        <p>Prédictions, redistributions, suivi des péremptions.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur" class="btn">📦 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/coldchain.webp')">
-        <h3>Chaîne du froid</h3>
-        <p>Surveillance des températures et maintenance préventive.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/incident" class="btn">❄️ Accéder</a>
+        <a href="#" class="btn">🚐 Voir les données</a>
       </div>
 
       <div class="card" style="background-image: url('images/qualite.webp')">
-        <h3>Contrôle qualité</h3>
-        <p>Validation des données, corrections et audit automatique.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins" class="btn">✅ Accéder</a>
+        <h3>Structures performantes</h3>
+        <p>Visualisation des centres les plus efficaces.</p>
+        <a href="#" class="btn">📈 Voir les données</a>
       </div>
-
-      <div class="card" style="background-image: url('images/outbreak.webp')">
-        <h3>Réponse épidémies</h3>
-        <p>Activation de plans d’urgence, mobilisation rapide.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-suspecte" class="btn">🚨 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/community.webp')">
-        <h3>Engagement communautaire</h3>
-        <p>Campagnes, feedback terrain, écoute sociale.</p>
-        <a href="#" class="btn">🤝 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/training.webp')">
-        <h3>Académie de formation</h3>
-        <p>Cours, certificats, évaluations et badges numériques.</p>
-        <a href="formation.html" class="btn">🎓 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/formulaires.webp')">
-        <h3>Formulaires terrain</h3>
-        <p>Collecte de données mobile, validation instantanée.</p>
-        <a href="infirmiere.html" class="btn">📝 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/campagnes.webp')">
-        <h3>Campagnes de vaccination</h3>
-        <p>Planification, logistique et suivi des résultats.</p>
-        <a href="campagnes.html" class="btn">📅 Accéder</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/agents.webp')">
-        <h3>Support agents santé</h3>
-        <p>Centre d’aide, FAQ, base de connaissances mobile.</p>
-        <a href="aide.html" class="btn">🆘 Accéder</a>
-      </div>
-
     </div>
 
-    <!-- ✅ Bouton retour -->
+    <!-- Bloc 1 : Dispatch équipes mobiles -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>🚐 Dispatch équipes mobiles</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Date</th><th>Zones</th></tr>
+          </thead>
+          <tbody id="table-routes"></tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container" style="grid-column: 1/-1;">
+        <h3>Tournées par jour</h3>
+        <canvas id="chart-routes"></canvas>
+      </div>
+    </section>
+
+    <!-- Bloc 2 : Top performers -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>⭐⭐ Structures les plus performantes</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Taux de couverture</th><th>Ponctualité</th></tr>
+          </thead>
+          <tbody id="table-top"></tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container" style="grid-column: 1/-1;">
+        <h3>Performances</h3>
+        <canvas id="chart-top"></canvas>
+      </div>
+    </section>
+
+    <!-- Bouton retour -->
     <div style="text-align: center; margin-top: 2rem;">
       <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
     </div>
   </main>
+
+  <script>
+    // Bloc 1 - Dispatch
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/optimize-routes")
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-routes").innerHTML = data.map(v => `
+          <tr><td>${v.structure}</td><td>${v.date}</td><td>${v.zones}</td></tr>`).join("");
+        const dates = data.map(x => x.date);
+        const counts = Object.values(dates.reduce((acc, d) => {
+          acc[d] = (acc[d] || 0) + 1; return acc;
+        }, {}));
+        const labels = [...new Set(dates)];
+        new Chart(document.getElementById("chart-routes"), {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [{ label: "Tournées", data: counts }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } } }
+        });
+      });
+
+    // Bloc 2 - Performances
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/top-performers")
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-top").innerHTML = data.map(v => `
+          <tr><td>${v.structure}</td><td>${v.couverture} %</td><td>${v.ponctualite} %</td></tr>`).join("");
+        new Chart(document.getElementById("chart-top"), {
+          type: "radar",
+          data: {
+            labels: ["Couverture", "Ponctualité", "Score"],
+            datasets: [{
+              data: [data[0].couverture, data[0].ponctualite, data[0].score],
+              label: data[0].structure,
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            elements: { line: { borderWidth: 3 } }
+          }
+        });
+      });
+  </script>
 </body>
 </html>
