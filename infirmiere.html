@@ -8,12 +8,255 @@
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
   <script>
+  <!-- ✅ Styles internes améliorés -->
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      color: #333;
+      margin: 0;
+    }
+
+    /* ✅ Lien d'accessibilité (invisible sauf focus) */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: #16a085;
+      color: white;
+      padding: 0.5rem 1rem;
+      z-index: 1000;
+      text-decoration: none;
+      transition: top 0.3s ease;
+    }
+
+    .skip-link:focus {
+      top: 0;
+    }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .homepage {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 16px;
+      color: white;
+      min-height: 240px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: scale(1.01);
+    }
+
+    .card:active {
+      transform: scale(0.99);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .card:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: -4px;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.25);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3, .card p {
+      margin: 0 0 0.5rem 0;
+    }
+
+    .btn {
+      margin-top: auto;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    a:focus-visible, button:focus-visible {
+      outline: 3px solid #ffffff;
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.4rem;
+      }
+      h2 {
+        font-size: 1.1rem;
+      }
+      .card {
+        min-height: 200px;
+        padding: 0.8rem;
+      }
+    }
+
+    /* ✅ Dark mode natif */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #f4fdfc;
+      }
+      .top-bar {
+        background-color: #0e5e4f;
+        border-bottom-color: #0a463b;
+      }
+      .card::before {
+        background: rgba(0, 0, 0, 0.5);
+      }
+    }
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ SW actif"))
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <style>
+    .grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
+    }
+
+    .card {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    form label {
+      display: block;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    form input,
+    form select {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-top: 0.3rem;
+    }
+
+    .formulaire {
+      background: #f9f9f9;
+      border-radius: 16px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .btn-vaccin {
+      margin-top: 1.5rem;
+      background-color: #2c3e50;
+      color: #fff;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #f4fdfc;
+      }
+
+      .card {
+        background: #1e1e1e;
+        color: white;
+      }
+
+      .formulaire {
+        background: #1a1a1a;
+      }
+
+      input, select {
+        background: #333;
+        color: white;
+        border-color: #555;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -22,26 +265,35 @@
     <h2>Espace Médical – Suivi et enregistrement</h2>
   </header>
 
-  <main class="homepage">
-    <a href="index.html" class="btn btn-secondary">⬅ Retour</a>
+  <main class="homepage" role="main" aria-label="Espace infirmière FlowLab">
+    <button onclick="window.location.href='index.html'" class="btn btn-secondary">⬅ Retour</button>
 
-    <!-- 🟩 Cartes d'accès -->
+    <!-- 🟩 3 Cartes -->
     <section class="grid-cards">
-      <div class="card" style="background-image: url('images/enfants.png')">
-        <h3>👶 Enfants</h3>
-        <p>Ajoutez un enfant avec ses informations.</p>
-        <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
+      <div class="card" tabindex="0" aria-label="Carte enfants">
+        <img src="images/enfants.png" alt="Enfant">
+        <div class="card-content">
+          <h3>👶 Enfants</h3>
+          <p>Ajoutez un enfant dans le système avec ses informations.</p>
+          <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
+        </div>
       </div>
-      <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🤰 Grossesses</h3>
-        <p>Inscrivez une femme enceinte pour suivi prénatal.</p>
-        <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
+      <div class="card" tabindex="0" aria-label="Carte grossesses">
+        <img src="images/grossesses.png" alt="Femme enceinte">
+        <div class="card-content">
+          <h3>🤰 Grossesses</h3>
+          <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
+          <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
+        </div>
       </div>
-      <div class="card" style="background-image: url('images/vaccination-ville.webp')">
-        <h3>📅 Vaccins aujourd’hui</h3>
-        <p>Consultez les enfants à vacciner aujourd’hui.</p>
-        <a href="vaccins.html" class="btn">Voir vaccins</a>
-        <a href="vaccins-administres.html" class="btn btn-vaccin">✅ Vaccin fait</a>
+      <div class="card" tabindex="0" aria-label="Carte vaccins aujourd'hui">
+        <img src="images/vaccination-ville.webp" alt="Calendrier vaccinal">
+        <div class="card-content">
+          <h3>📅 Vaccins aujourd’hui</h3>
+          <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
+          <button onclick="window.location.href='vaccins.html'" class="btn">Voir vaccins</button>
+          <button class="btn btn-vaccin" onclick="window.location.href='vaccins-administres.html'">✅ Vaccin fait</button>
+        </div>
       </div>
     </section>
 
@@ -122,17 +374,7 @@
     </section>
   </main>
 
-  <!-- ✅ Script principal -->
   <script src="script.js"></script>
-
-  <!-- ✅ Fonction d’affichage de formulaire -->
-  <script>
-    function afficherFormulaire(id) {
-      document.getElementById("form-enfant").style.display = "none";
-      document.getElementById("form-grossesse").style.display = "none";
-      document.getElementById(id).style.display = "block";
-      document.getElementById(id).scrollIntoView({ behavior: "smooth" });
-    }
-  </script>
 </body>
 </html>
+arrange ca je veux le meme style pour tout mes hml . prends exemples sur l indexe html
