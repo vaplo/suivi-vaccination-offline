@@ -2,14 +2,135 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Opérations de terrain – FlowLab</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FlowLab – Espace Superviseur</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      margin: 0;
+      color: #333;
+    }
+
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .vaccins-section {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .vaccin-table-container {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .vaccin-table-container h3 {
+      margin: 0 0 1rem 0;
+      color: #16a085;
+      font-size: 1.2rem;
+    }
+
+    .table-stats {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    .table-stats th, .table-stats td {
+      border: 1px solid #ddd;
+      padding: 0.75rem;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .table-stats th {
+      background-color: #16a085;
+      color: white;
+      font-weight: bold;
+    }
+
+    .table-stats tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background-color: #16a085;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    footer {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .vaccins-section {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -21,111 +142,453 @@
 <body>
   <header class="top-bar">
     <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
-    <h1>Opérations de terrain</h1>
-    <h2>Coordination des campagnes, stocks, performances et plus</h2>
-    <p>Sélectionnez une action ou consultez les statistiques terrain.</p>
+    <h1>FlowLab</h1>
+    <h2>Système intelligent d'implémentation de la vaccination en RDC</h2>
+    <p>Visualisation Opérationnelle - Supervision & Analyse</p>
   </header>
 
-  <main class="homepage">
-    <div class="grid-cards">
-      <!-- Cartes d'action -->
-      <div class="card" style="background-image: url('images/mobileteam.webp')">
-        <h3>Dispatch équipes mobiles</h3>
-        <p>Optimisation des trajets et planification automatique.</p>
-        <a href="#" class="btn">🚐 Voir les données</a>
-      </div>
-
-      <div class="card" style="background-image: url('images/qualite.webp')">
-        <h3>Structures performantes</h3>
-        <p>Visualisation des centres les plus efficaces.</p>
-        <a href="#" class="btn">📈 Voir les données</a>
-      </div>
-    </div>
-
-    <!-- Bloc 1 : Dispatch équipes mobiles -->
+  <main class="container">
+    <!-- Section 1: Dispatch équipes mobiles -->
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>🚐 Dispatch équipes mobiles</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Structure</th><th>Date</th><th>Zones</th></tr>
+            <tr><th>Structure</th><th>Date</th><th>Zones</th><th>Durée</th></tr>
           </thead>
-          <tbody id="table-routes"></tbody>
+          <tbody id="table-dispatch">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
         </table>
       </div>
-      <div class="vaccin-table-container" style="grid-column: 1/-1;">
+      <div class="vaccin-table-container">
         <h3>Tournées par jour</h3>
-        <canvas id="chart-routes"></canvas>
+        <div class="chart-container">
+          <canvas id="chart-dispatch"></canvas>
+        </div>
       </div>
     </section>
 
-    <!-- Bloc 2 : Top performers -->
+    <!-- Section 2: Top Performers -->
     <section class="vaccins-section">
       <div class="vaccin-table-container">
-        <h3>⭐⭐ Structures les plus performantes</h3>
+        <h3>⭐ Top Performers (structures efficaces)</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Structure</th><th>Taux de couverture</th><th>Ponctualité</th></tr>
+            <tr><th>Structure</th><th>Taux couverture</th><th>Ponctualité</th><th>Score</th></tr>
           </thead>
-          <tbody id="table-top"></tbody>
+          <tbody id="table-top-performers">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
         </table>
       </div>
-      <div class="vaccin-table-container" style="grid-column: 1/-1;">
-        <h3>Performances</h3>
-        <canvas id="chart-top"></canvas>
+      <div class="vaccin-table-container">
+        <h3>Radar des performances</h3>
+        <div class="chart-container">
+          <canvas id="chart-top-performers"></canvas>
+        </div>
       </div>
     </section>
 
-    <!-- Bouton retour -->
-    <div style="text-align: center; margin-top: 2rem;">
-      <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
-    </div>
+    <!-- Section 3: Low Performers -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>⚠️ Low Performers (structures en difficulté)</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Retards critiques</th><th>Réponses manquantes</th><th>Score</th></tr>
+          </thead>
+          <tbody id="table-low-performers">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Taux de performance</h3>
+        <div class="chart-container">
+          <canvas id="chart-low-performers"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Réponse épidémies -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>🚨 Réponse épidémies</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Date</th><th>Type alerte</th><th>Statut</th></tr>
+          </thead>
+          <tbody id="table-epidemies">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Alertes par zone</h3>
+        <div class="chart-container">
+          <canvas id="chart-epidemies"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Gestion des stocks -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>📦 Gestion des stocks</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Vaccin</th><th>Quantité</th><th>Péremption</th></tr>
+          </thead>
+          <tbody id="table-stocks">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Niveaux de stock</h3>
+        <div class="chart-container">
+          <canvas id="chart-stocks"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Engagement communautaire -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>🤝 Engagement communautaire</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Date</th><th>Type feedback</th><th>Sentiment</th></tr>
+          </thead>
+          <tbody id="table-community">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Types de retours</h3>
+        <div class="chart-container">
+          <canvas id="chart-community"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Campagnes de vaccination -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>💉 Campagnes de vaccination</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Nom campagne</th><th>Zone</th><th>Cible</th><th>Réalisé</th><th>Statut</th></tr>
+          </thead>
+          <tbody id="table-campagnes">
+            <tr><td colspan="5">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Couverture vs objectif</h3>
+        <div class="chart-container">
+          <canvas id="chart-campagnes"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 8: Support agents santé -->
+    <section class="vaccins-section">
+      <div class="vaccin-table-container">
+        <h3>❓ Support agents santé</h3>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Question</th><th>Catégorie</th><th>Nb vues</th><th>Date</th></tr>
+          </thead>
+          <tbody id="table-support">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="vaccin-table-container">
+        <h3>Usage support / jour</h3>
+        <div class="chart-container">
+          <canvas id="chart-support"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <a href="index.html" class="btn btn-secondary">⬅ Retour à l'accueil</a>
+    </footer>
   </main>
 
   <script>
-    // Bloc 1 - Dispatch
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/optimize-routes")
+    const baseUrl = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test";
+
+    // Section 1: Dispatch équipes mobiles
+    fetch(`${baseUrl}/optimize-routes`)
       .then(r => r.json())
       .then(data => {
-        document.getElementById("table-routes").innerHTML = data.map(v => `
-          <tr><td>${v.structure}</td><td>${v.date}</td><td>${v.zones}</td></tr>`).join("");
+        document.getElementById("table-dispatch").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.date}</td><td>${v.zones}</td><td>${v.duree || 'N/A'}</td></tr>`
+        ).join("");
+        
         const dates = data.map(x => x.date);
-        const counts = Object.values(dates.reduce((acc, d) => {
+        const dateCount = dates.reduce((acc, d) => {
           acc[d] = (acc[d] || 0) + 1; return acc;
-        }, {}));
-        const labels = [...new Set(dates)];
-        new Chart(document.getElementById("chart-routes"), {
+        }, {});
+        
+        new Chart(document.getElementById("chart-dispatch"), {
           type: "bar",
           data: {
-            labels,
-            datasets: [{ label: "Tournées", data: counts }]
+            labels: Object.keys(dateCount),
+            datasets: [{ 
+              label: "Nombre de tournées", 
+              data: Object.values(dateCount),
+              backgroundColor: "#16a085"
+            }]
           },
-          options: { responsive: true, plugins: { legend: { display: false } } }
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } } 
+          }
         });
+      })
+      .catch(() => {
+        document.getElementById("table-dispatch").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
 
-    // Bloc 2 - Performances
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/top-performers")
+    // Section 2: Top Performers
+    fetch(`${baseUrl}/top-performers`)
       .then(r => r.json())
       .then(data => {
-        document.getElementById("table-top").innerHTML = data.map(v => `
-          <tr><td>${v.structure}</td><td>${v.couverture} %</td><td>${v.ponctualite} %</td></tr>`).join("");
-        new Chart(document.getElementById("chart-top"), {
+        document.getElementById("table-top-performers").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.couverture}%</td><td>${v.ponctualite}%</td><td>${v.score}</td></tr>`
+        ).join("");
+        
+        new Chart(document.getElementById("chart-top-performers"), {
           type: "radar",
           data: {
             labels: ["Couverture", "Ponctualité", "Score"],
-            datasets: [{
-              data: [data[0].couverture, data[0].ponctualite, data[0].score],
-              label: data[0].structure,
+            datasets: data.slice(0, 3).map((item, i) => ({
+              label: item.structure,
+              data: [item.couverture, item.ponctualite, item.score],
+              backgroundColor: [`rgba(22, 160, 133, ${0.2 + i*0.2})`, `rgba(52, 152, 219, ${0.2 + i*0.2})`, `rgba(241, 196, 15, ${0.2 + i*0.2})`][i],
+              borderColor: ["#16a085", "#3498db", "#f1c40f"][i],
+              fill: true
+            }))
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            elements: { line: { borderWidth: 2 } }
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-top-performers").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
+      });
+
+    // Section 3: Low Performers
+    fetch(`${baseUrl}/low-performers`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-low-performers").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.retards_critiques}</td><td>${v.reponses_manquantes}</td><td>${v.score}</td></tr>`
+        ).join("");
+        
+        new Chart(document.getElementById("chart-low-performers"), {
+          type: "bar",
+          data: {
+            labels: data.map(x => x.structure),
+            datasets: [{ 
+              label: "Score de performance", 
+              data: data.map(x => x.score),
+              backgroundColor: "#e74c3c"
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            indexAxis: 'y',
+            plugins: { legend: { display: false } }
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-low-performers").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
+      });
+
+    // Section 4: Réponse épidémies
+    fetch(`${baseUrl}/surveillance-suspecte`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-epidemies").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.date}</td><td>${v.type}</td><td>${v.statut}</td></tr>`
+        ).join("");
+        
+        const zoneCount = data.reduce((acc, item) => {
+          const zone = item.zone || item.structure;
+          acc[zone] = (acc[zone] || 0) + 1;
+          return acc;
+        }, {});
+        
+        new Chart(document.getElementById("chart-epidemies"), {
+          type: "bar",
+          data: {
+            labels: Object.keys(zoneCount),
+            datasets: [{ 
+              label: "Alertes par zone", 
+              data: Object.values(zoneCount),
+              backgroundColor: "#e67e22"
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-epidemies").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
+      });
+
+    // Section 5: Gestion des stocks
+    fetch(`${baseUrl}/stock-status`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-stocks").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.vaccin}</td><td>${v.quantite}</td><td>${v.peremption}</td></tr>`
+        ).join("");
+        
+        const vaccinStock = data.reduce((acc, item) => {
+          acc[item.vaccin] = (acc[item.vaccin] || 0) + parseInt(item.quantite);
+          return acc;
+        }, {});
+        
+        new Chart(document.getElementById("chart-stocks"), {
+          type: "doughnut",
+          data: {
+            labels: Object.keys(vaccinStock),
+            datasets: [{ 
+              data: Object.values(vaccinStock),
+              backgroundColor: ["#16a085", "#3498db", "#e74c3c", "#f39c12", "#9b59b6"]
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-stocks").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
+      });
+
+    // Section 6: Engagement communautaire
+    fetch(`${baseUrl}/community-feedback`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-community").innerHTML = data.map(v => 
+          `<tr><td>${v.structure}</td><td>${v.date}</td><td>${v.type}</td><td>${v.sentiment}</td></tr>`
+        ).join("");
+        
+        const typeCount = data.reduce((acc, item) => {
+          acc[item.type] = (acc[item.type] || 0) + 1;
+          return acc;
+        }, {});
+        
+        new Chart(document.getElementById("chart-community"), {
+          type: "pie",
+          data: {
+            labels: Object.keys(typeCount),
+            datasets: [{ 
+              data: Object.values(typeCount),
+              backgroundColor: ["#2ecc71", "#3498db", "#e74c3c", "#f39c12"]
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-community").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
+      });
+
+    // Section 7: Campagnes de vaccination
+    fetch(`${baseUrl}/campagnes-stats`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-campagnes").innerHTML = data.map(v => 
+          `<tr><td>${v.nom}</td><td>${v.zone}</td><td>${v.cible}</td><td>${v.realise}</td><td>${v.statut}</td></tr>`
+        ).join("");
+        
+        new Chart(document.getElementById("chart-campagnes"), {
+          type: "bar",
+          data: {
+            labels: data.map(x => x.nom),
+            datasets: [
+              { 
+                label: "Cible", 
+                data: data.map(x => parseInt(x.cible)),
+                backgroundColor: "#bdc3c7"
+              },
+              { 
+                label: "Réalisé", 
+                data: data.map(x => parseInt(x.realise)),
+                backgroundColor: "#16a085"
+              }
+            ]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false
+          }
+        });
+      })
+      .catch(() => {
+        document.getElementById("table-campagnes").innerHTML = '<tr><td colspan="5">Données indisponibles</td></tr>';
+      });
+
+    // Section 8: Support agents santé
+    fetch(`${baseUrl}/faq-usage`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-support").innerHTML = data.map(v => 
+          `<tr><td>${v.titre}</td><td>${v.categorie || 'Général'}</td><td>${v.nb_vues}</td><td>${v.date}</td></tr>`
+        ).join("");
+        
+        const dailyUsage = data.reduce((acc, item) => {
+          acc[item.date] = (acc[item.date] || 0) + parseInt(item.nb_vues);
+          return acc;
+        }, {});
+        
+        new Chart(document.getElementById("chart-support"), {
+          type: "line",
+          data: {
+            labels: Object.keys(dailyUsage),
+            datasets: [{ 
+              label: "Usage quotidien",
+              data: Object.values(dailyUsage),
+              borderColor: "#9b59b6",
+              backgroundColor: "rgba(155, 89, 182, 0.1)",
               fill: true
             }]
           },
-          options: {
-            responsive: true,
-            elements: { line: { borderWidth: 3 } }
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } }
           }
         });
+      })
+      .catch(() => {
+        document.getElementById("table-support").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
   </script>
 </body>
 </html>
+
