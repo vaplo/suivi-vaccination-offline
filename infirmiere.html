@@ -2,261 +2,20 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FlowLab – Espace Médical</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
+
+  <!-- ✅ Service Worker -->
   <script>
-  <!-- ✅ Styles internes améliorés -->
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4fdfc;
-      color: #333;
-      margin: 0;
-    }
-
-    /* ✅ Lien d'accessibilité (invisible sauf focus) */
-    .skip-link {
-      position: absolute;
-      top: -40px;
-      left: 0;
-      background: #16a085;
-      color: white;
-      padding: 0.5rem 1rem;
-      z-index: 1000;
-      text-decoration: none;
-      transition: top 0.3s ease;
-    }
-
-    .skip-link:focus {
-      top: 0;
-    }
-
-    .top-bar {
-      background-color: #16a085;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      border-bottom: 4px solid #138d75;
-    }
-
-    .top-bar .logo {
-      display: block;
-      margin: 0 auto 0.5rem;
-      max-height: 60px;
-    }
-
-    .homepage {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-
-    .card {
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      border-radius: 16px;
-      color: white;
-      min-height: 240px;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      transition: transform 0.2s ease;
-    }
-
-    .card:hover {
-      transform: scale(1.01);
-    }
-
-    .card:active {
-      transform: scale(0.99);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-
-    .card:focus-visible {
-      outline: 3px solid #ffffff;
-      outline-offset: -4px;
-      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.6);
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.25);
-      z-index: 0;
-    }
-
-    .card * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .card h3, .card p {
-      margin: 0 0 0.5rem 0;
-    }
-
-    .btn {
-      margin-top: auto;
-      padding: 0.6rem 1rem;
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .btn:hover {
-      background-color: #138d75;
-    }
-
-    .btn-secondary {
-      background-color: #2980b9;
-    }
-
-    .btn-secondary:hover {
-      background-color: #216a94;
-    }
-
-    a:focus-visible, button:focus-visible {
-      outline: 3px solid #ffffff;
-      outline-offset: 2px;
-    }
-
-    @media (max-width: 600px) {
-      h1 {
-        font-size: 1.4rem;
-      }
-      h2 {
-        font-size: 1.1rem;
-      }
-      .card {
-        min-height: 200px;
-        padding: 0.8rem;
-      }
-    }
-
-    /* ✅ Dark mode natif */
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #121212;
-        color: #f4fdfc;
-      }
-      .top-bar {
-        background-color: #0e5e4f;
-        border-bottom-color: #0a463b;
-      }
-      .card::before {
-        background: rgba(0, 0, 0, 0.5);
-      }
-    }
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ SW actif"))
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
-  <style>
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-    }
-
-    .card {
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      border-radius: 16px;
-      min-height: 280px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      padding: 1.5rem;
-      color: white;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 0;
-    }
-
-    .card * {
-      position: relative;
-      z-index: 1;
-    }
-
-    form label {
-      display: block;
-      font-weight: bold;
-      margin-top: 1rem;
-    }
-
-    form input,
-    form select {
-      width: 100%;
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      margin-top: 0.3rem;
-    }
-
-    .formulaire {
-      background: #f9f9f9;
-      border-radius: 16px;
-      padding: 2rem;
-      margin-top: 2rem;
-    }
-
-    .btn-vaccin {
-      margin-top: 1.5rem;
-      background-color: #2c3e50;
-      color: #fff;
-    }
-
-    @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #121212;
-        color: #f4fdfc;
-      }
-
-      .card {
-        background: #1e1e1e;
-        color: white;
-      }
-
-      .formulaire {
-        background: #1a1a1a;
-      }
-
-      input, select {
-        background: #333;
-        color: white;
-        border-color: #555;
-      }
-    }
-  </style>
 </head>
 <body>
   <header class="top-bar">
@@ -266,65 +25,58 @@
   </header>
 
   <main class="homepage" role="main" aria-label="Espace infirmière FlowLab">
-    <button onclick="window.location.href='index.html'" class="btn btn-secondary">⬅ Retour</button>
+    <a href="index.html" class="btn btn-secondary">⬅ Retour</a>
 
-    <!-- 🟩 3 Cartes -->
+    <!-- ✅ Cartes -->
     <section class="grid-cards">
-      <div class="card" tabindex="0" aria-label="Carte enfants">
-        <img src="images/enfants.png" alt="Enfant">
-        <div class="card-content">
-          <h3>👶 Enfants</h3>
-          <p>Ajoutez un enfant dans le système avec ses informations.</p>
-          <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
-        </div>
+      <div class="card" style="background-image: url('images/enfants.png')" tabindex="0" aria-label="Carte enfants">
+        <h3>👶 Enfants</h3>
+        <p>Ajoutez un enfant dans le système avec ses informations.</p>
+        <button onclick="afficherFormulaire('form-enfant')" class="btn">Enregistrer un enfant</button>
       </div>
-      <div class="card" tabindex="0" aria-label="Carte grossesses">
-        <img src="images/grossesses.png" alt="Femme enceinte">
-        <div class="card-content">
-          <h3>🤰 Grossesses</h3>
-          <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
-          <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
-        </div>
+
+      <div class="card" style="background-image: url('images/grossesses.png')" tabindex="0" aria-label="Carte grossesses">
+        <h3>🤰 Grossesses</h3>
+        <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
+        <button onclick="afficherFormulaire('form-grossesse')" class="btn btn-secondary">Enregistrer une grossesse</button>
       </div>
-      <div class="card" tabindex="0" aria-label="Carte vaccins aujourd'hui">
-        <img src="images/vaccination-ville.webp" alt="Calendrier vaccinal">
-        <div class="card-content">
-          <h3>📅 Vaccins aujourd’hui</h3>
-          <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
-          <button onclick="window.location.href='vaccins.html'" class="btn">Voir vaccins</button>
-          <button class="btn btn-vaccin" onclick="window.location.href='vaccins-administres.html'">✅ Vaccin fait</button>
-        </div>
+
+      <div class="card" style="background-image: url('images/vaccination-ville.webp')" tabindex="0" aria-label="Carte vaccins aujourd'hui">
+        <h3>📅 Vaccins aujourd’hui</h3>
+        <p>Consultez la liste des enfants à vacciner aujourd’hui.</p>
+        <button onclick="window.location.href='vaccins.html'" class="btn">Voir vaccins</button>
+        <button onclick="window.location.href='vaccins-administres.html'" class="btn btn-vaccin">✅ Vaccin fait</button>
       </div>
     </section>
 
-    <!-- 🟨 Formulaire Enfant -->
+    <!-- ✅ Formulaire Enfant -->
     <section id="form-enfant" class="formulaire" style="display: none;">
       <h3>👶 Formulaire Enfant</h3>
       <form id="form-enfant-form">
         <label for="nom_complet">Nom complet</label>
-        <input name="nom_complet" id="nom_complet" type="text" required>
+        <input id="nom_complet" name="nom_complet" type="text" required />
 
         <label for="date_naissance">Date de naissance</label>
-        <input name="date_naissance" id="date_naissance" type="date" required>
+        <input id="date_naissance" name="date_naissance" type="date" required />
 
         <label for="sexe">Sexe</label>
-        <select name="sexe" id="sexe" required>
-          <option value="">Sexe</option>
+        <select id="sexe" name="sexe" required>
+          <option value="">Sélectionner</option>
           <option value="M">Masculin</option>
           <option value="F">Féminin</option>
         </select>
 
-        <label for="telephone">Téléphone du parent</label>
-        <input name="telephone" id="telephone" type="tel" required>
+        <label for="telephone_parent">Téléphone du parent</label>
+        <input id="telephone_parent" name="telephone_parent" type="tel" required />
 
-        <label for="centre_sante">Structure de santé</label>
-        <input name="centre_sante" id="centre_sante" type="text" required>
+        <label for="centre_sante_enfant">Structure de santé</label>
+        <input id="centre_sante_enfant" name="centre_sante" type="text" required />
 
-        <label for="province">Province</label>
-        <input name="province" id="province" type="text" required>
+        <label for="province_enfant">Province</label>
+        <input id="province_enfant" name="province" type="text" required />
 
-        <label for="langue_preferee">Langue préférée</label>
-        <select name="langue_preferee" id="langue_preferee" required>
+        <label for="langue_preferee_enfant">Langue préférée</label>
+        <select id="langue_preferee_enfant" name="langue_preferee" required>
           <option value="">Langue préférée</option>
           <option value="Français">Français</option>
           <option value="Lingala">Lingala</option>
@@ -337,30 +89,30 @@
       </form>
     </section>
 
-    <!-- 🟨 Formulaire Grossesse -->
+    <!-- ✅ Formulaire Grossesse -->
     <section id="form-grossesse" class="formulaire" style="display: none;">
       <h3>🤰 Formulaire Grossesse</h3>
       <form id="form-grossesse-form">
-        <label for="nom">Nom complet</label>
-        <input name="nom" id="nom" type="text" required>
+        <label for="nom_grossesse">Nom complet</label>
+        <input id="nom_grossesse" name="nom" type="text" required />
 
         <label for="telephone_grossesse">Téléphone</label>
-        <input name="telephone" id="telephone_grossesse" type="tel" required>
+        <input id="telephone_grossesse" name="telephone" type="tel" required />
 
         <label for="semaines_grossesse">Semaines de grossesse</label>
-        <input name="semaines_grossesse" id="semaines_grossesse" type="number" required>
+        <input id="semaines_grossesse" name="semaines_grossesse" type="number" required />
 
         <label for="dpa">Date prévue d’accouchement</label>
-        <input name="dpa" id="dpa" type="date" required>
+        <input id="dpa" name="dpa" type="date" required />
 
         <label for="centre_sante_grossesse">Structure de santé</label>
-        <input name="centre_sante" id="centre_sante_grossesse" type="text" required>
+        <input id="centre_sante_grossesse" name="centre_sante" type="text" required />
 
         <label for="province_grossesse">Province</label>
-        <input name="province" id="province_grossesse" type="text" required>
+        <input id="province_grossesse" name="province" type="text" required />
 
         <label for="langue_preferee_grossesse">Langue préférée</label>
-        <select name="langue_preferee" id="langue_preferee_grossesse" required>
+        <select id="langue_preferee_grossesse" name="langue_preferee" required>
           <option value="">Langue préférée</option>
           <option value="Français">Français</option>
           <option value="Lingala">Lingala</option>
@@ -377,4 +129,4 @@
   <script src="script.js"></script>
 </body>
 </html>
-arrange ca je veux le meme style pour tout mes hml . prends exemples sur l indexe html
+
