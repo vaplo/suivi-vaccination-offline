@@ -69,6 +69,11 @@
       margin-bottom: 0.5rem;
     }
 
+    .btn-small { padding: .35rem .6rem; font-size: .875rem; border-radius: 6px; }
+    .btn-inline { margin: 0; display: inline-flex; align-items: center; gap: .4rem; }
+    .btn[disabled] { opacity: .6; cursor: not-allowed; }
+
+
     .btn {
       margin-top: 1rem;
       padding: 0.6rem 1rem;
@@ -332,7 +337,7 @@
         <h3>📌 Vaccins à faire aujourd'hui</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th></tr>
+            <tr><th>Catégorie</th><th>ID</th><th>Centre Santé</th><th>Nom</th><th>Date naissance</th><th>Date RDV</th><th>Vaccin</th><th>Dose</th><th>Action</th></tr>
           </thead>
           <tbody id="table-vaccins-prevus">
             <tr><td>Jean Mukamba</td><td>15/03/2023</td><td>BCG</td><td>1ère dose</td></tr>
@@ -393,14 +398,14 @@
       const formData = new FormData(this);
       const data = Object.fromEntries(formData);
       
-      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/enfant', {
+      fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       })
       .then(response => response.json())
       .then(data => {
-        alert('Enfant enregistré avec succès!');
+        alert(`Enfant ${data.nom_complet} enregistré avec succès!`);
         this.reset();
         retourAccueil();
       })
@@ -415,7 +420,7 @@
       const formData = new FormData(this);
       const data = Object.fromEntries(formData);
       
-      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/grossesse', {
+      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
@@ -432,18 +437,111 @@
       });
     });
 
+ // ===================================== Vaccins ==========================================   
+
     // Chargement des données de vaccination
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-prevus")
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinprevue")
       .then(r => r.json())
       .then(data => {
-        const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_naissance}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
-        document.getElementById("table-vaccins-prevus").innerHTML = rows;
+        const rows = (Array.isArray(data) ? data : [data]).map(v => `
+        <tr 
+          data-categorie="${v.categorie ?? ''}"
+          data-personne_id="${v.personne_id ?? ''}"
+          data-centre_sante="${v.centre_sante ?? ''}"
+          data-nom="${v.nom ?? ''}"
+          data-date_naissance="${v.date_naissance ?? ''}"
+          data-date_rdv="${v.date_rdv ?? ''}"
+          data-vaccin="${v.vaccin ?? ''}"
+          data-dose="${v.dose ?? ''}"
+        >
+          <td>${v.categorie ?? ''}</td>
+          <td>${v.personne_id ?? ''}</td>
+          <td>${v.centre_sante ?? ''}</td>
+          <td>${v.nom ?? ''}</td>
+          <td>${v.date_naissance ?? ''}</td>
+          <td>${v.date_rdv ?? ''}</td>
+          <td>${v.vaccin ?? ''}</td>
+          <td>${v.dose ?? ''}</td>
+          <td>
+            <button class="btn btn-small btn-inline" onclick="confirmerVaccin(this)">
+              ✅ Valider
+            </button>
+          </td>
+        </tr>
+      `).join("");
+      document.getElementById("table-vaccins-prevus").innerHTML = rows;
       })
       .catch(() => {
         console.log("Utilisation des données par défaut pour vaccins prévus");
       });
 
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccins-administres")
+      const ACTION_URL = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinadministrebouton";
+
+      async function confirmerVaccin(buttonEl) {
+    const tr = buttonEl.closest('tr');
+    // On construit le payload à partir des data-* du <tr>
+    const payload = {
+      categorie:      tr.dataset.categorie,
+      personne_id:    tr.dataset.personne_id,
+      centre_sante:   tr.dataset.centre_sante,
+      nom:            tr.dataset.nom,
+      date_naissance: tr.dataset.date_naissance,
+      date_rdv:       tr.dataset.date_rdv,
+      vaccin:         tr.dataset.vaccin,
+      dose:           tr.dataset.dose
+    };
+
+    // UI: désactiver le bouton pendant l’envoi
+    const originalText = buttonEl.textContent;
+    buttonEl.textContent = "Envoi…";
+    buttonEl.disabled = true;
+
+    try {
+      const res = await fetch(ACTION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+  
+
+      // Tente de lire le JSON (si le serveur renvoie autre chose, ça peut throw)
+      const resultText = await res.text();
+      let result;
+      try { result = JSON.parse(resultText); } catch { result = { ok: res.ok, raw: resultText }; }
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} – ${resultText?.slice?.(0,200) || 'Erreur serveur'}`);
+      }
+
+      // (Optionnel) Déplacer la ligne vers “Vaccins déjà administrés”
+      // En réutilisant nom, date (on met date_rdv à défaut), vaccin, dose
+      const adminTbody = document.getElementById("table-vaccins-administres");
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${payload.nom || ''}</td>
+        <td>${(result?.date_administration) || payload.date_rdv || ''}</td>
+        <td>${payload.vaccin || ''}</td>
+        <td>${payload.dose || ''}</td>
+      `;
+      adminTbody.prepend(newRow); // On le met en haut de la liste
+
+      // Retirer la ligne des “à faire”
+      tr.remove();
+
+      alert(`Vaccination confirmée pour ${payload.nom || 'patient'} ✅`);
+    } catch (err) {
+      console.error("Erreur validation vaccin:", err);
+      alert("Échec de l'envoi : " + err.message);
+      // Réactiver le bouton
+      buttonEl.disabled = false;
+      buttonEl.textContent = originalText;
+      return;
+    }
+  }
+
+  //  ------------- Vaccin Deja Administrés ----------------
+
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
       .then(r => r.json())
       .then(data => {
         const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_administration}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");

@@ -175,7 +175,7 @@
       <h3>📊 Tableau de Suivi Équitable</h3>
       <table class="table-stats">
         <thead>
-          <tr><th>Structure</th><th>Enfants inscrits</th><th>Enfants vaccinés</th><th>Couverture (%)</th></tr>
+          <tr><th>Structure</th><th>Total Enfants</th><th>Total Vaccins Prévus</th><th>Total Vaccins Faits</th></tr>
         </thead>
         <tbody id="table-equite">
           <tr><td colspan="4">Chargement...</td></tr>
@@ -187,7 +187,7 @@
       <h3>📂 Enfants en Retard de Vaccination</h3>
       <table class="table-stats">
         <thead>
-          <tr><th>Nom</th><th>Date naissance</th><th>Centre</th><th>Vaccin manquant</th></tr>
+          <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th><th>Date Prevue</th> <th>Admin</th><th>Statut</th><th>Centre</th><th>Tel Parents</th></tr>
         </thead>
         <tbody id="table-retards">
           <tr><td colspan="4">Chargement...</td></tr>
@@ -199,7 +199,7 @@
       <h3>🩺 Surveillance des Soins par Structure</h3>
       <table class="table-stats">
         <thead>
-          <tr><th>Structure</th><th>Enfants</th><th>Grossesses</th><th>Vaccins effectués</th></tr>
+          <tr><th>Structure</th><th>Total Enfants</th><th>Vaccins effectués</th><th>Total Femmes</th><th>Soins prenatals</th></tr>
         </thead>
         <tbody id="table-soins">
           <tr><td colspan="4">Chargement...</td></tr>
@@ -239,20 +239,22 @@
     }
 
     // Chargement des tableaux au démarrage
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable")
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable", {headers: { "Accept": "application/json" }})
       .then(r => r.json())
       .then(data => {
         const rows = data.map(e => `
-          <tr><td>${e.structure}</td><td>${e.enfants_total}</td><td>${e.enfants_vaccines}</td><td>${e.taux_couverture}%</td></tr>
+          <tr><td>${e.centre_sante}</td><td>${e.total_enfants}</td><td>${e.total_vaccins_prevus}</td><td>${e.total_vaccins_faits}%</td></tr>
         `).join("");
+         
         document.getElementById("table-equite").innerHTML = rows;
+        console.log(r);
       });
 
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards")
       .then(r => r.json())
       .then(data => {
         const rows = data.map(e => `
-          <tr><td>${e.nom_complet}</td><td>${e.date_naissance}</td><td>${e.centre_sante}</td><td>${e.vaccin_non_fait}</td></tr>
+          <tr><td>${e.nom_complet}</td><td>${e.date_naissance}</td><td>${e.vaccin}</td><td>${e.dose}</td><td>${e.date_prevue}</td><td>${e.date_administration}</td><td>${e.statut}</td><td>${e.centre_sante}</td><td>${e.telephone_parent}</td></tr>
         `).join("");
         document.getElementById("table-retards").innerHTML = rows;
       });
@@ -261,7 +263,7 @@
       .then(r => r.json())
       .then(data => {
         const rows = data.map(e => `
-          <tr><td>${e.structure}</td><td>${e.total_enfants}</td><td>${e.total_grossesses}</td><td>${e.vaccins_realises}</td></tr>
+          <tr><td>${e.centre_sante}</td><td>${e.total_enfants}</td><td>${e.total_femmes}</td><td>${e.total_vaccins_administres}</td><td>${e.soins_prenatals}</td></tr>
         `).join("");
         document.getElementById("table-soins").innerHTML = rows;
       });

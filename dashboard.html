@@ -16,6 +16,8 @@
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
 </head>
 <body>
   <header class="top-bar">
@@ -49,7 +51,10 @@
       <div class="card" style="background-image: url('images/statsnationales.webp')">
         <h3>Statistiques nationales</h3>
         <p>Comparaison avec benchmarks OMS, tendances historiques.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-nationales" class="btn">📊 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur" class="btn">📊 Accéder</a>
+        <div style="background:#fff;border-radius:12px;padding:12px;margin-top:12px;">
+          <canvas id="statsChart" height="140"></canvas>
+        </div>
       </div>
 
       <div class="card" style="background-image: url('images/analytics.webp')">
@@ -83,6 +88,9 @@
       <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
     </div>
   </main>
+  
 </body>
 </html>
+
+
 
