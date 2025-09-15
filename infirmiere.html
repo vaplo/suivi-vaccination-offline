@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FlowLab – Espace Médical Infirmière</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -233,13 +235,13 @@
   <main class="container">
     <section class="grid-cards">
       <div class="card" style="background-image: url('images/enfants.png')">
-        <h3>👶 Enfants</h3>
+        <h3> Enfants</h3>
         <p>Ajoutez un enfant dans le système avec ses informations.</p>
         <button class="btn" onclick="afficherFormulaire('form-enfant')">Enregistrer un enfant</button>
       </div>
 
       <div class="card" style="background-image: url('images/grossesses.png')">
-        <h3>🤰 Grossesses</h3>
+        <h3> Grossesses</h3>
         <p>Inscrivez une femme enceinte pour le suivi prénatal.</p>
         <button class="btn btn-secondary" onclick="afficherFormulaire('form-grossesse')">Enregistrer une grossesse</button>
       </div>
@@ -286,6 +288,23 @@
       <option value="Kikongo">Kikongo</option>
       <option value="Tshiluba">Tshiluba</option>
     </select>
+
+    <label for="mode">Mode</label>
+    <select id="mode" name="mode" required>
+      <option value="Nouveau-né">Nouveau-né</option>
+      <option value="Rattrapage">Rattrapage</option>
+    </select>
+
+    <label for="base_data">Base de calcul</label>
+    <select id="base_data" name="base_data" required>
+      <option value="">Base de Calcul</option>
+      <option value="DOB">DOB</option>
+      <option value="today">Today</option>
+    </select>
+
+    <label for="sypmtomes">Symptomes remarqués et recommandations</label>
+    <textarea id="symptomes" name="symptomes" style="height: 150px; width: 100%;"></textarea>
+
 
     <button type="submit" class="btn">📅 Envoyer</button>
   </form>
@@ -334,7 +353,28 @@
     <!-- Section Vaccins -->
     <section class="vaccins-section" id="vaccins-section" style="display: none;">
       <div class="vaccin-table-container">
-        <h3>📌 Vaccins à faire aujourd'hui</h3>
+        <h3>📌 Vaccins à faire aujourd'hui</h3><br />
+        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:1rem;">
+          <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
+            Du
+            <input id="filter-prevus-from" type="date" />
+          </label>
+
+          <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
+            Au
+            <input id="filter-prevus-to" type="date" />
+          </label>
+
+          <label style="display:flex; align-items:center; gap:0.4rem; font-weight:600;">
+            <input id="filter-prevus-since-start" type="checkbox" />
+            Depuis le début
+          </label>
+
+          <button id="btn-apply-filter-prevus" class="btn btn-small btn-inline">Appliquer</button>
+          <button id="btn-reset-filter-prevus" class="btn btn-small btn-secondary">Réinitialiser</button>
+          <button id="btn-range-prevus-yesterday-today" class="btn btn-small">Hier & Aujourd'hui</button>
+          <button id="btn-range-prevus-start-today" class="btn btn-small">Du début → Aujourd'hui</button>
+        </div>
         <table class="table-stats">
           <thead>
             <tr><th>Catégorie</th><th>ID</th><th>Centre Santé</th><th>Nom</th><th>Date naissance</th><th>Date RDV</th><th>Vaccin</th><th>Dose</th><th>Action</th></tr>
@@ -349,7 +389,31 @@
       </div>
 
       <div class="vaccin-table-container">
-        <h3>✅ Vaccins déjà administrés</h3>
+        <h3>✅ Vaccins déjà administrés</h3> <br />
+
+         <!-- Barre de filtres -->
+  <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:1rem;">
+    <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
+      Du
+      <input id="filter-from" type="date" />
+    </label>
+
+    <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
+      Au
+      <input id="filter-to" type="date" />
+    </label>
+
+    <label style="display:flex; align-items:center; gap:0.4rem; font-weight:600;">
+      <input id="filter-since-start" type="checkbox" />
+      Depuis le début
+    </label>
+
+    <button id="btn-apply-filter" class="btn btn-small btn-inline">Appliquer</button>
+    <button id="btn-reset-filter" class="btn btn-small btn-secondary">Réinitialiser</button>
+    <button id="btn-range-yesterday-today" class="btn btn-small">Hier & Aujourd'hui</button>
+    <button id="btn-range-start-today" class="btn btn-small">Du début → Aujourd'hui</button>
+  </div>
+
         <table class="table-stats">
           <thead>
             <tr><th>Nom</th><th>Date</th><th>Vaccin</th><th>Dose</th></tr>
@@ -439,7 +503,7 @@
 
  // ===================================== Vaccins ==========================================   
 
-    // Chargement des données de vaccination
+    /* Chargement des données de vaccination
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinprevue")
       .then(r => r.json())
       .then(data => {
@@ -473,7 +537,7 @@
       })
       .catch(() => {
         console.log("Utilisation des données par défaut pour vaccins prévus");
-      });
+      });*/
 
       const ACTION_URL = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinadministrebouton";
 
@@ -510,6 +574,7 @@
       try { result = JSON.parse(resultText); } catch { result = { ok: res.ok, raw: resultText }; }
 
       if (!res.ok) {
+        alert("Code d'erreur de la reponse");
         throw new Error(`HTTP ${res.status} – ${resultText?.slice?.(0,200) || 'Erreur serveur'}`);
       }
 
@@ -541,16 +606,332 @@
 
   //  ------------- Vaccin Deja Administrés ----------------
 
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
-      .then(r => r.json())
+    //fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
+      /*.then(r => r.json())
       .then(data => {
         const rows = data.map(v => `<tr><td>${v.nom_complet}</td><td>${v.date_administration}</td><td>${v.vaccin}</td><td>${v.dose}</td></tr>`).join("");
         document.getElementById("table-vaccins-administres").innerHTML = rows;
       })
       .catch(() => {
         console.log("Utilisation des données par défaut pour vaccins administrés");
-      });
+      });*/
   </script>
+
+  <script>
+  // stockage global pour vaccins prévus
+  let allPrevus = [];
+
+  // si tu as déjà yyyyMMdd() et parseDateSafe() dans la page (depuis la section admin),
+  // elles seront réutilisées. Sinon, on redéfinit sans écraser.
+  if (typeof yyyyMMdd !== 'function') {
+    function yyyyMMdd(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+  }
+  if (typeof parseDateSafe !== 'function') {
+    function parseDateSafe(val) {
+      if (!val) return null;
+      const normalized = String(val).trim().replace(/\//g, '-').replace(/\s.*$/, '');
+      const d = new Date(normalized);
+      return isNaN(d) ? null : d;
+    }
+  }
+
+  // rendu pour les vaccins prévus
+  function renderPrevusTable(fromDate, toDate) {
+    const tbody = document.getElementById("table-vaccins-prevus");
+    const rows = [];
+
+    let fromTime = fromDate ? new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate(), 0,0,0,0).getTime() : null;
+    let toTime   = toDate   ? new Date(toDate.getFullYear(),   toDate.getMonth(),   toDate.getDate(),   23,59,59,999).getTime() : null;
+
+    allPrevus.forEach(v => {
+      // on prend date_rdv comme date de filtrage (fallbacks inclus)
+      const dateStr = v.date_rdv || v.date_rendez_vous || v.date || '';
+      const d = parseDateSafe(dateStr);
+      if (!d) return; // skip si pas de date valide
+      const t = d.getTime();
+
+      if (fromTime !== null && t < fromTime) return;
+      if (toTime !== null && t > toTime) return;
+
+      // On crée la ligne avec data-* nécessaires à confirmerVaccin
+      rows.push(`
+        <tr
+          data-categorie="${v.categorie ?? ''}"
+          data-personne_id="${v.personne_id ?? v.id ?? ''}"
+          data-centre_sante="${v.centre_sante ?? ''}"
+          data-nom="${(v.nom ?? v.nom_complet) ?? ''}"
+          data-date_naissance="${v.date_naissance ?? ''}"
+          data-date_rdv="${(v.date_rdv || v.date_rendez_vous || '')}"
+          data-vaccin="${v.vaccin ?? ''}"
+          data-dose="${v.dose ?? ''}"
+        >
+          <td>${v.categorie ?? ''}</td>
+          <td>${v.personne_id ?? v.id ?? ''}</td>
+          <td>${v.centre_sante ?? ''}</td>
+          <td>${v.nom ?? v.nom_complet ?? ''}</td>
+          <td>${v.date_naissance ?? ''}</td>
+          <td>${yyyyMMdd(d)}</td>
+          <td>${v.vaccin ?? ''}</td>
+          <td>${v.dose ?? ''}</td>
+          <td>
+            <button class="btn btn-small btn-inline" onclick="confirmerVaccin(this)">✅ Valider</button>
+          </td>
+        </tr>
+      `);
+    });
+
+    tbody.innerHTML = rows.join('') || '<tr><td colspan="9" style="text-align:center">Aucun vaccin prévu pour cette période</td></tr>';
+  }
+
+  // initialisation des inputs (hier -> aujourd'hui)
+  function setPrevusInputsToYesterdayToday() {
+    const today = new Date();
+    const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+    const f = document.getElementById('filter-prevus-from');
+    const t = document.getElementById('filter-prevus-to');
+    if (f) f.value = yyyyMMdd(yesterday);
+    if (t) t.value = yyyyMMdd(today);
+    const since = document.getElementById('filter-prevus-since-start');
+    if (since) since.checked = false;
+  }
+
+  // checkbox depuis le début
+  const sincePrevus = document.getElementById('filter-prevus-since-start');
+  if (sincePrevus) {
+    sincePrevus.addEventListener('change', function() {
+      const fromInput = document.getElementById('filter-prevus-from');
+      if (fromInput) fromInput.disabled = this.checked;
+    });
+  }
+
+  // boutons
+  const btnApplyPrevus = document.getElementById('btn-apply-filter-prevus');
+  if (btnApplyPrevus) btnApplyPrevus.addEventListener('click', function() {
+    let from = null;
+    if (!document.getElementById('filter-prevus-since-start').checked) {
+      from = parseDateSafe(document.getElementById('filter-prevus-from').value);
+    }
+    const to = parseDateSafe(document.getElementById('filter-prevus-to').value);
+    renderPrevusTable(from, to);
+  });
+
+  const btnResetPrevus = document.getElementById('btn-reset-filter-prevus');
+  if (btnResetPrevus) btnResetPrevus.addEventListener('click', function() {
+    setPrevusInputsToYesterdayToday();
+    const from = parseDateSafe(document.getElementById('filter-prevus-from').value);
+    const to   = parseDateSafe(document.getElementById('filter-prevus-to').value);
+    renderPrevusTable(from, to);
+  });
+
+  const btnYesterdayTodayPrevus = document.getElementById('btn-range-prevus-yesterday-today');
+  if (btnYesterdayTodayPrevus) btnYesterdayTodayPrevus.addEventListener('click', function() {
+    setPrevusInputsToYesterdayToday();
+    document.getElementById('filter-prevus-since-start').checked = false;
+    document.getElementById('filter-prevus-from').disabled = false;
+    const from = parseDateSafe(document.getElementById('filter-prevus-from').value);
+    const to   = parseDateSafe(document.getElementById('filter-prevus-to').value);
+    renderPrevusTable(from, to);
+  });
+
+  const btnStartTodayPrevus = document.getElementById('btn-range-prevus-start-today');
+  if (btnStartTodayPrevus) btnStartTodayPrevus.addEventListener('click', function() {
+    document.getElementById('filter-prevus-since-start').checked = true;
+    document.getElementById('filter-prevus-from').disabled = true;
+    document.getElementById('filter-prevus-to').value = yyyyMMdd(new Date());
+    renderPrevusTable(null, parseDateSafe(document.getElementById('filter-prevus-to').value));
+  });
+
+  // FETCH des vaccins prévus depuis l'API officielle
+  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinprevue")
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => {
+      // data attendu comme array ; si objet unique on convertit en array
+      allPrevus = Array.isArray(data) ? data : (data ? [data] : []);
+      // par défaut : hier -> aujourd'hui
+      setPrevusInputsToYesterdayToday();
+      const from = parseDateSafe(document.getElementById('filter-prevus-from').value);
+      const to   = parseDateSafe(document.getElementById('filter-prevus-to').value);
+      renderPrevusTable(from, to);
+    })
+    .catch(err => {
+      console.error("Erreur fetch vaccins prévus:", err);
+      /* fallback : si tbody contient déjà des lignes statiques, les utiliser
+      const tbody = document.getElementById("table-vaccins-prevus");
+      if (tbody) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        allPrevus = rows.map(tr => {
+          // on essaie de reconstruire les objets à partir du DOM
+          const cells = tr.querySelectorAll('td');
+          return {
+            categorie: (cells[0] && cells[0].textContent.trim()) || '',
+            personne_id: (cells[1] && cells[1].textContent.trim()) || '',
+            centre_sante: (cells[2] && cells[2].textContent.trim()) || '',
+            nom: (cells[3] && cells[3].textContent.trim()) || '',
+            date_naissance: (cells[4] && cells[4].textContent.trim()) || '',
+            date_rdv: (cells[5] && cells[5].textContent.trim()) || '',
+            vaccin: (cells[6] && cells[6].textContent.trim()) || '',
+            dose: (cells[7] && cells[7].textContent.trim()) || ''
+          };
+        });
+        setPrevusInputsToYesterdayToday();
+        renderPrevusTable(parseDateSafe(document.getElementById('filter-prevus-from').value), parseDateSafe(document.getElementById('filter-prevus-to').value));*/
+      //}
+    });
+</script>
+
+
+  <script>
+    //  ------------- Vaccin Deja Administrés 2  ----------------
+  // ---- stockage global ----
+  let allAdmin = [];
+
+  // ---- utilitaires date ----
+  function yyyyMMdd(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function parseDateSafe(val) {
+    if (!val) return null;
+    // Normalise / -> - et enlève time part s'il y en a
+    const normalized = String(val).trim().replace(/\//g, '-').replace(/\s.*$/, '');
+    // Si c'est déjà YYYY-MM-DD, new Date fonctionne.
+    const d = new Date(normalized);
+    return isNaN(d) ? null : d;
+  }
+
+  // ---- rendu tableau ----
+  function renderAdminTable(fromDate, toDate) {
+    const tbody = document.getElementById("table-vaccins-administres");
+    const rows = [];
+
+    let fromTime = fromDate ? new Date(fromDate.getFullYear(), fromDate.getMonth(), fromDate.getDate(), 0,0,0,0).getTime() : null;
+    let toTime   = toDate   ? new Date(toDate.getFullYear(),   toDate.getMonth(),   toDate.getDate(),   23,59,59,999).getTime() : null;
+
+    allAdmin.forEach(v => {
+      const dateStr = v.date_administration || v.date || v.date_adm || '';
+      const d = parseDateSafe(dateStr);
+      if (!d) return; // skip si pas de date valide
+      const t = d.getTime();
+
+      if (fromTime !== null && t < fromTime) return;
+      if (toTime !== null && t > toTime) return;
+
+      rows.push(`<tr>
+        <td>${v.nom_complet || v.nom || ''}</td>
+        <td>${yyyyMMdd(d)}</td>
+        <td>${v.vaccin || ''}</td>
+        <td>${v.dose || ''}</td>
+      </tr>`);
+    });
+
+    tbody.innerHTML = rows.join('') || '<tr><td colspan="4" style="text-align:center">Aucun vaccin pour cette période</td></tr>';
+  }
+
+  // ---- initialisation inputs ----
+  function setInputsToYesterdayToday() {
+    const today = new Date();
+    const yesterday = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 1);
+    const f = document.getElementById('filter-from');
+    const t = document.getElementById('filter-to');
+    if (f) f.value = yyyyMMdd(yesterday);
+    if (t) t.value = yyyyMMdd(today);
+    const since = document.getElementById('filter-since-start');
+    if (since) since.checked = false;
+  }
+
+  // ---- événement checkbox "Depuis le début" ----
+  const sinceCheckbox = document.getElementById('filter-since-start');
+  if (sinceCheckbox) {
+    sinceCheckbox.addEventListener('change', function() {
+      const fromInput = document.getElementById('filter-from');
+      if (fromInput) fromInput.disabled = this.checked;
+    });
+  }
+
+  // ---- boutons (Appliquer / Reset / Ranges) ----
+  const btnApply = document.getElementById('btn-apply-filter');
+  if (btnApply) btnApply.addEventListener('click', function() {
+    let from = null;
+    if (!document.getElementById('filter-since-start').checked) {
+      from = parseDateSafe(document.getElementById('filter-from').value);
+    }
+    const to = parseDateSafe(document.getElementById('filter-to').value);
+    renderAdminTable(from, to);
+  });
+
+  const btnReset = document.getElementById('btn-reset-filter');
+  if (btnReset) btnReset.addEventListener('click', function() {
+    setInputsToYesterdayToday();
+    const from = parseDateSafe(document.getElementById('filter-from').value);
+    const to   = parseDateSafe(document.getElementById('filter-to').value);
+    renderAdminTable(from, to);
+  });
+
+  const btnYesterdayToday = document.getElementById('btn-range-yesterday-today');
+  if (btnYesterdayToday) btnYesterdayToday.addEventListener('click', function() {
+    setInputsToYesterdayToday();
+    document.getElementById('filter-since-start').checked = false;
+    document.getElementById('filter-from').disabled = false;
+    const from = parseDateSafe(document.getElementById('filter-from').value);
+    const to   = parseDateSafe(document.getElementById('filter-to').value);
+    renderAdminTable(from, to);
+  });
+
+  const btnStartToday = document.getElementById('btn-range-start-today');
+  if (btnStartToday) btnStartToday.addEventListener('click', function() {
+    document.getElementById('filter-since-start').checked = true;
+    document.getElementById('filter-from').disabled = true;
+    document.getElementById('filter-to').value = yyyyMMdd(new Date());
+    renderAdminTable(null, parseDateSafe(document.getElementById('filter-to').value));
+  });
+
+  // ---- FETCH des vaccins administrés depuis l'API (source officielle) ----
+  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
+    .then(r => {
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      return r.json();
+    })
+    .then(data => {
+      // data attendu comme array d'objets
+      allAdmin = Array.isArray(data) ? data : (data ? [data] : []);
+      // initialisation par défaut : hier -> aujourd'hui
+      setInputsToYesterdayToday();
+      const from = parseDateSafe(document.getElementById('filter-from').value);
+      const to   = parseDateSafe(document.getElementById('filter-to').value);
+      renderAdminTable(from, to);
+    })
+    .catch(err => {
+      console.error("Erreur fetch vaccins administrés:", err);
+      // Si erreur, on essaie de récupérer les lignes statiques déjà présentes dans le tbody (fallback)
+      const tbody = document.getElementById("table-vaccins-administres");
+      if (tbody) {
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        allAdmin = rows.map(tr => {
+          const cells = tr.querySelectorAll('td');
+          return {
+            nom_complet: (cells[0] && cells[0].textContent.trim()) || '',
+            date_administration: (cells[1] && cells[1].textContent.trim()) || '',
+            vaccin: (cells[2] && cells[2].textContent.trim()) || '',
+            dose: (cells[3] && cells[3].textContent.trim()) || ''
+          };
+        });
+        setInputsToYesterdayToday();
+        renderAdminTable(parseDateSafe(document.getElementById('filter-from').value), parseDateSafe(document.getElementById('filter-to').value));
+      }
+    });
+</script>
+
 </body>
 </html>
 

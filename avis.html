@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Formulaire de passage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 500px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
+
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #555;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    button {
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #0056b3;
+    }
+
+    .button2 {
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      text-decoration: none;
+    }
+    .button2:hover {
+      background: #0056b3;
+    }
+    .message {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+    .success {
+      color: green;
+    }
+    .error {
+      color: red;
+    }
+    .table-stats {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .table-stats th, .table-stats td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .table-stats th {
+      background-color: #16a085;
+      color: white;
+    }
+
+    .table-stats tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+
+<body>
+
+    <!-- ✅ Barre supérieure -->
+  <header class="top-bar" role="banner">
+    <img src="images/logo.png" alt="Logo FlowLab" class="logo" />
+    <h1>FlowLab</h1>
+    <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
+    <p>Espace Patient</p>
+    <a href="index.html" class="button2">⬅ Retour</a>
+  </header>
+
+  <div class="container">
+    <h2>Formulaire d'avis</h2>
+    <form id="passage-form">
+      <label for="centre_sante">Nom de la structure</label>
+      <input type="text" id="centre_sante" name="centre_sante" required>
+
+      <label for="date_prevue">Date de passage</label>
+      <input type="date" id="date_prevue" name="date_prevue" required>
+
+      <label for="avis">Avis</label>
+      <select id="avis" name="avis" required>
+        <option value="">-- Sélectionnez --</option>
+        <option value="Positif">Positif</option>
+        <option value="Neutre">Neutre</option>
+        <option value="Négatif">Négatif</option>
+      </select>
+
+      <label for="feedback">Feedback</label>
+      <textarea id="feedback" name="feedback" placeholder="Entrez votre retour..."></textarea>
+
+      <button type="submit">Envoyer</button>
+    </form>
+    <div id="message" class="message"></div>
+  </div>
+
+  <div class="container">
+    <h2>Avis des autres parents</h2>
+        <table class="table-stats">
+          <thead>
+            <tr><th>Structure</th><th>Date</th><th>Avis</th><th>Feedback</th></tr>
+          </thead>
+          <tbody id="table-community">
+            <tr><td colspan="4">Chargement des données...</td></tr>
+          </tbody>
+        </table>
+        <div style="height: 300px;">
+            <canvas id="chart-community"></canvas>
+        </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("passage-form");
+    const messageBox = document.getElementById("message");
+
+    const baseUrl = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test"
+
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const data = {
+        structure: document.getElementById("centre_sante").value,
+        date: document.getElementById("date_prevue").value,
+        avis: document.getElementById("avis").value,
+        feedback: document.getElementById("feedback").value
+      };
+
+      try {
+        const res = await fetch(`${baseUrl}/avis-post`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          messageBox.textContent = "✅ Données envoyées avec succès !";
+          messageBox.className = "message success";
+          form.reset();
+        } else {
+          throw new Error(`Erreur serveur (${res.status})`);
+        }
+      } catch (err) {
+        messageBox.textContent = "❌ Échec de l'envoi : " + err.message;
+        messageBox.className = "message error";
+      }
+    });
+
+
+
+    // Section 6: Engagement communautaire
+    fetch(`${baseUrl}/avis-get`)
+      .then(r => r.json())
+      .then(data => {
+        document.getElementById("table-community").innerHTML = data.map(v => 
+          `<tr><td>${v.centre_sante}</td><td>${v.date_prevue}</td><td>${v.avis}</td><td>${v.feedback}</td></tr>`
+        ).join(""); console.log(data)
+        
+        const typeCount = data.reduce((acc, item) => {
+          acc[item.avis] = (acc[item.avis] || 0) + 1;
+          return acc;
+        }, {});
+        
+        new Chart(document.getElementById("chart-community"), {
+          type: "pie",
+          data: {
+            labels: Object.keys(typeCount),
+            datasets: [{ 
+              data: Object.values(typeCount),
+              backgroundColor: ["#2ecc71", "#3498db", "#e74c3c", "#f39c12"]
+            }]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false
+          }
+        });
+      })
+      .catch((e) => {
+        document.getElementById("table-community").innerHTML = `<tr><td colspan="4">${e}</td></tr>`;
+        console.log(e);
+      });
+
+    
+  </script>
+</body>
+</html>

@@ -2,124 +2,187 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FlowLab – Espace Superviseur</title>
-
-  <!-- SEO -->
-  <meta name="description" content="Suivi équitable, export des retards et surveillance des soins — FlowLab, supervision vaccination RDC.">
+  <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#16a085" />
+  <!-- jsPDF + autoTable (CDN) : nécessaire pour exporter en PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
-  <!-- PWA -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="FlowLab – Espace Superviseur">
-  <meta property="og:description" content="Vos tableaux de supervision vaccination : équité, retards, soins.">
-  <meta property="og:image" content="images/og-flowlab.png">
-  <meta property="og:type" content="website">
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
   <style>
-    :root { --primary:#16a085; --primary-dark:#138d75; --blue:#2980b9; --blue-dark:#216a94; }
-    * { box-sizing: border-box; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#f4fdfc; margin:0; color:#333; }
-    a { color: inherit; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4fdfc;
+      margin: 0;
+      color: #333;
+    }
 
-    .skip-link { position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden; }
-    .skip-link:focus { position:static; width:auto; height:auto; padding:0.5rem; background:#000; color:#fff; }
+    .top-bar {
+      background-color: #16a085;
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      border-bottom: 4px solid #138d75;
+    }
 
-    .top-bar { background:var(--primary); color:#fff; text-align:center; padding:1rem; border-bottom:4px solid var(--primary-dark); }
-    .top-bar .logo { display:block; margin:0 auto 0.5rem; max-height:60px; }
-    .top-bar h1 { margin:.2rem 0 .1rem; font-size:1.6rem; }
-    .top-bar h2 { margin:.1rem 0 .5rem; font-weight:500; font-size:1rem; opacity:.95; }
-    .top-bar p  { margin:0; opacity:.9; }
-
-    .container { max-width:1100px; margin:0 auto; padding:0 1rem 2rem; }
+    .top-bar .logo {
+      display: block;
+      margin: 0 auto 0.5rem;
+      max-height: 60px;
+    }
 
     .grid-cards {
-      display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr));
-      gap:1.5rem; padding:2rem 0 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 2rem;
     }
-    .card {
-      position:relative; background-size:cover; background-position:center;
-      border-radius:16px; min-height:280px; display:flex; flex-direction:column; justify-content:flex-end;
-      overflow:hidden; box-shadow:0 4px 12px rgba(0,0,0,.15); padding:1.5rem; color:#fff;
-    }
-    .card::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.5); z-index:0; }
-    .card * { position:relative; z-index:1; }
-    .card h3 { margin:0 0 .5rem; }
 
-    .btn { margin-top:1rem; padding:.6rem 1rem; background:var(--primary); color:#fff; border:none; border-radius:8px; font-weight:700; cursor:pointer; }
-    .btn:hover { background:var(--primary-dark); }
-    .btn-secondary { background:var(--blue); }
-    .btn-secondary:hover { background:var(--blue-dark); }
+    .card {
+      position: relative;
+      background-size: cover;
+      background-position: center;
+      border-radius: 16px;
+      min-height: 280px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 1.5rem;
+      color: white;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+
+    .card * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .btn {
+      margin-top: 1rem;
+      padding: 0.6rem 1rem;
+      background-color: #16a085;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #138d75;
+    }
+
+    .btn-secondary {
+      background-color: #2980b9;
+    }
+
+    .btn-secondary:hover {
+      background-color: #216a94;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
     .formulaire {
-      background:#fff; border-radius:12px; padding:1.5rem; margin:1.5rem 0 0;
-      box-shadow:0 2px 6px rgba(0,0,0,.08); display:none;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1rem 2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      display: none; /* caché par défaut */
     }
 
-    .table-stats { width:100%; border-collapse:collapse; margin-top:1rem; }
-    .table-stats th, .table-stats td { border:1px solid #ccc; padding:.75rem; text-align:left; }
-    .table-stats th { background:var(--primary); color:#fff; }
-    .visually-hidden { position:absolute !important; clip:rect(1px,1px,1px,1px); padding:0 !important; border:0 !important; height:1px !important; width:1px !important; overflow:hidden; }
+    .table-stats {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
 
-    footer { text-align:center; margin:2rem 0; }
-    @media (max-width:600px){ .card{ padding:1rem; } }
+    .table-stats th, .table-stats td {
+      border: 1px solid #ccc;
+      padding: 0.75rem;
+      text-align: left;
+    }
+
+    .table-stats th {
+      background-color: #16a085;
+      color: white;
+    }
+
+    footer {
+      text-align: center;
+      margin: 2rem 0;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 1rem;
+      }
+    }
   </style>
-
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ Service Worker actif"))
+        .then(() => console.log("✅ SW actif"))
         .catch(err => console.error("❌ SW error:", err));
     }
   </script>
 </head>
 <body>
-  <a class="skip-link" href="#main">Aller au contenu</a>
-  <header class="top-bar" role="banner">
-    <img src="images/logo.png" alt="Logo FlowLab" class="logo" />
+  <header class="top-bar">
+    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
     <h1>FlowLab</h1>
     <h2>Système intelligent d’implémentation de la vaccination en RDC</h2>
-    <p>Supervision &amp; Retards</p>
+    <p>Supervision & Retards</p>
   </header>
 
-  <main id="main" class="container">
-    <section class="grid-cards" aria-label="Actions rapides">
-      <div class="card" style="background-image:url('images/suiviequitable.png')">
+  <main class="container">
+    <section class="grid-cards">
+      <div class="card" style="background-image: url('images/suiviequitable.png')">
         <h3>📊 Suivi équitable</h3>
         <p>Identifiez les inégalités de vaccination entre les structures et régions.</p>
-        <button class="btn" aria-controls="equite" onclick="afficherTableau('equite')">📈 Voir Suivi</button>
+        <button class="btn" onclick="afficherTableau('equite')">📈 Voir Suivi</button>
       </div>
-      <div class="card" style="background-image:url('images/exportdesretards.png')">
+      <div class="card" style="background-image: url('images/exportdesretards.png')">
         <h3>📂 Export des retards</h3>
+        
         <p>Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
-        <button class="btn btn-secondary" aria-controls="retards" onclick="afficherTableau('retards'); telechargerRetards()">📥 Exporter</button>
+        <button class="btn btn-secondary" onclick="afficherTableau('retards'); telechargerRetards()">📥 Exporter</button>
       </div>
-      <div class="card" style="background-image:url('images/surveillancesoin.png')">
+      <div class="card" style="background-image: url('images/surveillancesoin.png')">
         <h3>🩺 Surveillance des soins</h3>
         <p>Vérifiez la couverture vaccinale et la qualité des soins par établissement.</p>
-        <button class="btn" aria-controls="soins" onclick="afficherTableau('soins')">🔍 Voir Soins</button>
+        <button class="btn" onclick="afficherTableau('soins')">🔍 Voir Soins</button>
       </div>
     </section>
 
-    <!-- Suivi équitable -->
-    <section class="formulaire" id="equite" role="region" aria-labelledby="equite-title">
-      <h2 id="equite-title">📊 Tableau de Suivi Équitable</h2>
-      <div aria-live="polite" class="visually-hidden" id="equite-status">Chargement…</div>
+    <section class="formulaire" id="equite">
+      <h3>📊 Tableau de Suivi Équitable</h3>
       <table class="table-stats">
-        <caption class="visually-hidden">Comparaison par structure : enfants, vaccins prévus, vaccins faits</caption>
         <thead>
-          <tr>
-            <th scope="col">Structure</th>
-            <th scope="col">Total Enfants</th>
-            <th scope="col">Total Vaccins Prévus</th>
-            <th scope="col">Taux de couverture</th>
-          </tr>
+          <tr><th>Structure</th><th>Total Enfants</th><th>Total Vaccins Prévus</th><th>Total Vaccins Faits</th></tr>
         </thead>
         <tbody id="table-equite">
           <tr><td colspan="4">Chargement...</td></tr>
@@ -127,42 +190,36 @@
       </table>
     </section>
 
-    <!-- Retards -->
-    <section class="formulaire" id="retards" role="region" aria-labelledby="retards-title">
-      <h2 id="retards-title">📂 Enfants en Retard de Vaccination</h2>
-      <div aria-live="polite" class="visually-hidden" id="retards-status">Chargement…</div>
-      <table class="table-stats">
-        <caption class="visually-hidden">Liste détaillée des retards</caption>
+    <section class="formulaire" id="retards">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
+        <h3 style="margin:0;">📂 Enfants en Retard de Vaccination</h3>
+
+        <div style="display:flex; gap:0.5rem; align-items:center;">
+          <button id="export-csv" class="btn btn-small">Export CSV</button>
+          <button id="export-txt" class="btn btn-small btn-secondary">Export TXT</button>
+          <button id="export-pdf" class="btn btn-small" style="background-color: black;">Export PDF</button>
+        </div>
+      </div>
+        <p> Téléchargez les listes des enfants en retard pour traitement et suivi.</p>
+
+      <table class="table-stats" >
         <thead>
-          <tr>
-            <th scope="col">Nom</th><th scope="col">Date naissance</th><th scope="col">Vaccin</th>
-            <th scope="col">Dose</th><th scope="col">Date prévue</th><th scope="col">Admin</th>
-            <th scope="col">Statut</th><th scope="col">Centre</th><th scope="col">Tel Parents</th>
-          </tr>
+          <tr><th>Nom</th><th>Date naissance</th><th>Vaccin</th><th>Dose</th><th>Date Prevue</th> <th>Admin</th><th>Statut</th><th>Centre</th><th>Tel Parents</th></tr>
         </thead>
         <tbody id="table-retards">
-          <tr><td colspan="9">Chargement...</td></tr>
+          <tr><td colspan="4">Chargement...</td></tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Surveillance des soins -->
-    <section class="formulaire" id="soins" role="region" aria-labelledby="soins-title">
-      <h2 id="soins-title">🩺 Surveillance des Soins par Structure</h2>
-      <div aria-live="polite" class="visually-hidden" id="soins-status">Chargement…</div>
+    <section class="formulaire" id="soins">
+      <h3>🩺 Surveillance des Soins par Structure</h3>
       <table class="table-stats">
-        <caption class="visually-hidden">Synthèse par structure : enfants, vaccins effectués, femmes, soins prénatals</caption>
         <thead>
-          <tr>
-            <th scope="col">Structure</th>
-            <th scope="col">Total Enfants</th>
-            <th scope="col">Vaccins effectués</th>
-            <th scope="col">Total Femmes</th>
-            <th scope="col">Soins prénatals</th>
-          </tr>
+          <tr><th>Structure</th><th>Total Enfants</th><th>Vaccins effectués</th><th>Total Femmes</th><th>Soins prenatals</th></tr>
         </thead>
         <tbody id="table-soins">
-          <tr><td colspan="5">Chargement...</td></tr>
+          <tr><td colspan="4">Chargement...</td></tr>
         </tbody>
       </table>
     </section>
@@ -173,123 +230,168 @@
   </main>
 
   <script>
-    // ====== Endpoints centralisés
-    const BASE = "https://n8n-automation-server-waz-production.up.railway.app";
-    const webhookEquite   = `${BASE}/webhook-test/suivi-equitable`;
-    const webhookRetards  = `${BASE}/webhook-test/export-retards`;        // JSON
-    const webhookRetardsX = `${BASE}/webhook-test/export-retards-file`;   // XLSX (binaire)
-    const webhookSoins    = `${BASE}/webhook-test/surveillance-soins`;
+    const webhookStats = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur";
+    const webhookRetards = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards";
+
+    function telechargerRetards() {
+      fetch(webhookRetards)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = "retards_vaccination.xlsx";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+        });
+    }
 
     function afficherTableau(id) {
-      for (const sec of document.querySelectorAll(".formulaire")) sec.style.display = "none";
       const section = document.getElementById(id);
-      if (section) { section.style.display = "block"; section.scrollIntoView({ behavior: "smooth" }); }
-    }
-
-    // ====== Chargement Équité
-    async function loadEquite() {
-      const el = document.getElementById("table-equite");
-      try {
-        const r = await fetch(webhookEquite, { headers: { Accept: "application/json" }});
-        const data = await r.json();
-        const rows = (Array.isArray(data) ? data : []).map(e => {
-          const faits = Number(e.total_vaccins_faits ?? 0);
-          const prevu = Number(e.total_vaccins_prevus ?? 0);
-          const taux  = e.taux_couverture ?? Math.round((faits / Math.max(prevu,1)) * 100);
-          return `<tr>
-            <td>${e.centre_sante ?? ""}</td>
-            <td>${e.total_enfants ?? 0}</td>
-            <td>${prevu}</td>
-            <td>${taux}%</td>
-          </tr>`;
-        }).join("");
-        el.innerHTML = rows || `<tr><td colspan="4">Aucune donnée</td></tr>`;
-      } catch {
-        el.innerHTML = `<tr><td colspan="4">Erreur de chargement</td></tr>`;
+      if (section) {
+        section.style.display = 'block';
+        section.scrollIntoView({ behavior: 'smooth' });
       }
     }
 
-    // ====== Chargement Retards (table)
-    async function loadRetards() {
-      const el = document.getElementById("table-retards");
-      try {
-        const r = await fetch(webhookRetards, { headers: { Accept: "application/json" }});
-        const data = await r.json();
-        const rows = (Array.isArray(data) ? data : []).map(e => `
-          <tr>
-            <td>${e.nom_complet ?? ""}</td>
-            <td>${e.date_naissance ?? ""}</td>
-            <td>${e.vaccin ?? ""}</td>
-            <td>${e.dose ?? ""}</td>
-            <td>${e.date_prevue ?? ""}</td>
-            <td>${e.date_administration ?? ""}</td>
-            <td>${e.statut ?? ""}</td>
-            <td>${e.centre_sante ?? ""}</td>
-            <td>${e.telephone_parent ?? ""}</td>
-          </tr>
+    // Chargement des tableaux au démarrage
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable", {headers: { "Accept": "application/json" }})
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.centre_sante}</td><td>${e.total_enfants}</td><td>${e.total_vaccins_prevus}</td><td>${e.total_vaccins_faits}%</td></tr>
         `).join("");
-        el.innerHTML = rows || `<tr><td colspan="9">Aucune donnée</td></tr>`;
-      } catch {
-        el.innerHTML = `<tr><td colspan="9">Erreur de chargement</td></tr>`;
-      }
-    }
+         
+        document.getElementById("table-equite").innerHTML = rows;
+        console.log(r);
+      });
 
-    // ====== Chargement Soins
-    async function loadSoins() {
-      const el = document.getElementById("table-soins");
-      try {
-        const r = await fetch(webhookSoins, { headers: { Accept: "application/json" }});
-        const data = await r.json();
-        const rows = (Array.isArray(data) ? data : []).map(e => `
-          <tr>
-            <td>${e.centre_sante ?? ""}</td>
-            <td>${e.total_enfants ?? 0}</td>
-            <td>${e.total_vaccins_administres ?? 0}</td>
-            <td>${e.total_femmes ?? 0}</td>
-            <td>${e.soins_prenatals ?? 0}</td>
-          </tr>
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.nom_complet}</td><td>${e.date_naissance}</td><td>${e.vaccin}</td><td>${e.dose}</td><td>${e.date_prevue}</td><td>${e.date_administration}</td><td>${e.statut}</td><td>${e.centre_sante}</td><td>${e.telephone_parent}</td></tr>
         `).join("");
-        el.innerHTML = rows || `<tr><td colspan="5">Aucune donnée</td></tr>`;
-      } catch {
-        el.innerHTML = `<tr><td colspan="5">Erreur de chargement</td></tr>`;
-      }
-    }
+        document.getElementById("table-retards").innerHTML = rows;
+      });
 
-    // ====== Export : essaie l'XLSX, sinon fallback CSV depuis JSON
-    async function telechargerRetards() {
-      try {
-        // 1) Tentative binaire XLSX
-        const rx = await fetch(webhookRetardsX);
-        const ct = rx.headers.get("Content-Type") || "";
-        if (rx.ok && ct.includes("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
-          const blob = await rx.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = "retards_vaccination.xlsx";
-          document.body.appendChild(a); a.click(); a.remove(); return;
-        }
-        // 2) Fallback CSV via JSON
-        const r = await fetch(webhookRetards, { headers: { Accept: "application/json" } });
-        const data = await r.json();
-        const headers = ["nom_complet","date_naissance","vaccin","dose","date_prevue","date_administration","statut","centre_sante","telephone_parent"];
-        const csv = [headers.join(",")].concat(
-          (Array.isArray(data) ? data : []).map(e => headers.map(h => (String(e[h] ?? "").replaceAll('"','""'))).map(x=>`"${x}"`).join(","))
-        ).join("\n");
-        const blob = new Blob([csv], { type:"text/csv;charset=utf-8" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = "retards_vaccination.csv";
-        document.body.appendChild(a); a.click(); a.remove();
-      } catch {
-        alert("Export indisponible pour le moment.");
-      }
-    }
-
-    // Init
-    (function init(){ loadEquite(); loadRetards(); loadSoins(); })();
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins")
+      .then(r => r.json())
+      .then(data => {
+        const rows = data.map(e => `
+          <tr><td>${e.centre_sante}</td><td>${e.total_enfants}</td><td>${e.total_femmes}</td><td>${e.total_vaccins_administres}</td><td>${e.soins_prenatals}</td></tr>
+        `).join("");
+        document.getElementById("table-soins").innerHTML = rows;
+      });
   </script>
+  <script>
+  // Utilitaire : récupère tableau (header + rows) depuis un <table> en DOM
+  function readTable(tableId) {
+    const table = document.getElementById(tableId);
+    if (!table) return null;
+
+    // headers
+    const ths = Array.from(table.querySelectorAll('thead th'));
+    const headers = ths.map(th => th.textContent.trim());
+
+    // rows (seulement tbody visible / filtré)
+    const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr => {
+      return Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim());
+    });
+
+    return { headers, rows };
+  }
+
+  // Export CSV
+  function exportTableToCSV(tableId, filename = 'table.csv') {
+    const data = readTable(tableId);
+    if (!data) { alert('Table introuvable'); return; }
+    const lines = [];
+    lines.push(data.headers.map(h => `"${h.replace(/"/g,'""')}"`).join(','));
+    data.rows.forEach(r => {
+      lines.push(r.map(cell => `"${String(cell).replace(/"/g,'""')}"`).join(','));
+    });
+    const csv = lines.join('\r\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Export TXT (tab separated)
+  function exportTableToTXT(tableId, filename = 'table.txt') {
+    const data = readTable(tableId);
+    if (!data) { alert('Table introuvable'); return; }
+    const lines = [];
+    lines.push(data.headers.join('\t'));
+    data.rows.forEach(r => lines.push(r.join('\t')));
+    const txt = lines.join('\r\n');
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  // Export PDF via jsPDF + autoTable
+  async function exportTableToPDF(tableId, filename = 'table.pdf') {
+    const data = readTable(tableId);
+    if (!data) { alert('Table introuvable'); return; }
+
+    // Accès à jsPDF (UMD import)
+    const { jsPDF } = window.jspdf || (window.jspdf = window.jspdf || {});
+
+    if (!jsPDF) {
+      alert('jsPDF non chargé. Vérifie que les scripts CDN sont inclus.');
+      return;
+    }
+
+    const doc = new jsPDF({
+      unit: 'pt',
+      format: 'a4'
+    });
+
+    // Convert header/rows en format accepté par autoTable
+    const head = [data.headers];
+    const body = data.rows;
+
+    // Ajoute un titre propre
+    doc.setFontSize(14);
+    doc.text('Retards de vaccination', 40, 40);
+
+    // autoTable (position Y = 60)
+    doc.autoTable({
+      startY: 60,
+      head,
+      body,
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [22,160,133], textColor: 255 },
+      margin: { left: 40, right: 40 }
+    });
+
+    doc.save(filename);
+  }
+
+  // Bind des boutons (remplace 'table-vaccins-retards' par ton id si besoin)
+  document.getElementById('export-csv')?.addEventListener('click', () => exportTableToCSV('table-retards', 'retards_vaccination.csv'));
+  document.getElementById('export-txt')?.addEventListener('click', () => exportTableToTXT('table-retards', 'retards_vaccination.txt'));
+  document.getElementById('export-pdf')?.addEventListener('click', () => exportTableToPDF('table-retards', 'retards_vaccination.pdf'));
+</script>
+
 </body>
 </html>
+
+
 
 
 

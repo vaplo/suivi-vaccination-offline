@@ -9,6 +9,8 @@
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -17,26 +19,7 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-  <script src="https://unpkg.com/globe.gl"></script>
-  <style>
-    /* Petites touches pour les panneaux */
-    .panel {
-      display:none; background:#fff; border-radius:16px; margin:16px; padding:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,.08)
-    }
-    .panel-header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
-    .kpi-wrap { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-bottom:16px; }
-    .kpi { background:#f4fdfc; border:1px solid #e6f2f0; padding:12px; border-radius:12px; }
-    .kpi .label { font-size:12px; color:#666 }
-    .kpi .value { font-size:20px; font-weight:600 }
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
-    .card-box { padding:12px; background:#f8fbfb; border-radius:12px; }
-    .full-bleed { grid-column:1/-1 }
-    @media (max-width: 1024px){
-      .grid-2, .grid-3 { grid-template-columns:1fr; }
-    }
-  </style>
+
 </head>
 <body>
   <header class="top-bar">
@@ -49,578 +32,62 @@
   <main class="homepage">
     <div class="grid-cards">
 
-      <!-- Vue nationale 360° -->
-      <div class="card" style="background-image: url('images/vue360.webp')">
+      <div class="card" style="background-image: url('images/3706.jpg') ">
         <h3>Vue nationale 360°</h3>
         <p>KPIs en temps réel, tendances, alertes nationales.</p>
-        <a id="btn-360" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-360" class="btn">🌍 Accéder</a>
+        <a href="kpi2.html"  class="btn">🌍 Accéder</a>
       </div>
 
-      <!-- Centre de commande provincial -->
-      <div class="card" style="background-image: url('images/commandeprovince.webp')">
+      <!--<div class="card" style="background-image: url('images/commandeprovince.webp')">
         <h3>Centre de commande provincial</h3>
         <p>Coordination par province, alertes critiques, équipes terrain.</p>
-        <a id="btn-prov" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/provincial-dashboard?province=Kinshasa" class="btn">🏢 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/provincial-dashboard" class="btn">🏢 Accéder</a>
       </div>
 
-      <!-- Vue par zone sanitaire -->
       <div class="card" style="background-image: url('images/zonehealth.webp')">
         <h3>Vue par zone sanitaire</h3>
         <p>Performance, stocks, qualité, alertes locales.</p>
-        <a id="btn-zone" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/zone-view?zone=Kintambo" class="btn">🗺️ Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/zones-dashboard" class="btn">🗺️ Accéder</a>
       </div>
 
-      <!-- Statistiques nationales -->
       <div class="card" style="background-image: url('images/statsnationales.webp')">
         <h3>Statistiques nationales</h3>
         <p>Comparaison avec benchmarks OMS, tendances historiques.</p>
-        <a id="btn-stats" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-stats" class="btn">📊 Accéder</a>
-        <div style="background:#fff;border-radius:12px;padding:12px;margin-top:12px;">
-          <canvas id="statsChart" height="140"></canvas>
-        </div>
-      </div>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur" class="btn">📊 Accéder</a>
+      </div>-->
 
-      <!-- Analytics prédictives -->
       <div class="card" style="background-image: url('images/analytics.webp')">
         <h3>Analytics prédictives</h3>
         <p>Prédictions IA, risques, scénarios, planification avancée.</p>
-        <a id="btn-analytics" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/predictive-analytics?scope=zone&horizon=3&hist=6" class="btn">📈 Accéder</a>
+        <a href="intelligence.html" class="btn">📈 Accéder</a>
       </div>
 
-      <!-- Monitoring temps réel -->
-      <div class="card" style="background-image: url('images/monitoring.webp')">
+      <!--<div class="card" style="background-image: url('images/monitoring.webp')">
         <h3>Monitoring temps réel</h3>
         <p>Suivi en direct, alertes automatiques, indicateurs critiques.</p>
-        <a id="btn-live" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/live" class="btn">⏱️ Accéder</a>
-      </div>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/monitoring-realtime" class="btn">⏱️ Accéder</a>
+      </div>-->
 
-      <!-- Classement performance -->
-      <div class="card" style="background-image: url('images/classement.webp')">
+      <!--<div class="card" style="background-image: url('images/classement.webp')">
         <h3>Classement performance</h3>
         <p>Score des structures, gamification, taux de couverture.</p>
-        <a id="btn-ranking" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/ranking?scope=centre&period=30" class="btn">🏆 Accéder</a>
-      </div>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/classement" class="btn">🏆 Accéder</a>
+      </div>-->
 
-      <!-- Planification stratégique -->
       <div class="card" style="background-image: url('images/planning.webp')">
         <h3>Planification stratégique</h3>
         <p>Budgets, scénarios, projections intelligentes par zone.</p>
-        <a id="btn-planif" href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/planif?months=6" class="btn">🧠 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategique" class="btn">🧠 Accéder</a>
       </div>
 
     </div>
 
-    <!-- Bouton retour -->
+    <!-- ✅ Bouton retour -->
     <div style="text-align: center; margin-top: 2rem;">
       <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
     </div>
   </main>
-
-  <!-- PANELS =============================================================== -->
   
-  <!-- PANEL: Vue nationale 360° -->
-  <section id="panel-360" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Vue nationale 360°</h2>
-      <button data-close="#panel-360" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-360" class="kpi-wrap"></div>
-    <div class="grid-2">
-      <div id="globe-wrap" style="height:420px; border-radius:16px; overflow:hidden; background:#f5f7f9; position:relative;">
-        <div id="globe" style="height:100%"></div>
-        <div style="position:absolute; right:10px; bottom:10px; font-size:12px; background:rgba(255,255,255,.9); padding:6px 8px; border-radius:8px;">Couverture: faible ⟶ élevée</div>
-      </div>
-      <div class="grid-3 full-bleed" style="grid-template-columns:1fr 1fr 1fr">
-        <div class="card-box"><h4>Couverture par province (%)</h4><canvas id="chart-couverture-360" height="200"></canvas></div>
-        <div class="card-box"><h4>Alertes 7j (par niveau)</h4><canvas id="chart-alertes-360" height="200"></canvas></div>
-        <div class="card-box"><h4>Prévues vs Administrées (par province)</h4><canvas id="chart-prevadmin-360" height="200"></canvas></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- PANEL: Provincial -->
-  <section id="panel-prov" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Centre de commande provincial</h2>
-      <button data-close="#panel-prov" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-prov" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Couverture par zone (%)</h4><canvas id="chart-couv-zone" height="220"></canvas></div>
-      <div class="card-box"><h4>Prévues vs Administrées (zones)</h4><canvas id="chart-prevadmin-zone" height="220"></canvas></div>
-      <div class="card-box"><h4>Alertes 7j (par niveau)</h4><canvas id="chart-alertes-prov" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Zone sanitaire -->
-  <section id="panel-zone" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Vue par zone sanitaire</h2>
-      <button data-close="#panel-zone" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-zone" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Couverture par centre</h4><canvas id="chart-couv-centre" height="220"></canvas></div>
-      <div class="card-box"><h4>Tendance 30 jours</h4><canvas id="chart-trend-zone" height="220"></canvas></div>
-      <div class="card-box"><h4>Alertes 7j</h4><canvas id="chart-alertes-zone" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Statistiques nationales -->
-  <section id="panel-stats" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Statistiques nationales</h2>
-      <button data-close="#panel-stats" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-stats" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Prévues vs Administrées (mois)</h4><canvas id="chart-stats-prevadmin" height="220"></canvas></div>
-      <div class="card-box"><h4>Couverture (%) par mois</h4><canvas id="chart-stats-couv" height="220"></canvas></div>
-      <div class="card-box"><h4>Zéro-dose par mois</h4><canvas id="chart-stats-zero" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Analytics prédictives -->
-  <section id="panel-analytics" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Analytics prédictives</h2>
-      <button data-close="#panel-analytics" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-analytics" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Prévisions (base & IC)</h4><canvas id="chart-forecast" height="220"></canvas></div>
-      <div class="card-box"><h4>Risque par zone</h4><canvas id="chart-risk" height="220"></canvas></div>
-      <div class="card-box"><h4>Scénarios (Low/Base/High)</h4><canvas id="chart-scenarios" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Monitoring temps réel -->
-  <section id="panel-live" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Monitoring temps réel</h2>
-      <button data-close="#panel-live" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-live" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Évènements (60 dernières min)</h4><canvas id="chart-live-throughput" height="220"></canvas></div>
-      <div class="card-box"><h4>Alertes récentes</h4><canvas id="chart-live-alerts" height="220"></canvas></div>
-      <div class="card-box"><h4>Status (online/offline)</h4><canvas id="chart-live-status" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Classement -->
-  <section id="panel-ranking" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Classement performance</h2>
-      <button data-close="#panel-ranking" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-ranking" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Top 10 – Couverture</h4><canvas id="chart-top10" height="220"></canvas></div>
-      <div class="card-box"><h4>Distribution des scores</h4><canvas id="chart-dist" height="220"></canvas></div>
-      <div class="card-box"><h4>Progression (Top 5)</h4><canvas id="chart-rank-trend" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- PANEL: Planification -->
-  <section id="panel-planif" class="panel">
-    <div class="panel-header">
-      <h2 style="margin:0">Planification stratégique</h2>
-      <button data-close="#panel-planif" class="btn" style="background:#eee;color:#333">Fermer</button>
-    </div>
-    <div id="kpi-planif" class="kpi-wrap"></div>
-    <div class="grid-3">
-      <div class="card-box"><h4>Charge planifiée vs capacité</h4><canvas id="chart-planif-load" height="220"></canvas></div>
-      <div class="card-box"><h4>Budget par catégorie</h4><canvas id="chart-planif-budget" height="220"></canvas></div>
-      <div class="card-box"><h4>Sessions planifiées (semaine)</h4><canvas id="chart-planif-sessions" height="220"></canvas></div>
-    </div>
-  </section>
-
-  <!-- SCRIPTS =============================================================== -->
-  <script>
-  (function(){
-    // ===== Helpers communs =====
-    const fmt = (n)=> (n==null||isNaN(n)) ? "-" : Number(n).toLocaleString("fr-FR");
-    const q = (sel)=> document.querySelector(sel);
-    const qq = (sel)=> Array.from(document.querySelectorAll(sel));
-
-    function renderKPIs(container, k){
-      if(!container) return;
-      container.innerHTML = '';
-      const keys = k ? Object.keys(k) : [];
-      if(!keys.length){ return; }
-      keys.forEach(key=>{
-        const el = document.createElement('div');
-        el.className = 'kpi';
-        el.innerHTML = `<div class="label">${key.replace(/_/g,' ')}</div><div class="value">${fmt(k[key])}</div>`;
-        container.appendChild(el);
-      });
-    }
-
-    function buildBar(ctx, labels, seriesLabel, data, stacked=false){
-      if(!ctx) return null;
-      return new Chart(ctx, {
-        type: 'bar',
-        data: { labels, datasets: [{ label: seriesLabel, data, borderWidth:1, stack: stacked? 'a': undefined }] },
-        options: { responsive:true, scales:{ x:{ stacked }, y:{ beginAtZero:true, stacked } }, plugins:{ legend: { display: !!seriesLabel } } }
-      });
-    }
-    function buildMultiBar(ctx, labels, datasets, stacked=false){
-      if(!ctx) return null;
-      return new Chart(ctx, {
-        type: 'bar',
-        data: { labels, datasets: datasets.map(d=> ({...d, borderWidth:1, stack: stacked? 'a': undefined})) },
-        options: { responsive:true, scales:{ x:{ stacked }, y:{ beginAtZero:true, stacked } } }
-      });
-    }
-    function buildLine(ctx, labels, datasets){
-      if(!ctx) return null;
-      return new Chart(ctx, { type:'line', data:{ labels, datasets }, options:{ responsive:true, interaction:{mode:'index', intersect:false}, scales:{ y:{ beginAtZero:true } } } });
-    }
-    function buildDoughnut(ctx, labels, data){
-      if(!ctx) return null;
-      return new Chart(ctx, { type:'doughnut', data:{ labels, datasets:[{ data }] }, options:{ responsive:true } });
-    }
-
-    async function fetchJSON(url){
-      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
-      if(!res.ok) throw new Error('HTTP '+res.status);
-      return await res.json();
-    }
-
-    function openPanel(id){
-      const el = q(id);
-      if(!el) return;
-      el.style.display = 'block';
-      el.scrollIntoView({ behavior:'smooth', block:'start' });
-    }
-    function closePanel(id){ const el=q(id); if(el) el.style.display='none'; }
-    qq('[data-close]')?.forEach(btn=> btn.addEventListener('click', ()=> closePanel(btn.getAttribute('data-close'))));
-
-    // ====== NATIONAL 360 (globe + 3 charts) ======
-    const PROV_COORDS = {
-      "Kinshasa": [-4.325, 15.322], "Kongo Central": [-5.24, 13.00], "Kwango": [-6.13, 17.30],
-      "Kwilu": [-5.00, 18.70], "Mai-Ndombe": [-2.68, 18.00], "Équateur": [1.61, 20.50],
-      "Tshuapa": [-0.72, 23.50], "Mongala": [2.00, 21.50], "Nord-Ubangi": [3.50, 20.50],
-      "Sud-Ubangi": [2.50, 19.00], "Ituri": [1.80, 29.50], "Haut-Uele": [3.50, 28.50],
-      "Bas-Uele": [4.00, 25.80], "Tshopo": [0.50, 25.20], "Nord-Kivu": [-0.50, 29.20],
-      "Sud-Kivu": [-3.10, 28.90], "Maniema": [-2.80, 26.30], "Tanganyika": [-6.30, 28.50],
-      "Haut-Lomami": [-8.00, 25.30], "Lualaba": [-10.40, 25.30], "Haut-Katanga": [-11.60, 27.50],
-      "Sankuru": [-2.00, 24.00], "Kasaï": [-5.00, 21.40], "Kasaï Central": [-7.00, 22.00],
-      "Kasaï Oriental": [-6.20, 23.60], "Lomami": [-6.30, 24.50]
-    };
-
-    function covColor(pct){
-      const clamp01 = x=> Math.max(0, Math.min(1, x));
-      const t = clamp01((pct||0)/100);
-      let r,g,b=0; // rouge -> jaune -> vert
-      if(t<=0.5){ r=255; g=Math.round(510*t); }
-      else { g=255; r=Math.round(510*(1-t)); }
-      return `rgb(${r},${g},${b})`;
-    }
-
-    let globeInstance, chartCouv360, chartAlert360, chartPrevAdm360;
-    q('#btn-360')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-360'), data.kpis);
-
-        // Globe
-        const pts = (data.couverture_province||[])\
-          .filter(p=>p && PROV_COORDS[p.province])\
-          .map(p=> ({ province:p.province, lat:PROV_COORDS[p.province][0], lng:PROV_COORDS[p.province][1], val: Number(p.couverture_pct||0) }));
-        if(!globeInstance){
-          globeInstance = Globe()(document.getElementById('globe'))
-            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-dark.jpg')
-            .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
-            .backgroundColor('#f5f7f9')
-            .pointAltitude(d=> 0.02 + 0.08*Math.max(0, Math.min(1, d.val/100)))
-            .pointColor(d=> covColor(d.val))
-            .pointLabel(d=> `${d.province}: ${Math.round(d.val)}%`)
-            .pointsData(pts);
-          globeInstance.controls().autoRotate = true;
-          globeInstance.controls().autoRotateSpeed = 0.4;
-        } else {
-          globeInstance.pointsData(pts);
-        }
-
-        // Charts
-        const byProv = (data.couverture_province||[]).slice().sort((a,b)=> (b.couverture_pct||0)-(a.couverture_pct||0));
-        const labels = byProv.map(x=> x.province);
-        const cov = byProv.map(x=> Number((x.couverture_pct||0).toFixed?.(1) ?? x.couverture_pct||0));
-        chartCouv360?.destroy();
-        chartCouv360 = buildBar(q('#chart-couverture-360'), labels, 'Couverture (%)', cov);
-
-        const alerts = (data.alertes_recent||[]).map(a=> ({ day: (a.created_at||'').slice(0,10), niveau: a.niveau||'Autre' }));
-        const days = Array.from({length:7}, (_,i)=>{
-          const d = new Date(); d.setDate(d.getDate()-(6-i));
-          return d.toISOString().slice(0,10);
-        });
-        const niveaux = Array.from(new Set(alerts.map(a=>a.niveau))).sort();
-        const datasets = niveaux.map(niv=> ({ label:niv, data: days.map(d=> alerts.filter(x=>x.day===d && x.niveau===niv).length) }));
-        chartAlert360?.destroy();
-        chartAlert360 = buildMultiBar(q('#chart-alertes-360'), days, datasets, true);
-
-        const prev = byProv.map(x=> Number(x.prevues||x.prevus||x.planned||0));
-        const adm  = byProv.map(x=> Number(x.administrees||x.admin||x.given||0));
-        chartPrevAdm360?.destroy();
-        chartPrevAdm360 = buildMultiBar(q('#chart-prevadmin-360'), labels, [ {label:'Prévues', data:prev}, {label:'Administrées', data:adm} ], false);
-
-        openPanel('#panel-360');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== PROVINCIAL ======
-    let chartCouvZone, chartPrevAdmZone, chartAlertProv;
-    q('#btn-prov')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-prov'), data.kpis);
-        const zones = data.zones || data.couverture_zone || data.couverture_province || [];
-        const sorted = zones.slice().sort((a,b)=> (b.couverture_pct||0)-(a.couverture_pct||0));
-        const labels = sorted.map(x=> x.zone || x.province || x.name || '—');
-        const cov = sorted.map(x=> Number(x.couverture_pct||0));
-        chartCouvZone?.destroy();
-        chartCouvZone = buildBar(q('#chart-couv-zone'), labels, 'Couverture (%)', cov);
-
-        const prev = sorted.map(x=> Number(x.prevues||x.prevus||0));
-        const adm  = sorted.map(x=> Number(x.administrees||x.admin||0));
-        chartPrevAdmZone?.destroy();
-        chartPrevAdmZone = buildMultiBar(q('#chart-prevadmin-zone'), labels, [ {label:'Prévues', data:prev}, {label:'Administrées', data:adm} ]);
-
-        const alerts = (data.alertes_recent||data.alertes||[]).map(a=> ({ day:(a.created_at||'').slice(0,10), niveau:a.niveau||'Autre' }));
-        const days = Array.from({length:7}, (_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(6-i)); return d.toISOString().slice(0,10); });
-        const niveaux = Array.from(new Set(alerts.map(a=>a.niveau))).sort();
-        const datasets = niveaux.map(niv=> ({ label:niv, data: days.map(d=> alerts.filter(x=>x.day===d && x.niveau===niv).length) }));
-        chartAlertProv?.destroy();
-        chartAlertProv = buildMultiBar(q('#chart-alertes-prov'), days, datasets, true);
-
-        openPanel('#panel-prov');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== ZONE ======
-    let chartCouvCentre, chartTrendZone, chartAlertZone;
-    q('#btn-zone')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-zone'), data.kpis);
-        const centres = data.centres || data.centres_sante || data.structures || [];
-        const sorted = centres.slice().sort((a,b)=> (b.couverture_pct||0)-(a.couverture_pct||0));
-        const labels = sorted.map(x=> x.centre_sante || x.centre || x.name || '—');
-        const cov = sorted.map(x=> Number(x.couverture_pct||0));
-        chartCouvCentre?.destroy();
-        chartCouvCentre = buildBar(q('#chart-couv-centre'), labels, 'Couverture (%)', cov);
-
-        const trend = data.tendance || data.timeseries || [];
-        const tLabels = trend.map(x=> x.mois || x.date || x.jour || '');
-        const prev = trend.map(x=> Number(x.prevues||x.planned||0));
-        const adm  = trend.map(x=> Number(x.administrees||x.given||0));
-        chartTrendZone?.destroy();
-        chartTrendZone = buildLine(q('#chart-trend-zone'), tLabels, [ {label:'Prévues', data:prev}, {label:'Administrées', data:adm} ]);
-
-        const alerts = (data.alertes_recent||data.alertes||[]).map(a=> ({ day:(a.created_at||'').slice(0,10), niveau:a.niveau||'Autre' }));
-        const days = Array.from({length:7}, (_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(6-i)); return d.toISOString().slice(0,10); });
-        const niveaux = Array.from(new Set(alerts.map(a=>a.niveau))).sort();
-        const datasets = niveaux.map(niv=> ({ label:niv, data: days.map(d=> alerts.filter(x=>x.day===d && x.niveau===niv).length) }));
-        chartAlertZone?.destroy();
-        chartAlertZone = buildMultiBar(q('#chart-alertes-zone'), days, datasets, true);
-
-        openPanel('#panel-zone');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== STATS ======
-    let chartStatsPrevAdm, chartStatsCouv, chartStatsZero;
-    q('#btn-stats')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-stats'), data.kpis);
-        const arr = data.national || data.series || data.tendance || [];
-        const labels = arr.map(r=> r.mois || r.date || '');
-        const prev = arr.map(r=> Number(r.prevues||r.planned||0));
-        const adm  = arr.map(r=> Number(r.administrees||r.given||0));
-        chartStatsPrevAdm?.destroy();
-        chartStatsPrevAdm = buildLine(q('#chart-stats-prevadmin'), labels, [ {label:'Prévues', data:prev}, {label:'Administrées', data:adm} ]);
-        const couv = arr.map((r,i)=> (prev[i]>0 ? Math.round(100*adm[i]/prev[i]) : null));
-        chartStatsCouv?.destroy();
-        chartStatsCouv = buildBar(q('#chart-stats-couv'), labels, 'Couverture (%)', couv);
-        const zero = arr.map(r=> Number(r.zero_dose||r.zero||0));
-        chartStatsZero?.destroy();
-        chartStatsZero = buildBar(q('#chart-stats-zero'), labels, 'Zéro-dose', zero);
-        openPanel('#panel-stats');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== ANALYTICS ======
-    let chartForecast, chartRisk, chartScenarios;
-    q('#btn-analytics')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-analytics'), data.kpis);
-        const preds = data.predictions || data.forecast || [];
-        const labels = preds.map(p=> p.date || p.mois || '');
-        const base = preds.map(p=> Number(p.base||p.yhat||p.forecast||0));
-        const low  = preds.map(p=> Number(p.interval_low||p.yhat_lower||0));
-        const high = preds.map(p=> Number(p.interval_high||p.yhat_upper||0));
-        chartForecast?.destroy();
-        chartForecast = buildLine(q('#chart-forecast'), labels, [ {label:'Low', data:low}, {label:'Base', data:base}, {label:'High', data:high} ]);
-
-        const risks = data.risks || data.zone_risk || [];
-        const rLabels = risks.map(r=> r.zone || r.province || r.name || '—');
-        const rData   = risks.map(r=> Number(r.risk_score||r.score||0));
-        chartRisk?.destroy();
-        chartRisk = buildBar(q('#chart-risk'), rLabels, 'Risque', rData);
-
-        const scen = data.scenarios || [];
-        const sLabels = scen.map(s=> s.horizon || s.periode || '');
-        const sLow  = scen.map(s=> Number(s.low||s.pessimistic||0));
-        const sBase = scen.map(s=> Number(s.base||s.median||0));
-        const sHigh = scen.map(s=> Number(s.high||s.optimistic||0));
-        chartScenarios?.destroy();
-        chartScenarios = buildMultiBar(q('#chart-scenarios'), sLabels, [ {label:'Low', data:sLow}, {label:'Base', data:sBase}, {label:'High', data:sHigh} ]);
-
-        openPanel('#panel-analytics');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== LIVE ======
-    let chartLiveThroughput, chartLiveAlerts, chartLiveStatus;
-    q('#btn-live')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-live'), data.kpis);
-        const ts = data.timeseries || data.events || [];
-        const labels = ts.map(t=> t.timestamp?.slice?.(11,16) || t.minute || '');
-        const counts = ts.map(t=> Number(t.count||t.value||0));
-        chartLiveThroughput?.destroy();
-        chartLiveThroughput = buildLine(q('#chart-live-throughput'), labels, [ {label:'Évènements', data:counts} ]);
-
-        const alerts = (data.alertes_recent||data.alerts||[]).map(a=> ({ level:a.niveau||a.level||'Autre' }));
-        const levels = Array.from(new Set(alerts.map(a=>a.level))).sort();
-        const countsLvl = levels.map(L=> alerts.filter(a=>a.level===L).length);
-        chartLiveAlerts?.destroy();
-        chartLiveAlerts = buildBar(q('#chart-live-alerts'), levels, 'Alertes', countsLvl);
-
-        const st = data.status || {};
-        const on = Number(st.online||st.up||0), off = Number(st.offline||st.down||0);
-        chartLiveStatus?.destroy();
-        chartLiveStatus = buildDoughnut(q('#chart-live-status'), ['Online','Offline'], [on, off]);
-
-        openPanel('#panel-live');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== RANKING ======
-    let chartTop10, chartDist, chartRankTrend;
-    q('#btn-ranking')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-ranking'), data.kpis);
-        const list = data.ranking || data.centres || data.structures || [];
-        const sorted = list.slice().sort((a,b)=> (b.couverture_pct||b.score||0)-(a.couverture_pct||a.score||0));
-        const top10 = sorted.slice(0,10);
-        chartTop10?.destroy();
-        chartTop10 = buildBar(q('#chart-top10'), top10.map(x=> x.name||x.centre||x.centre_sante||'—'), 'Couverture/Score', top10.map(x=> Number(x.couverture_pct||x.score||0)) );
-
-        // distribution buckets de couverture
-        const vals = list.map(x=> Number(x.couverture_pct||x.score||0));
-        const buckets = [0,20,40,60,80,100];
-        const labels = ['0-20','20-40','40-60','60-80','80-100'];
-        const counts = [0,0,0,0,0];
-        vals.forEach(v=>{ for(let i=0;i<5;i++){ if(v>=buckets[i] && v<=buckets[i+1]) { counts[i]++; break; } } });
-        chartDist?.destroy();
-        chartDist = buildBar(q('#chart-dist'), labels, 'Structures', counts);
-
-        // progression top5 — nécessite timeseries dans data.trends (par centre)
-        const trends = data.trends || [];
-        const top5names = top10.slice(0,5).map(x=> x.name||x.centre||x.centre_sante).filter(Boolean);
-        const ds = [];
-        if(Array.isArray(trends) && trends.length){
-          const allDates = Array.from(new Set(trends.flatMap(t=> (t.series||[]).map(p=> p.date || p.mois)))).sort();
-          top5names.forEach(nm=>{
-            const t = trends.find(x=> (x.name||x.centre||x.centre_sante)===nm);
-            const vals = allDates.map(d=> (t?.series||[]).find(p=> (p.date||p.mois)===d)?.value ?? null);
-            ds.push({ label:nm, data:vals });
-          });
-          chartRankTrend?.destroy();
-          chartRankTrend = buildLine(q('#chart-rank-trend'), allDates, ds);
-        } else {
-          // fallback: utiliser top10 vals comme line simple
-          chartRankTrend?.destroy();
-          chartRankTrend = buildLine(q('#chart-rank-trend'), top10.map(x=> x.name||x.centre||x.centre_sante||'—'), [ {label:'Score', data: top10.map(x=> Number(x.couverture_pct||x.score||0)) } ]);
-        }
-
-        openPanel('#panel-ranking');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ====== PLANIF ======
-    let chartPlanifLoad, chartPlanifBudget, chartPlanifSessions;
-    q('#btn-planif')?.addEventListener('click', async (e)=>{
-      e.preventDefault();
-      const url = e.currentTarget.getAttribute('href');
-      try{
-        const data = await fetchJSON(url);
-        renderKPIs(q('#kpi-planif'), data.kpis);
-        const load = data.load || data.capacity || data.prevues_vs_capacite || [];
-        const lLabels = load.map(x=> x.mois || x.date || '');
-        const lPlan = load.map(x=> Number(x.planifie||x.prevues||0));
-        const lCap  = load.map(x=> Number(x.capacite||x.capacity||0));
-        chartPlanifLoad?.destroy();
-        chartPlanifLoad = buildMultiBar(q('#chart-planif-load'), lLabels, [ {label:'Planifié', data:lPlan}, {label:'Capacité', data:lCap} ]);
-
-        const budget = data.budget || data.costs || [];
-        const bLabels = budget.map(b=> b.categorie || b.category || '—');
-        const bData   = budget.map(b=> Number(b.montant||b.amount||0));
-        chartPlanifBudget?.destroy();
-        chartPlanifBudget = buildBar(q('#chart-planif-budget'), bLabels, 'Montant', bData);
-
-        const sessions = data.sessions || data.planning || [];
-        const sLabels = sessions.map(s=> s.semaine || s.week || s.date || '');
-        const sData   = sessions.map(s=> Number(s.nombre||s.count||0));
-        chartPlanifSessions?.destroy();
-        chartPlanifSessions = buildBar(q('#chart-planif-sessions'), sLabels, 'Sessions', sData);
-
-        openPanel('#panel-planif');
-      }catch(err){ console.error(err); window.open(url, '_blank'); }
-    });
-
-    // ===== MINI aperçu inline du card "Statistiques nationales" (déjà existant) =====
-    (async () => {
-      try {
-        const url = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-stats";
-        const res = await fetch(url);
-        const data = await res.json();
-        const labels = (data.national || []).map(r => r.mois || r.date);
-        const prevues = (data.national || []).map(r => Number(r.prevues||0));
-        const admin   = (data.national || []).map(r => Number(r.administrees||0));
-        const ctx = document.getElementById("statsChart");
-        if (!ctx) return;
-        new Chart(ctx, {
-          type: "line",
-          data: { labels, datasets: [ { label: "Prévues", data: prevues }, { label: "Administrées", data: admin } ] },
-          options: { responsive: true, maintainAspectRatio: false, interaction: { mode: "index", intersect: false }, scales: { x: { title: { display: true, text: "Mois" } }, y: { title: { display: true, text: "Doses" }, beginAtZero: true } } }
-        });
-      } catch (e) { console.error("Stat chart error:", e); }
-    })();
-
-  })();
-  </script>
 </body>
 </html>
 

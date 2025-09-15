@@ -6,6 +6,8 @@
   <title>FlowLab – Espace Superviseur</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="images/logo.png">
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -148,7 +150,7 @@
   </header>
 
   <main class="container">
-    <!-- Section 1: Dispatch équipes mobiles -->
+    <!-- Section 1: Dispatch équipes mobiles 
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>🚐 Dispatch équipes mobiles</h3>
@@ -167,7 +169,7 @@
           <canvas id="chart-dispatch"></canvas>
         </div>
       </div>
-    </section>
+    </section>-->
 
     <!-- Section 2: Top Performers -->
     <section class="vaccins-section">
@@ -175,7 +177,7 @@
         <h3>⭐ Top Performers (structures efficaces)</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Structure</th><th>Taux couverture</th><th>Ponctualité</th><th>Score</th></tr>
+            <tr><th>Structure</th><th>Score</th><th>Province</th></tr>
           </thead>
           <tbody id="table-top-performers">
             <tr><td colspan="4">Chargement des données...</td></tr>
@@ -196,7 +198,7 @@
         <h3>⚠️ Low Performers (structures en difficulté)</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Structure</th><th>Retards critiques</th><th>Réponses manquantes</th><th>Score</th></tr>
+            <tr><th>Structure</th><th>Score</th><th>Province</th></tr>
           </thead>
           <tbody id="table-low-performers">
             <tr><td colspan="4">Chargement des données...</td></tr>
@@ -225,14 +227,14 @@
         </table>
       </div>
       <div class="vaccin-table-container">
-        <h3>Alertes par zone</h3>
+        <h3>Alertes par structure</h3>
         <div class="chart-container">
           <canvas id="chart-epidemies"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- Section 5: Gestion des stocks -->
+    <!-- Section 5: Gestion des stocks 
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>📦 Gestion des stocks</h3>
@@ -251,9 +253,9 @@
           <canvas id="chart-stocks"></canvas>
         </div>
       </div>
-    </section>
+    </section>-->
 
-    <!-- Section 6: Engagement communautaire -->
+    <!-- Section 6: Engagement communautaire 
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>🤝 Engagement communautaire</h3>
@@ -272,7 +274,7 @@
           <canvas id="chart-community"></canvas>
         </div>
       </div>
-    </section>
+    </section> -->
 
     <!-- Section 7: Campagnes de vaccination -->
     <section class="vaccins-section">
@@ -280,7 +282,7 @@
         <h3>💉 Campagnes de vaccination</h3>
         <table class="table-stats">
           <thead>
-            <tr><th>Nom campagne</th><th>Zone</th><th>Cible</th><th>Réalisé</th><th>Statut</th></tr>
+            <tr><th>Nom campagne</th><th>Zone</th><th>Cible</th><th>Realise</th><th>Statut</th></tr>
           </thead>
           <tbody id="table-campagnes">
             <tr><td colspan="5">Chargement des données...</td></tr>
@@ -295,7 +297,7 @@
       </div>
     </section>
 
-    <!-- Section 8: Support agents santé -->
+    <!-- Section 8: Support agents santé 
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>❓ Support agents santé</h3>
@@ -314,7 +316,7 @@
           <canvas id="chart-support"></canvas>
         </div>
       </div>
-    </section>
+    </section>-->
 
     <footer>
       <a href="index.html" class="btn btn-secondary">⬅ Retour à l'accueil</a>
@@ -324,7 +326,7 @@
   <script>
     const baseUrl = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test";
 
-    // Section 1: Dispatch équipes mobiles
+    /* Section 1: Dispatch équipes mobiles
     fetch(`${baseUrl}/optimize-routes`)
       .then(r => r.json())
       .then(data => {
@@ -356,23 +358,23 @@
       })
       .catch(() => {
         document.getElementById("table-dispatch").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
-      });
+      });*/
 
     // Section 2: Top Performers
     fetch(`${baseUrl}/top-performers`)
       .then(r => r.json())
       .then(data => {
         document.getElementById("table-top-performers").innerHTML = data.map(v => 
-          `<tr><td>${v.structure}</td><td>${v.couverture}%</td><td>${v.ponctualite}%</td><td>${v.score}</td></tr>`
-        ).join("");
+          `<tr><td>${v.centre_sante}</td><td>${v.score_performance}%</td><td>${v.province}%</td></tr>`
+        ).join(""); console.log(data);
         
         new Chart(document.getElementById("chart-top-performers"), {
           type: "radar",
           data: {
-            labels: ["Couverture", "Ponctualité", "Score"],
+            labels: ["Province", "Score1", "Score1prime"],
             datasets: data.slice(0, 3).map((item, i) => ({
-              label: item.structure,
-              data: [item.couverture, item.ponctualite, item.score],
+              label: item.centre_sante,
+              data: [item.province, item.score, item.score],
               backgroundColor: [`rgba(22, 160, 133, ${0.2 + i*0.2})`, `rgba(52, 152, 219, ${0.2 + i*0.2})`, `rgba(241, 196, 15, ${0.2 + i*0.2})`][i],
               borderColor: ["#16a085", "#3498db", "#f1c40f"][i],
               fill: true
@@ -394,16 +396,16 @@
       .then(r => r.json())
       .then(data => {
         document.getElementById("table-low-performers").innerHTML = data.map(v => 
-          `<tr><td>${v.structure}</td><td>${v.retards_critiques}</td><td>${v.reponses_manquantes}</td><td>${v.score}</td></tr>`
+          `<tr><td>${v.centre_sante}</td><td>${v.score_performance}%</td><td>${v.province}%</td></tr>`
         ).join("");
         
         new Chart(document.getElementById("chart-low-performers"), {
           type: "bar",
           data: {
-            labels: data.map(x => x.structure),
+            labels: data.map(x => x.centre_sante),
             datasets: [{ 
               label: "Score de performance", 
-              data: data.map(x => x.score),
+              data: data.map(x => x.score_performance),
               backgroundColor: "#e74c3c"
             }]
           },
@@ -424,11 +426,11 @@
       .then(r => r.json())
       .then(data => {
         document.getElementById("table-epidemies").innerHTML = data.map(v => 
-          `<tr><td>${v.structure}</td><td>${v.date}</td><td>${v.type}</td><td>${v.statut}</td></tr>`
+          `<tr><td>${v.Structure}</td><td>${v.Date}</td><td>${v.Typealerte}</td><td>${v.Statut}</td></tr>`
         ).join("");
         
         const zoneCount = data.reduce((acc, item) => {
-          const zone = item.zone || item.structure;
+          const zone = item.zone || item.Structure;
           acc[zone] = (acc[zone] || 0) + 1;
           return acc;
         }, {});
@@ -454,7 +456,7 @@
         document.getElementById("table-epidemies").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
 
-    // Section 5: Gestion des stocks
+    /* Section 5: Gestion des stocks
     fetch(`${baseUrl}/stock-status`)
       .then(r => r.json())
       .then(data => {
@@ -484,10 +486,10 @@
       })
       .catch(() => {
         document.getElementById("table-stocks").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
-      });
+      });*/
 
     // Section 6: Engagement communautaire
-    fetch(`${baseUrl}/community-feedback`)
+    /*fetch(`${baseUrl}/community-feedback`)
       .then(r => r.json())
       .then(data => {
         document.getElementById("table-community").innerHTML = data.map(v => 
@@ -516,45 +518,93 @@
       })
       .catch(() => {
         document.getElementById("table-community").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
-      });
+      });*/
 
-    // Section 7: Campagnes de vaccination
-    fetch(`${baseUrl}/campagnes-stats`)
-      .then(r => r.json())
-      .then(data => {
-        document.getElementById("table-campagnes").innerHTML = data.map(v => 
-          `<tr><td>${v.nom}</td><td>${v.zone}</td><td>${v.cible}</td><td>${v.realise}</td><td>${v.statut}</td></tr>`
-        ).join("");
-        
-        new Chart(document.getElementById("chart-campagnes"), {
-          type: "bar",
-          data: {
-            labels: data.map(x => x.nom),
-            datasets: [
-              { 
-                label: "Cible", 
-                data: data.map(x => parseInt(x.cible)),
-                backgroundColor: "#bdc3c7"
-              },
-              { 
-                label: "Réalisé", 
-                data: data.map(x => parseInt(x.realise)),
-                backgroundColor: "#16a085"
-              }
-            ]
+// Section 7: Campagnes de vaccination
+fetch(`${baseUrl}/campagnes-stats`)
+  .then(r => r.json())
+  .then(data => {
+    // Normaliser : data peut être un tableau contenant l'objet, ou déjà l'objet
+    const payload = Array.isArray(data) && data.length ? data[0] : data;
+    const campagnes = payload && payload.campagnesTable ? payload.campagnesTable : [];
+
+    // Remplir le tableau HTML (en utilisant les champs exacts renvoyés)
+    document.getElementById("table-campagnes").innerHTML = campagnes.map(v => 
+      `<tr>
+        <td>${v.Nomcampagne ?? v.nom ?? ''}</td>
+        <td>${v.Zone ?? ''}</td>
+        <td>${v.Cible ?? v.cible ?? 0}</td>
+        <td>${v['Réalisé'] ?? v.realise ?? v.Realise ?? 0}</td>
+        <td>${v.Statut ?? v.statut ?? ''}</td>
+      </tr>`
+    ).join("");
+
+    console.log('données campagnes chargées :', campagnes);
+
+    // Préparer labels et datasets (gestion des variantes de nom & valeurs)
+    const labels = campagnes.map(x => x.Nomcampagne ?? x.nom ?? '—');
+    const cibleData = campagnes.map(x => {
+      const v = x.Cible ?? x.cible ?? 0;
+      return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
+    });
+    const realData = campagnes.map(x => {
+      // propriété avec accent
+      const v = x['Réalisé'] ?? x.realise ?? x.Realise ?? x.realise ?? 0;
+      return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
+    });
+
+    // Si pas de Chart.js chargé, prévenir
+    if (typeof Chart === 'undefined') {
+      console.error('Chart.js non chargé — include la librairie Chart.js avant ce script.');
+      return;
+    }
+
+    // Assure-toi que le conteneur du canvas a une hauteur (ex: .chart-container { height:300px })
+    const ctx = document.getElementById("chart-campagnes");
+    if (!ctx) {
+      console.error('Canvas #chart-campagnes introuvable');
+      return;
+    }
+
+    // Détruire un chart existant sur le même canvas (utile en dev si tu recharge le script)
+    if (ctx._chartInstance) {
+      ctx._chartInstance.destroy();
+    }
+
+    ctx._chartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels,
+        datasets: [
+          { 
+            label: "Cible", 
+            data: cibleData,
+            backgroundColor: "#bdc3c7"
           },
-          options: { 
-            responsive: true, 
-            maintainAspectRatio: false
+          { 
+            label: "Realise", 
+            data: realData,
+            backgroundColor: "#16a085"
           }
-        });
-      })
-      .catch(() => {
-        document.getElementById("table-campagnes").innerHTML = '<tr><td colspan="5">Données indisponibles</td></tr>';
-      });
+        ]
+      },
+      options: { 
+        responsive: true, 
+        maintainAspectRatio: false,
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  })
+  .catch((e) => {
+    console.error(e);
+    document.getElementById("table-campagnes").innerHTML = `<tr><td colspan="5">Erreur: ${e}</td></tr>`;
+  });
+
 
     // Section 8: Support agents santé
-    fetch(`${baseUrl}/faq-usage`)
+    /*fetch(`${baseUrl}/faq-usage`)
       .then(r => r.json())
       .then(data => {
         document.getElementById("table-support").innerHTML = data.map(v => 
@@ -587,7 +637,7 @@
       })
       .catch(() => {
         document.getElementById("table-support").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
-      });
+      });*/
   </script>
 </body>
 </html>
