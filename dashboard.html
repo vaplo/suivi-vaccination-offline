@@ -17,7 +17,6 @@
     }
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
-
 </head>
 <body>
   <header class="top-bar">
@@ -30,65 +29,109 @@
   <main class="homepage">
     <div class="grid-cards">
 
+      <!-- Vue nationale 360° -->
       <div class="card" style="background-image: url('images/vue360.webp')">
         <h3>Vue nationale 360°</h3>
         <p>KPIs en temps réel, tendances, alertes nationales.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/kpi-national" class="btn">🌍 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-360" class="btn">🌍 Accéder</a>
       </div>
 
+      <!-- Centre de commande provincial -->
       <div class="card" style="background-image: url('images/commandeprovince.webp')">
         <h3>Centre de commande provincial</h3>
         <p>Coordination par province, alertes critiques, équipes terrain.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/provincial-dashboard" class="btn">🏢 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/provincial-dashboard?province=Kinshasa" class="btn">🏢 Accéder</a>
       </div>
 
+      <!-- Vue par zone sanitaire -->
       <div class="card" style="background-image: url('images/zonehealth.webp')">
         <h3>Vue par zone sanitaire</h3>
         <p>Performance, stocks, qualité, alertes locales.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/zones-dashboard" class="btn">🗺️ Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/zone-view?zone=Kintambo" class="btn">🗺️ Accéder</a>
       </div>
 
+      <!-- Statistiques nationales -->
       <div class="card" style="background-image: url('images/statsnationales.webp')">
         <h3>Statistiques nationales</h3>
         <p>Comparaison avec benchmarks OMS, tendances historiques.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur" class="btn">📊 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-stats" class="btn">📊 Accéder</a>
         <div style="background:#fff;border-radius:12px;padding:12px;margin-top:12px;">
           <canvas id="statsChart" height="140"></canvas>
         </div>
       </div>
 
+      <!-- Analytics prédictives -->
       <div class="card" style="background-image: url('images/analytics.webp')">
         <h3>Analytics prédictives</h3>
         <p>Prédictions IA, risques, scénarios, planification avancée.</p>
-        <a href="intelligence.html" class="btn">📈 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/predictive-analytics?scope=zone&horizon=3&hist=6" class="btn">📈 Accéder</a>
       </div>
 
+      <!-- Monitoring temps réel -->
       <div class="card" style="background-image: url('images/monitoring.webp')">
         <h3>Monitoring temps réel</h3>
         <p>Suivi en direct, alertes automatiques, indicateurs critiques.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/monitoring-realtime" class="btn">⏱️ Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/live" class="btn">⏱️ Accéder</a>
       </div>
 
+      <!-- Classement performance -->
       <div class="card" style="background-image: url('images/classement.webp')">
         <h3>Classement performance</h3>
         <p>Score des structures, gamification, taux de couverture.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/classement" class="btn">🏆 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/ranking?scope=centre&period=30" class="btn">🏆 Accéder</a>
       </div>
 
+      <!-- Planification stratégique -->
       <div class="card" style="background-image: url('images/planning.webp')">
         <h3>Planification stratégique</h3>
         <p>Budgets, scénarios, projections intelligentes par zone.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategique" class="btn">🧠 Accéder</a>
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/planif?months=6" class="btn">🧠 Accéder</a>
       </div>
 
     </div>
 
-    <!-- ✅ Bouton retour -->
+    <!-- Bouton retour -->
     <div style="text-align: center; margin-top: 2rem;">
       <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
     </div>
   </main>
-  
+
+  <!-- Mini-script pour tracer le graphe « Statistiques nationales » depuis l’API -->
+  <script>
+    (async () => {
+      try {
+        const url = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/api/national-stats";
+        const res = await fetch(url);
+        const data = await res.json();
+        const labels = (data.national || []).map(r => r.mois);
+        const prevues = (data.national || []).map(r => Number(r.prevues||0));
+        const admin   = (data.national || []).map(r => Number(r.administrees||0));
+        const ctx = document.getElementById("statsChart");
+        if (!ctx) return;
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels,
+            datasets: [
+              { label: "Prévues", data: prevues },
+              { label: "Administrées", data: admin }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            scales: {
+              x: { title: { display: true, text: "Mois" } },
+              y: { title: { display: true, text: "Doses" }, beginAtZero: true }
+            }
+          }
+        });
+      } catch (e) {
+        console.error("Stat chart error:", e);
+      }
+    })();
+  </script>
 </body>
 </html>
 
