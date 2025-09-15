@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Planification Vaccinale</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial; margin:0; padding:16px; background:#f6f8fa; color:#0b1726}
+    .container{max-width:1100px;margin:0 auto}
+    h1{font-size:20px;margin-bottom:8px}
+    .grid{display:grid;grid-template-columns:1fr 420px;gap:16px}
+    .card{background:#fff;border-radius:8px;padding:14px;box-shadow:0 1px 4px rgba(12,20,30,0.06)}
+    label{display:block;margin:8px 0 4px;font-weight:600;font-size:13px}
+    input,select{width:100%;padding:8px;border:1px solid #ddd;border-radius:6px}
+    .row{display:flex;gap:8px}
+    .row > *{flex:1}
+    button{padding:10px 12px;border:0;border-radius:6px;background:#0b74de;color:#fff;font-weight:600;cursor:pointer}
+    .muted{color:#556}
+    #map{height:280px;border-radius:8px}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{padding:8px;border-bottom:1px solid #eee;font-size:13px;text-align:left}
+    .tabs{display:flex;gap:8px;margin-bottom:10px}
+    .tab{padding:8px 12px;border-radius:8px;background:#fff;cursor:pointer;border:1px solid transparent}
+    .tab.active{border-color:#cde4ff;background:#eaf5ff}
+    .controls{display:flex;gap:8px;align-items:center}
+    .small{font-size:12px;color:#666}
+    .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .legend .item{display:flex;gap:6px;align-items:center}
+    .dot{width:12px;height:12px;border-radius:50%}
+    .footer-note{margin-top:12px;font-size:12px;color:#666}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Planification stratégique — Vaccins</h1>
+    <div class="grid">
+      <div>
+        <div class="card">
+          <strong>1) Envoyer une nouvelle planification</strong>
+          <p class="muted">Remplis le formulaire puis clique sur <em>Envoyer</em>. Les données sont envoyées à l'endpoint n8n indiqué.</p>
+          <form id="planForm">
+            <label for="mois">Mois (ex: 2025-09)</label>
+            <input id="mois" name="mois" type="month" required />
+
+            <label for="province">Province</label>
+            <select id="province" name="province" required>
+              <option value="">-- Choisir --</option>
+              <option>Kinshasa</option>
+              <option>Bas-Congo</option>
+              <option>Haut-Katanga</option>
+              <option>Kasaï</option>
+              <option>Nord-Kivu</option>
+              <option>Sud-Kivu</option>
+              <option>Équateur</option>
+              <option>Province Orientale</option>
+            </select>
+
+            <div class="row">
+              <div>
+                <label for="prevue">Prévue (date de réception)</label>
+                <input id="prevue" name="prevue" type="date" />
+              </div>
+              <div>
+                <label for="administre">Administré (date d'administration)</label>
+                <input id="administre" name="administre" type="date" />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <label for="budget_prevu">Budget prévu</label>
+                <input id="budget_prevu" name="budget_prevu" type="number" step="0.01" min="0" />
+              </div>
+              <div>
+                <label for="budget_admis">Budget admis</label>
+                <input id="budget_admis" name="budget_admis" type="number" step="0.01" min="0" />
+              </div>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+              <button type="submit">Envoyer</button>
+              <div id="formStatus" class="small muted"></div>
+            </div>
+          </form>
+
+          <div class="footer-note">Endpoint POST: <code>https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategiqueget</code></div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <strong>2) Données reçues (source)</strong>
+          <p class="small muted">Les données affichées sont récupérées depuis: <code>https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategique</code></p>
+
+          <div style="margin-top:8px;display:flex;gap:6px;align-items:center;justify-content:space-between">
+            <div class="controls">
+              <label class="small" for="filterProvince">Filtrer province:</label>
+              <select id="filterProvince"><option value="">Toutes</option></select>
+              <button id="refreshBtn" style="margin-left:8px">Rafraîchir</button>
+            </div>
+            <div class="small muted">Dernière mise à jour: <span id="lastUpdate">—</span></div>
+          </div>
+
+          <div id="tabsArea" style="margin-top:10px">
+            <div class="tabs">
+              <div class="tab active" data-tab="table">Tableau</div>
+              <div class="tab" data-tab="chart">Graphique</div>
+              <div class="tab" data-tab="map">Budget vaccins — <span id="selectedProvinceLabel">Toutes</span></div>
+            </div>
+
+            <div id="tabContent" style="margin-top:10px">
+              <div data-content="table">
+                <div style="max-height:260px;overflow:auto">
+                  <table id="dataTable">
+                    <thead><tr><th>Mois</th><th>Province</th><th>Coût unitaire</th><th>Coût admis</th><th>Coût prévu</th><th>Historique (mois)</th><th>Forecast series</th></tr></thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div data-content="chart" style="display:none">
+                <canvas id="mainChart" width="600" height="250"></canvas>
+                <div class="legend">
+                  <div class="item"><div class="dot" style="background:#1f78b4"></div><div>Historique</div></div>
+                  <div class="item"><div class="dot" style="background:#e7298a"></div><div>Forecast</div></div>
+                </div>
+              </div>
+
+              <div data-content="map" style="display:none">
+                <div id="map" ></div>
+                <p class="small muted" style="margin-top:8px">Astuce: si la province n'a pas de coordonnées connues, la carte restera centrée sur l'Afrique centrale. Tu peux enrichir la table <code>provinceCoords</code> dans le script.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <strong>Informations & actions</strong>
+          <p class="small">Utilise le filtre pour choisir une province, puis clique sur l'onglet <em>Budget vaccins — 'nom de la province'</em> pour voir la carte, le tableau filtré et le graphique. Le graphique montre une série historique (months_hist_from_today) et la série forecast (months_forecast_deries).</p>
+
+          <h4 style="margin-top:12px">Exemple de champs envoyés</h4>
+          <pre class="small" style="background:#f4f7fb;padding:8px;border-radius:6px">{
+  "mois":"2025-09",
+  "province":"Kinshasa",
+  "prevue":"2025-09-10",
+  "administre":"2025-09-12",
+  "budget_prevu":12345.00,
+  "budget_admis":12000.00
+}</pre>
+
+          <h4 style="margin-top:12px">Coordonnées provinces (modifiable)</h4>
+          <pre class="small" style="background:#f4f7fb;padding:8px;border-radius:6px">// exemple: ajoute ou modifie coords pour centrer la carte
+{
+  "Kinshasa":[-4.325,15.322],
+  "Nord-Kivu":[-1.5,29.2],
+  "Haut-Katanga":[-10.7,27.5]
+}
+</pre>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script>
+
+
+     const fakeData = [
+  {
+    id: 1,
+    mois: "2025-09-20",
+    province: "Bas-Congo",
+    cout_unitaire: 150,
+    cout_admin: 1500,
+    coutt_prevue: 500,
+    months_hist_from_today: 12000,
+    months_forcast_deries: 140
+  },
+  {
+    id: 2,
+    mois: "2025-09-20",
+    province: "Kinshasa",
+    cout_unitaire: 120,
+    cout_admin: 1540,
+    coutt_prevue: 800,
+    months_hist_from_today: 15000,
+    months_forcast_deries: 147
+  },
+  {
+    id: 3,
+    mois: "2025-10-20",
+    province: "Bas-Congo",
+    cout_unitaire: 100,
+    cout_admin: 1800,
+    coutt_prevue: 400,
+    months_hist_from_today: 14000,
+    months_forcast_deries: 170
+  },
+  {
+    id: 2,
+    mois: "2025-10-20",
+    province: "Kinshasa",
+    cout_unitaire: 120,
+    cout_admin: 1540,
+    coutt_prevue: 800,
+    months_hist_from_today: 18000,
+    months_forcast_deries: 120
+  }
+];
+    const POST_URL = 'https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategique';
+    const GET_URL  = 'https://n8n-automation-server-waz-production.up.railway.app/webhook-test/planning-strategique';
+
+    // small lookup for province coords (update as needed)
+    const provinceCoords = {
+      'Kinshasa': [-4.325,15.322],
+      'Nord-Kivu': [-1.5,29.2],
+      'Sud-Kivu': [-3.2,28.6],
+      'Haut-Katanga': [-10.7,27.5],
+      'Bas-Congo': [-5.8,13.0],
+      'Kasaï': [-6.0,22.4],
+      'Équateur': [0.5,18.5],
+      'Province Orientale': [2.5,25.0]
+    };
+
+    // UI refs
+    const form = document.getElementById('planForm');
+    const status = document.getElementById('formStatus');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const filterProvince = document.getElementById('filterProvince');
+    const dataTable = document.querySelector('#dataTable tbody');
+    const lastUpdate = document.getElementById('lastUpdate');
+    const selectedProvinceLabel = document.getElementById('selectedProvinceLabel');
+
+    // tabs behaviour
+    document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const name = t.getAttribute('data-tab');
+      document.querySelectorAll('[data-content]').forEach(c=>c.style.display = c.getAttribute('data-content') === name ? '' : 'none');
+      if(name==='map') setTimeout(()=>map.invalidateSize(),300);
+    }));
+
+    // Chart setup
+    let mainChart = null;
+    const ctx = document.getElementById('mainChart').getContext('2d');
+
+    function createChart(labels, histSeries, forecastSeries){
+      if(mainChart) mainChart.destroy();
+      mainChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            { label:'Historique', data: histSeries, tension:0.3, borderWidth:2, pointRadius:3, backgroundColor:'transparent', borderColor:'#1f78b4' },
+            { label:'Forecast', data: forecastSeries, tension:0.3, borderWidth:2, pointRadius:3, backgroundColor:'transparent', borderColor:'#e7298a' }
+          ]
+        },
+        options: { responsive:true, plugins:{legend:{display:true}}, scales:{y:{beginAtZero:true}} }
+      });
+    }
+
+    // Leaflet map
+    const map = L.map('map', { zoomControl:true, attributionControl:false }).setView([-4.5, 18], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18}).addTo(map);
+    let provinceMarker = null;
+
+    function centerOnProvince(prov){
+      selectedProvinceLabel.textContent = prov || 'Toutes';
+      if(!prov){ map.setView([-4.5,18],5); if(provinceMarker){ map.removeLayer(provinceMarker); provinceMarker=null;} return; }
+      const coords = provinceCoords[prov];
+      if(coords){
+        map.setView(coords,8);
+        if(provinceMarker) provinceMarker.setLatLng(coords);
+        else provinceMarker = L.marker(coords).addTo(map).bindPopup(`<strong>${prov}</strong>`);
+      }else{
+        // no coords known
+        alert('Coordonnées inconnues pour '+prov+". Ajoute-les dans la variable provinceCoords dans le script.");
+      }
+    }
+
+    // Fetch and render GET data
+    async function loadRemoteData(){
+      try{
+        const res = await fetch(GET_URL);
+        if(!res.ok) throw new Error('Erreur: '+res.status);
+        const payload = await res.json();
+        // payload expected to be array of objects
+        renderData(payload);
+        lastUpdate.textContent = new Date().toLocaleString();
+      }catch(e){
+        renderData(fakeData);
+        lastUpdate.textContent = new Date().toLocaleString();
+        
+      }
+    }
+
+    function renderData(items){
+      // fill province filter options
+      const provinces = new Set(items.map(i=>i.province).filter(Boolean));
+      // reset select
+      filterProvince.innerHTML = '<option value="">Toutes</option>';
+      provinces.forEach(p=>{
+        const opt = document.createElement('option'); opt.value = p; opt.textContent = p; filterProvince.appendChild(opt);
+      });
+
+      // render table (apply filter if any)
+      const selected = filterProvince.value;
+      const filtered = selected ? items.filter(i=>i.province===selected) : items;
+      dataTable.innerHTML = '';
+      filtered.forEach(it=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${it.mois||''}</td><td>${it.province||''}</td><td>${it.cout_unitaire||''}</td><td>${it.cout_admin||''}</td><td>${it.coutt_prévu||it.coutt_prevue||''}</td><td>${it.months_hist_from_today||''}</td><td>${it.months_forcast_deries||''}</td>`;
+        dataTable.appendChild(tr);
+      });
+
+      // prepare chart for first province or global
+      const source = filtered[0] || items[0];
+      if(source){
+        // attempt to parse series fields (they can be arrays or comma-separated strings)
+        const parseSeries = s => {
+          if(!s) return [];
+          if(Array.isArray(s)) return s.map(x=>Number(x)||0);
+          if(typeof s==='string'){
+            try{ const j = JSON.parse(s); if(Array.isArray(j)) return j.map(x=>Number(x||0)); }catch(e){}
+            return s.split(',').map(x=>Number(x.trim()||0));
+          }
+          return [];
+        };
+        const hist = parseSeries(source.months_hist_from_today);
+        const forecast = parseSeries(source.months_forecast_deries);
+        // x labels: use months array if available or generate index
+        let labels = [];
+        if(Array.isArray(hist) && hist.length) labels = hist.map((_,i)=>'T-'+(hist.length-i));
+        else if(Array.isArray(forecast) && forecast.length) labels = forecast.map((_,i)=>'F+'+i);
+        else labels = filtered.map(x=>x.mois||'');
+
+        createChart(labels, hist, forecast);
+      }
+
+      // update map center if single province selected
+      centerOnProvince(selected || null);
+    }
+
+    // form submission
+    form.addEventListener('submit', async (ev)=>{
+      ev.preventDefault();
+      status.textContent = 'Envoi en cours...';
+      const fd = new FormData(form);
+      const body = {
+        mois: fd.get('mois'),
+        province: fd.get('province'),
+        prevues: fd.get('prevue') || null,
+        administrees: fd.get('administre') || null,
+        budget_prevus: Number(fd.get('budget_prevu')||0),
+        budget_admin: Number(fd.get('budget_admis')||0)
+      };
+      try{
+        const res = await fetch(POST_URL, {
+          method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+        });
+        if(!res.ok) throw new Error('Statut: '+res.status);
+        status.textContent = 'Envoyé ✓';
+        setTimeout(()=>status.textContent='',2500);
+        form.reset();
+        // refresh remote data to reflect possible changes
+        loadRemoteData();
+      }catch(e){
+        console.error(e); status.textContent = 'Erreur envoi';
+      }
+    });
+
+    // filter change
+    filterProvince.addEventListener('change', ()=>{
+      loadRemoteData(); // re-render with new filter
+      selectedProvinceLabel.textContent = filterProvince.value || 'Toutes';
+      centerOnProvince(filterProvince.value || null);
+    });
+
+    refreshBtn.addEventListener('click', ()=>loadRemoteData());
+
+    // initial load
+    loadRemoteData();
+  </script>
+</body>
+</html>
