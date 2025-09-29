@@ -227,23 +227,34 @@
       </table>
     </section>
 
-    <section class="formulaire" id="soins">
-      <h3>🩺 Surveillance des Soins par Structure</h3>
-      <table class="table-stats">
-        <thead>
-          <tr>
-            <th>Structure</th>
-            <th>Total Enfants</th>
-            <th>Vaccins effectués</th>
-            <th>Total Femmes</th>
-            <th>Soins prenatals</th>
-          </tr>
-        </thead>
-        <tbody id="table-soins">
-          <tr><td colspan="5">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </section>
+   <section class="formulaire" id="soins">
+  <h3>🩺 Surveillance des Soins par Structure</h3>
+
+  <!-- Graphique -->
+  <div class="panel" style="background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 6px rgba(0,0,0,.1); margin-bottom:1rem; height:320px;">
+    <canvas id="chart-soins"></canvas>
+  </div>
+
+  <table class="table-stats">
+    <thead>
+      <tr>
+        <th>Structure</th>
+        <th>DTC_HepB_Hib_1</th>
+        <th>DTC_HepB_Hib_3</th>
+        <th>Abandon P1→P3 (%)</th>
+        <th>Retards 30j+ (Enfants)</th>
+        <th>VAT1 (mois)</th>
+        <th>VAT2 (mois)</th>
+        <th>Retards 30j+ (Prénatal)</th>
+        <th>Priorité</th>
+      </tr>
+    </thead>
+    <tbody id="table-soins">
+      <tr><td colspan="9">Chargement...</td></tr>
+    </tbody>
+  </table>
+</section>
+
 
     <footer>
       <a href="index.html" class="btn">⬅ Retour à l'accueil</a>
@@ -323,26 +334,87 @@
 
     // 3) Surveillance des soins — ordre des colonnes corrigé pour coller au thead
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins")
-      .then(r => r.json())
-      .then(data => {
-        const rows = data.map(e => `
-          <tr>
-            <td>${e.centre_sante}</td>
-            <td>${e.total_enfants}</td>
-            <td>${e.total_vaccins_administres}</td>
-            <td>${e.total_femmes}</td>
-            <td>${e.soins_prenatals}</td>
-          </tr>
-        `).join("");
-        document.getElementById("table-soins").innerHTML = rows || `<tr><td colspan="5">Aucun résultat</td></tr>`;
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById("table-soins").innerHTML = `<tr><td colspan="5">Erreur de chargement</td></tr>`;
-      });
-  </script>
 
-  <script>
+<script>
+  let chartSoins;
+
+  async function loadSurveillanceSoins() {
+    try {
+      const r = await fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/surveillance-soins", {
+        headers: { "Accept": "application/json" }
+      });
+      const data = await r.json();
+
+      // TABLE
+      const rows = (Array.isArray(data) ? data : []).map(e => `
+        <tr>
+          <td>${e.centre_sante ?? ''}</td>
+          <td>${e.dtc_hib1 ?? 0}</td>
+          <td>${e.dtc_hib3 ?? 0}</td>
+          <td>${e.abandon_p1_p3_pct ?? 0}</td>
+          <td>${e.retards_30j_plus_enfants ?? 0}</td>
+          <td>${e.tt1_rdv_mois ?? 0}</td>
+          <td>${e.tt2_rdv_mois ?? 0}</td>
+          <td>${e.retards_30j_plus_prenatal ?? 0}</td>
+          <td>${e.priorite ?? ''}</td>
+        </tr>
+      `).join("");
+      document.getElementById("table-soins").innerHTML = rows || `<tr><td colspan="9">Aucun résultat</td></tr>`;
+
+      // GRAPH (barres : Penta1 vs Penta3, + ligne : % Abandon)
+      const labels = data.map(x => x.centre_sante);
+      const p1 = data.map(x => Number(x.dtc_hib1 || 0));
+      const p3 = data.map(x => Number(x.dtc_hib3 || 0));
+      const abandon = data.map(x => Number(x.abandon_p1_p3_pct || 0));
+
+      const ctx = document.getElementById('chart-soins').getContext('2d');
+      if (chartSoins) chartSoins.destroy();
+      chartSoins = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'DTC_HepB_Hib_1', data: p1, yAxisID: 'y' },
+            { label: 'DTC_HepB_Hib_3', data: p3, yAxisID: 'y' },
+            { label: 'Abandon P1→P3 (%)', data: abandon, type: 'line', yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+            tooltip: {
+              callbacks: {
+                afterLabel: (ctx) => {
+                  const idx = ctx.dataIndex;
+                  const r30e = data[idx]?.retards_30j_plus_enfants ?? 0;
+                  const r30p = data[idx]?.retards_30j_plus_prenatal ?? 0;
+                  const prio = data[idx]?.priorite ?? '';
+                  return `\nRetards 30j+ (Enf): ${r30e}\nRetards 30j+ (Prén): ${r30p}\nPriorité: ${prio}`;
+                }
+              }
+            }
+          },
+          scales: {
+            y:  { beginAtZero: true, title: { display: true, text: 'Nombre de doses' } },
+            y1: { beginAtZero: true, position: 'right', title: { display: true, text: '% Abandon' } }
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Surveillance des soins error:', err);
+      document.getElementById("table-soins").innerHTML = `<tr><td colspan="9">Erreur de chargement</td></tr>`;
+    }
+  }
+
+  // Charge automatiquement au démarrage (si tu ne l’appelles pas déjà)
+  window.addEventListener('load', () => {
+    loadSurveillanceSoins().catch(console.error);
+  });
+</script>
+
+ 
     // Utilitaire : récupère tableau (header + rows) depuis un <table> en DOM
     function readTable(tableId) {
       const table = document.getElementById(tableId);
