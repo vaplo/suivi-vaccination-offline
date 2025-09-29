@@ -178,17 +178,27 @@
       </div>
     </section>
 
-    <section class="formulaire" id="equite">
-      <h3>📊 Tableau de Suivi Équitable</h3>
-      <table class="table-stats">
-        <thead>
-          <tr><th>Structure</th><th>Total Enfants</th><th>Total Vaccins Prévus</th><th>Total Vaccins Faits</th></tr>
-        </thead>
-        <tbody id="table-equite">
-          <tr><td colspan="4">Chargement...</td></tr>
-        </tbody>
-      </table>
-    </section>
+   <section class="formulaire" id="equite">
+  <h3>📊 Tableau de Suivi Équitable</h3>
+  <div style="background:#fff;border-radius:12px;padding:1rem;box-shadow:0 2px 6px rgba(0,0,0,0.1);margin-bottom:1rem;">
+    <canvas id="chart-equite" height="220"></canvas>
+  </div>
+  <table class="table-stats">
+    <thead>
+      <tr>
+        <th>Structure</th>
+        <th>Total Enfants</th>
+        <th>Total Femmes</th>
+        <th>Total Vaccins Prévus</th>
+        <th>Total Vaccins Faits</th>
+      </tr>
+    </thead>
+    <tbody id="table-equite">
+      <tr><td colspan="5">Chargement...</td></tr>
+    </tbody>
+  </table>
+</section>
+
 
     <section class="formulaire" id="retards">
       <div style="display:flex; align-items:center; justify-content:space-between; gap:0.5rem;">
@@ -256,16 +266,60 @@
     }
 
     // Chargement des tableaux au démarrage
-    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/suivi-equitable", {headers: { "Accept": "application/json" }})
-      .then(r => r.json())
-      .then(data => {
-        const rows = data.map(e => `
-          <tr><td>${e.centre_sante}</td><td>${e.total_enfants}</td><td>${e.total_vaccins_prevus}</td><td>${e.total_vaccins_faits}%</td></tr>
-        `).join("");
-         
-        document.getElementById("table-equite").innerHTML = rows;
-        console.log(r);
+   <script>
+  async function loadSuiviEquitable() {
+    try {
+      const r = await fetch("https://votre-app.up.railway.app/webhook-test/suivi-equitable", {
+        headers: { "Accept": "application/json" }
       });
+      const data = await r.json();
+
+      // TABLE
+      const rows = (Array.isArray(data) ? data : []).map(e => `
+        <tr>
+          <td>${e.centre_sante ?? ''}</td>
+          <td>${e.total_enfants ?? 0}</td>
+          <td>${e.total_femmes ?? 0}</td>
+          <td>${e.total_vaccins_prevus ?? 0}</td>
+          <td>${e.total_vaccins_faits ?? 0}</td>
+        </tr>
+      `).join("");
+      document.getElementById("table-equite").innerHTML = rows || `<tr><td colspan="5">Aucun résultat</td></tr>`;
+
+      // GRAPH (barres : prévues vs faits par structure)
+      const labels = data.map(x => x.centre_sante);
+      const prevues = data.map(x => Number(x.total_vaccins_prevus || 0));
+      const faits   = data.map(x => Number(x.total_vaccins_faits  || 0));
+
+      const ctx = document.getElementById('chart-equite').getContext('2d');
+      if (window.chartEquite) window.chartEquite.destroy();
+      window.chartEquite = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label: 'Prévus', data: prevues },
+            { label: 'Faits',  data: faits }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: true } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+    } catch (err) {
+      console.error('Suivi équitable error:', err);
+      document.getElementById("table-equite").innerHTML =
+        `<tr><td colspan="5">Erreur de chargement</td></tr>`;
+    }
+  }
+
+  // Au démarrage, charge les données
+  window.addEventListener('load', () => {
+    loadSuiviEquitable().catch(console.error);
+  });
+</script>
 
     fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/export-retards")
       .then(r => r.json())
