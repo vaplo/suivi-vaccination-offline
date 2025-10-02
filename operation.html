@@ -361,35 +361,51 @@
       });*/
 
     // Section 2: Top Performers
+    /* >>> CHANGEMENT START >>> */
     fetch(`${baseUrl}/top-performers`)
       .then(r => r.json())
-      .then(data => {
-        document.getElementById("table-top-performers").innerHTML = data.map(v => 
-          `<tr><td>${v.centre_sante}</td><td>${v.score_performance}%</td><td>${v.province}%</td></tr>`
-        ).join(""); console.log(data);
-        
+      .then(raw => {
+        // Normalisation des champs renvoyés par la requête SQL (taux_pct, total, total_bon, province, centre_sante)
+        const data = Array.isArray(raw) ? raw : (raw?.data || []);
+        const norm = data.map(v => ({
+          centre:   v.centre_sante ?? v.centre ?? v.structure ?? '—',
+          province: v.province ?? v.prov ?? '—',
+          taux:     Number(v.taux_pct ?? v.score_performance ?? v.score ?? 0),
+          total:    Number(v.total ?? v.prevues_mois ?? 0),
+          bon:      Number(v.total_bon ?? v.admin_mois ?? 0),
+          population: v.population ?? 'enfant'
+        }));
+
+        // Tableau (score en %, province sans %)
+        document.getElementById("table-top-performers").innerHTML =
+          norm.map(v => `<tr><td>${v.centre}</td><td>${v.taux.toFixed(1)}%</td><td>${v.province}</td></tr>`).join("");
+
+        // Radar sur les 3 premiers (Couverture %, prévues, réalisées)
+        const top3 = norm.slice(0, 3);
         new Chart(document.getElementById("chart-top-performers"), {
           type: "radar",
           data: {
-            labels: ["Province", "Score1", "Score1prime"],
-            datasets: data.slice(0, 3).map((item, i) => ({
-              label: item.centre_sante,
-              data: [item.province, item.score, item.score],
-              backgroundColor: [`rgba(22, 160, 133, ${0.2 + i*0.2})`, `rgba(52, 152, 219, ${0.2 + i*0.2})`, `rgba(241, 196, 15, ${0.2 + i*0.2})`][i],
-              borderColor: ["#16a085", "#3498db", "#f1c40f"][i],
+            labels: ["Couverture (%)", "Total prévues", "Total réalisées"],
+            datasets: top3.map((item, i) => ({
+              label: item.centre,
+              data: [item.taux, item.total, item.bon],
+              backgroundColor: (["rgba(22,160,133,0.25)","rgba(52,152,219,0.25)","rgba(241,196,15,0.25)"][i] || "rgba(22,160,133,0.25)"),
+              borderColor: (["#16a085","#3498db","#f1c40f"][i] || "#16a085"),
               fill: true
             }))
           },
           options: { 
             responsive: true, 
             maintainAspectRatio: false,
-            elements: { line: { borderWidth: 2 } }
+            elements: { line: { borderWidth: 2 } },
+            scales: { r: { beginAtZero: true, suggestedMax: 100 } }
           }
         });
       })
       .catch(() => {
         document.getElementById("table-top-performers").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
+    /* >>> CHANGEMENT END >>> */
 
     // Section 3: Low Performers
     fetch(`${baseUrl}/low-performers`)
@@ -520,87 +536,87 @@
         document.getElementById("table-community").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });*/
 
-// Section 7: Campagnes de vaccination
-fetch(`${baseUrl}/campagnes-stats`)
-  .then(r => r.json())
-  .then(data => {
-    // Normaliser : data peut être un tableau contenant l'objet, ou déjà l'objet
-    const payload = Array.isArray(data) && data.length ? data[0] : data;
-    const campagnes = payload && payload.campagnesTable ? payload.campagnesTable : [];
+    // Section 7: Campagnes de vaccination
+    fetch(`${baseUrl}/campagnes-stats`)
+      .then(r => r.json())
+      .then(data => {
+        // Normaliser : data peut être un tableau contenant l'objet, ou déjà l'objet
+        const payload = Array.isArray(data) && data.length ? data[0] : data;
+        const campagnes = payload && payload.campagnesTable ? payload.campagnesTable : [];
 
-    // Remplir le tableau HTML (en utilisant les champs exacts renvoyés)
-    document.getElementById("table-campagnes").innerHTML = campagnes.map(v => 
-      `<tr>
-        <td>${v.Nomcampagne ?? v.nom ?? ''}</td>
-        <td>${v.Zone ?? ''}</td>
-        <td>${v.Cible ?? v.cible ?? 0}</td>
-        <td>${v['Réalisé'] ?? v.realise ?? v.Realise ?? 0}</td>
-        <td>${v.Statut ?? v.statut ?? ''}</td>
-      </tr>`
-    ).join("");
+        // Remplir le tableau HTML (en utilisant les champs exacts renvoyés)
+        document.getElementById("table-campagnes").innerHTML = campagnes.map(v => 
+          `<tr>
+            <td>${v.Nomcampagne ?? v.nom ?? ''}</td>
+            <td>${v.Zone ?? ''}</td>
+            <td>${v.Cible ?? v.cible ?? 0}</td>
+            <td>${v['Réalisé'] ?? v.realise ?? v.Realise ?? 0}</td>
+            <td>${v.Statut ?? v.statut ?? ''}</td>
+          </tr>`
+        ).join("");
 
-    console.log('données campagnes chargées :', campagnes);
+        console.log('données campagnes chargées :', campagnes);
 
-    // Préparer labels et datasets (gestion des variantes de nom & valeurs)
-    const labels = campagnes.map(x => x.Nomcampagne ?? x.nom ?? '—');
-    const cibleData = campagnes.map(x => {
-      const v = x.Cible ?? x.cible ?? 0;
-      return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
-    });
-    const realData = campagnes.map(x => {
-      // propriété avec accent
-      const v = x['Réalisé'] ?? x.realise ?? x.Realise ?? x.realise ?? 0;
-      return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
-    });
+        // Préparer labels et datasets (gestion des variantes de nom & valeurs)
+        const labels = campagnes.map(x => x.Nomcampagne ?? x.nom ?? '—');
+        const cibleData = campagnes.map(x => {
+          const v = x.Cible ?? x.cible ?? 0;
+          return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
+        });
+        const realData = campagnes.map(x => {
+          // propriété avec accent
+          const v = x['Réalisé'] ?? x.realise ?? x.Realise ?? x.realise ?? 0;
+          return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
+        });
 
-    // Si pas de Chart.js chargé, prévenir
-    if (typeof Chart === 'undefined') {
-      console.error('Chart.js non chargé — include la librairie Chart.js avant ce script.');
-      return;
-    }
-
-    // Assure-toi que le conteneur du canvas a une hauteur (ex: .chart-container { height:300px })
-    const ctx = document.getElementById("chart-campagnes");
-    if (!ctx) {
-      console.error('Canvas #chart-campagnes introuvable');
-      return;
-    }
-
-    // Détruire un chart existant sur le même canvas (utile en dev si tu recharge le script)
-    if (ctx._chartInstance) {
-      ctx._chartInstance.destroy();
-    }
-
-    ctx._chartInstance = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          { 
-            label: "Cible", 
-            data: cibleData,
-            backgroundColor: "#bdc3c7"
-          },
-          { 
-            label: "Realise", 
-            data: realData,
-            backgroundColor: "#16a085"
-          }
-        ]
-      },
-      options: { 
-        responsive: true, 
-        maintainAspectRatio: false,
-        scales: {
-          y: { beginAtZero: true }
+        // Si pas de Chart.js chargé, prévenir
+        if (typeof Chart === 'undefined') {
+          console.error('Chart.js non chargé — include la librairie Chart.js avant ce script.');
+          return;
         }
-      }
-    });
-  })
-  .catch((e) => {
-    console.error(e);
-    document.getElementById("table-campagnes").innerHTML = `<tr><td colspan="5">Erreur: ${e}</td></tr>`;
-  });
+
+        // Assure-toi que le conteneur du canvas a une hauteur (ex: .chart-container { height:300px })
+        const ctx = document.getElementById("chart-campagnes");
+        if (!ctx) {
+          console.error('Canvas #chart-campagnes introuvable');
+          return;
+        }
+
+        // Détruire un chart existant sur le même canvas (utile en dev si tu recharge le script)
+        if (ctx._chartInstance) {
+          ctx._chartInstance.destroy();
+        }
+
+        ctx._chartInstance = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels,
+            datasets: [
+              { 
+                label: "Cible", 
+                data: cibleData,
+                backgroundColor: "#bdc3c7"
+              },
+              { 
+                label: "Realise", 
+                data: realData,
+                backgroundColor: "#16a085"
+              }
+            ]
+          },
+          options: { 
+            responsive: true, 
+            maintainAspectRatio: false,
+            scales: {
+              y: { beginAtZero: true }
+            }
+          }
+        });
+      })
+      .catch((e) => {
+        console.error(e);
+        document.getElementById("table-campagnes").innerHTML = `<tr><td colspan="5">Erreur: ${e}</td></tr>`;
+      });
 
 
     // Section 8: Support agents santé
