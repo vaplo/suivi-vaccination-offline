@@ -175,6 +175,18 @@
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>⭐ Top Performers (structures efficaces)</h3>
+
+        <!-- >>> CHANGEMENT START (UI FILTRE TOP) >>> -->
+        <div style="margin:.5rem 0 1rem; display:flex; gap:.75rem; align-items:center;">
+          <label for="filter-top-pop" style="font-weight:600;color:#16a085;">Population :</label>
+          <select id="filter-top-pop">
+            <option value="all" selected>Toutes</option>
+            <option value="enfant">Enfants</option>
+            <option value="femme">Femmes</option>
+          </select>
+        </div>
+        <!-- >>> CHANGEMENT END (UI FILTRE TOP) >>> -->
+
         <table class="table-stats">
           <thead>
             <tr><th>Population</th><th>Structure</th><th>Score</th><th>Province</th></tr>
@@ -196,6 +208,18 @@
     <section class="vaccins-section">
       <div class="vaccin-table-container">
         <h3>⚠️ Low Performers (structures en difficulté)</h3>
+
+        <!-- >>> CHANGEMENT START (UI FILTRE LOW) >>> -->
+        <div style="margin:.5rem 0 1rem; display:flex; gap:.75rem; align-items:center;">
+          <label for="filter-low-pop" style="font-weight:600;color:#16a085;">Population :</label>
+          <select id="filter-low-pop">
+            <option value="all" selected>Toutes</option>
+            <option value="enfant">Enfants</option>
+            <option value="femme">Femmes</option>
+          </select>
+        </div>
+        <!-- >>> CHANGEMENT END (UI FILTRE LOW) >>> -->
+
         <table class="table-stats">
           <thead>
             <tr><th>Population</th><th>Structure</th><th>Score</th><th>Province</th></tr>
@@ -373,7 +397,7 @@
 
     function mapRowCommon(v) {
       return {
-        population:  (v.population ?? v.pop ?? 'enfant'),
+        population:  (v.population ?? v.pop ?? 'enfant').toLowerCase(),
         centre_sante: v.centre_sante ?? v.centre ?? v.structure ?? '—',
         province:     v.province ?? v.prov ?? '—',
         taux_pct:     Number.parseFloat(v.taux_pct ?? v.score_performance ?? 0) || 0,
@@ -382,27 +406,31 @@
       };
     }
 
-    // ---------- Section 2: Top Performers (ENSEMBLE) ----------
-    function renderTopPerformers(rows) {
-      // On suppose que la requête renvoie déjà Top 5 par population.
-      // Par sécurité, on re-classe par population/taux desc et on tronque à 5 par population.
-      const data = flattenN8nArray(rows).map(mapRowCommon);
-      const byPop = data.reduce((acc, r) => {
-        const key = (r.population || 'enfant').toLowerCase();
-        (acc[key] = acc[key] || []).push(r);
+    // ============================================================
+    // >>> CHANGEMENT START (JS TOP + FILTRE) >>>
+    // ============================================================
+    const topPopSelect = document.getElementById('filter-top-pop');
+    let topRaw = [];
+    function renderTop(popFilter = 'all') {
+      // Regroupe par population et calcule Top5 par population
+      const byPop = topRaw.reduce((acc, r) => {
+        (acc[r.population] = acc[r.population] || []).push(r);
         return acc;
       }, {});
-      const pops = Object.keys(byPop);
-      pops.forEach(k => byPop[k].sort((a,b) => (b.taux_pct - a.taux_pct) || (b.total - a.total)));
-      const topMerged = [
-        ...(byPop['enfant'] ? byPop['enfant'].slice(0,5) : []),
-        ...(byPop['femme']  ? byPop['femme'].slice(0,5)  : []),
+      Object.keys(byPop).forEach(k => byPop[k].sort((a,b) => (b.taux_pct - a.taux_pct) || (b.total - a.total)));
+
+      let merged = [];
+      if (popFilter === 'enfant') merged = (byPop.enfant || []).slice(0,5);
+      else if (popFilter === 'femme') merged = (byPop.femme || []).slice(0,5);
+      else merged = [
+        ...(byPop.enfant || []).slice(0,5),
+        ...(byPop.femme || []).slice(0,5)
       ];
 
       // Tableau
       document.getElementById("table-top-performers").innerHTML =
-        topMerged.length
-          ? topMerged.map(v => `<tr>
+        merged.length
+          ? merged.map(v => `<tr>
               <td>${v.population}</td>
               <td>${v.centre_sante}</td>
               <td>${v.taux_pct.toFixed(1)}%</td>
@@ -410,12 +438,10 @@
             </tr>`).join("")
           : '<tr><td colspan="4">Aucune donnée</td></tr>';
 
-      // Radar : on prend les 3 meilleurs toutes populations confondues
-      const allSorted = [...topMerged].sort((a,b) => (b.taux_pct - a.taux_pct) || (b.total - a.total));
-      const top3 = allSorted.slice(0,3);
-
+      // Radar : 3 meilleurs dans la sélection filtrée
       const ctx = document.getElementById("chart-top-performers");
       if (ctx._chartInstance) ctx._chartInstance.destroy();
+      const top3 = [...merged].sort((a,b) => (b.taux_pct - a.taux_pct) || (b.total - a.total)).slice(0,3);
       if (!top3.length) return;
 
       ctx._chartInstance = new Chart(ctx, {
@@ -430,43 +456,52 @@
             fill: true
           }))
         },
-        options: { 
-          responsive: true, 
-          maintainAspectRatio: false,
-          elements: { line: { borderWidth: 2 } },
-          scales: { r: { beginAtZero: true, suggestedMax: 100 } }
-        }
+        options: { responsive:true, maintainAspectRatio:false, elements:{ line:{ borderWidth:2 } }, scales:{ r:{ beginAtZero:true, suggestedMax:100 } } }
       });
     }
 
-    // Fetch Top
+    // Chargement initial Top
     fetch(`${baseUrl}/top-performers`)
       .then(r => r.json())
-      .then(renderTopPerformers)
+      .then(rows => {
+        topRaw = flattenN8nArray(rows).map(mapRowCommon);
+        renderTop(topPopSelect.value);
+      })
       .catch(() => {
         document.getElementById("table-top-performers").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
 
-    // ---------- Section 3: Low Performers (ENSEMBLE) ----------
-    function renderLowPerformers(rows) {
-      // Même principe, mais on trie ASC (pires d’abord) et on tronque Top 5 par population
-      const data = flattenN8nArray(rows).map(mapRowCommon);
-      const byPop = data.reduce((acc, r) => {
-        const key = (r.population || 'enfant').toLowerCase();
-        (acc[key] = acc[key] || []).push(r);
+    // Filtre Top : change
+    topPopSelect.addEventListener('change', () => renderTop(topPopSelect.value));
+    // ============================================================
+    // <<< CHANGEMENT END (JS TOP + FILTRE) <<<
+    // ============================================================
+
+
+    // ============================================================
+    // >>> CHANGEMENT START (JS LOW + FILTRE) >>>
+    // ============================================================
+    const lowPopSelect = document.getElementById('filter-low-pop');
+    let lowRaw = [];
+    function renderLow(popFilter = 'all') {
+      const byPop = lowRaw.reduce((acc, r) => {
+        (acc[r.population] = acc[r.population] || []).push(r);
         return acc;
       }, {});
-      const pops = Object.keys(byPop);
-      pops.forEach(k => byPop[k].sort((a,b) => (a.taux_pct - b.taux_pct) || (b.total - a.total)));
-      const lowMerged = [
-        ...(byPop['enfant'] ? byPop['enfant'].slice(0,5) : []),
-        ...(byPop['femme']  ? byPop['femme'].slice(0,5)  : []),
+      Object.keys(byPop).forEach(k => byPop[k].sort((a,b) => (a.taux_pct - b.taux_pct) || (b.total - a.total)));
+
+      let merged = [];
+      if (popFilter === 'enfant') merged = (byPop.enfant || []).slice(0,5);
+      else if (popFilter === 'femme') merged = (byPop.femme || []).slice(0,5);
+      else merged = [
+        ...(byPop.enfant || []).slice(0,5),
+        ...(byPop.femme || []).slice(0,5)
       ];
 
-      // Tableau (pas de % après province)
+      // Tableau
       document.getElementById("table-low-performers").innerHTML =
-        lowMerged.length
-          ? lowMerged.map(v => `<tr>
+        merged.length
+          ? merged.map(v => `<tr>
               <td>${v.population}</td>
               <td>${v.centre_sante}</td>
               <td>${v.taux_pct.toFixed(1)}%</td>
@@ -474,41 +509,37 @@
             </tr>`).join("")
           : '<tr><td colspan="4">Aucune donnée</td></tr>';
 
-      // Bar horizontale : labels = "centre (pop)"
-      const labels = lowMerged.map(x => `${x.centre_sante} (${x.population})`);
-      const values = lowMerged.map(x => x.taux_pct);
-
+      // Graphique barres horizontales
+      const labels = merged.map(x => `${x.centre_sante} (${x.population})`);
+      const values = merged.map(x => x.taux_pct);
       const ctx = document.getElementById("chart-low-performers");
       if (ctx._chartInstance) ctx._chartInstance.destroy();
       if (!values.length) return;
 
       ctx._chartInstance = new Chart(ctx, {
         type: "bar",
-        data: {
-          labels,
-          datasets: [{ 
-            label: "Score de performance (%)", 
-            data: values,
-            backgroundColor: "#e74c3c"
-          }]
-        },
-        options: { 
-          responsive: true, 
-          maintainAspectRatio: false,
-          indexAxis: 'y',
-          scales: { x: { beginAtZero: true, suggestedMax: 100 } },
-          plugins: { legend: { display: false } }
-        }
+        data: { labels, datasets: [{ label: "Score de performance (%)", data: values, backgroundColor: "#e74c3c" }] },
+        options: { responsive:true, maintainAspectRatio:false, indexAxis:'y', scales:{ x:{ beginAtZero:true, suggestedMax:100 } }, plugins:{ legend:{ display:false } } }
       });
     }
 
-    // Fetch Low
+    // Chargement initial Low
     fetch(`${baseUrl}/low-performers`)
       .then(r => r.json())
-      .then(renderLowPerformers)
+      .then(rows => {
+        lowRaw = flattenN8nArray(rows).map(mapRowCommon);
+        renderLow(lowPopSelect.value);
+      })
       .catch(() => {
         document.getElementById("table-low-performers").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });
+
+    // Filtre Low : change
+    lowPopSelect.addEventListener('change', () => renderLow(lowPopSelect.value));
+    // ============================================================
+    // <<< CHANGEMENT END (JS LOW + FILTRE) <<<
+    // ============================================================
+
 
     // ---------- Section 4: Réponse épidémies ----------
     fetch(`${baseUrl}/surveillance-suspecte`)
@@ -577,21 +608,15 @@
         document.getElementById("table-stocks").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });*/
 
-    // Section 6: Engagement communautaire (commenté dans ce fichier)
-    /*fetch(`${baseUrl}/community-feedback`)
-      .then(r => r.json())
-      .then(data => { ... })
-      .catch(() => { ... });*/
+    // Section 6: Engagement communautaire (commenté)
 
     // ---------- Section 7: Campagnes de vaccination ----------
     fetch(`${baseUrl}/campagnes-stats`)
       .then(r => r.json())
       .then(data => {
-        // Normaliser : data peut être un tableau contenant l'objet, ou déjà l'objet
         const payload = Array.isArray(data) && data.length ? data[0] : data;
         const campagnes = payload && payload.campagnesTable ? payload.campagnesTable : [];
 
-        // Remplir le tableau HTML (en utilisant les champs exacts renvoyés)
         document.getElementById("table-campagnes").innerHTML = campagnes.map(v => 
           `<tr>
             <td>${v.Nomcampagne ?? v.nom ?? ''}</td>
@@ -602,57 +627,31 @@
           </tr>`
         ).join("");
 
-        // Préparer labels et datasets (gestion des variantes de nom & valeurs)
         const labels = campagnes.map(x => x.Nomcampagne ?? x.nom ?? '—');
         const cibleData = campagnes.map(x => {
           const v = x.Cible ?? x.cible ?? 0;
           return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
         });
         const realData = campagnes.map(x => {
-          const v = x['Réalisé'] ?? x.realise ?? x.Realise ?? 0;
+          const v = x['Réalisé'] ?? x.realise ?? 0;
           return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
         });
 
-        // Si pas de Chart.js chargé, prévenir
-        if (typeof Chart === 'undefined') {
-          console.error('Chart.js non chargé — include la librairie Chart.js avant ce script.');
-          return;
-        }
-
+        if (typeof Chart === 'undefined') return;
         const ctx = document.getElementById("chart-campagnes");
-        if (!ctx) {
-          console.error('Canvas #chart-campagnes introuvable');
-          return;
-        }
-
-        if (ctx._chartInstance) {
-          ctx._chartInstance.destroy();
-        }
+        if (!ctx) return;
+        if (ctx._chartInstance) ctx._chartInstance.destroy();
 
         ctx._chartInstance = new Chart(ctx, {
           type: "bar",
           data: {
             labels,
             datasets: [
-              { 
-                label: "Cible", 
-                data: cibleData,
-                backgroundColor: "#bdc3c7"
-              },
-              { 
-                label: "Realise", 
-                data: realData,
-                backgroundColor: "#16a085"
-              }
+              { label: "Cible", data: cibleData, backgroundColor: "#bdc3c7" },
+              { label: "Realise", data: realData, backgroundColor: "#16a085" }
             ]
           },
-          options: { 
-            responsive: true, 
-            maintainAspectRatio: false,
-            scales: {
-              y: { beginAtZero: true }
-            }
-          }
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
         });
       })
       .catch((e) => {
@@ -660,12 +659,7 @@
         document.getElementById("table-campagnes").innerHTML = `<tr><td colspan="5">Erreur: ${e}</td></tr>`;
       });
 
-    // Section 8: Support agents santé (commenté dans ce fichier)
-    /*fetch(`${baseUrl}/faq-usage`)
-      .then(r => r.json())
-      .then(data => { ... })
-      .catch(() => { ... });*/
+    // Section 8: Support agents santé (commenté)
   </script>
 </body>
 </html>
-
