@@ -360,35 +360,42 @@
         document.getElementById("table-dispatch").innerHTML = '<tr><td colspan="4">Données indisponibles</td></tr>';
       });*/
 
-    // Section 2: Top Performers
     /* >>> CHANGEMENT START >>> */
+    // Section 2: Top Performers — aligne strictement sur les champs SQL: centre_sante, province, total, total_bon, taux_pct
     fetch(`${baseUrl}/top-performers`)
       .then(r => r.json())
       .then(raw => {
-        // Normalisation des champs renvoyés par la requête SQL (taux_pct, total, total_bon, province, centre_sante)
-        const data = Array.isArray(raw) ? raw : (raw?.data || []);
-        const norm = data.map(v => ({
-          centre:   v.centre_sante ?? v.centre ?? v.structure ?? '—',
-          province: v.province ?? v.prov ?? '—',
-          taux:     Number(v.taux_pct ?? v.score_performance ?? v.score ?? 0),
-          total:    Number(v.total ?? v.prevues_mois ?? 0),
-          bon:      Number(v.total_bon ?? v.admin_mois ?? 0),
-          population: v.population ?? 'enfant'
+        // Le webhook peut renvoyer un array direct ou un objet { data: [...] }
+        const rows = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
+        const data = rows.map(v => ({
+          centre_sante: (v.centre_sante ?? v.centre ?? v.structure ?? '—'),
+          province:     (v.province ?? v.prov ?? '—'),
+          taux_pct:     Number.parseFloat(v.taux_pct ?? v.score_performance ?? v.score ?? 0) || 0,
+          total:        Number.parseInt(v.total ?? v.prevues_mois ?? v.total_prevues ?? 0) || 0,
+          total_bon:    Number.parseInt(v.total_bon ?? v.admin_mois ?? v.total_realise ?? 0) || 0,
+          population:   v.population ?? '—'
         }));
 
-        // Tableau (score en %, province sans %)
-        document.getElementById("table-top-performers").innerHTML =
-          norm.map(v => `<tr><td>${v.centre}</td><td>${v.taux.toFixed(1)}%</td><td>${v.province}</td></tr>`).join("");
+        // Tableau : Score = taux_pct %, Province = texte (sans %)
+        document.getElementById("table-top-performers").innerHTML = data
+          .map(v => `<tr><td>${v.centre_sante}</td><td>${v.taux_pct.toFixed(1)}%</td><td>${v.province}</td></tr>`)
+          .join("");
 
-        // Radar sur les 3 premiers (Couverture %, prévues, réalisées)
-        const top3 = norm.slice(0, 3);
-        new Chart(document.getElementById("chart-top-performers"), {
+        // Radar : [Couverture %, Prévues, Réalisées] sur les 3 premiers
+        const top3 = data.slice(0, 3);
+        const ctx = document.getElementById("chart-top-performers");
+        if (!ctx) return;
+
+        // Détruit un éventuel chart existant (utile en dev)
+        if (ctx._chartInstance) ctx._chartInstance.destroy();
+
+        ctx._chartInstance = new Chart(ctx, {
           type: "radar",
           data: {
             labels: ["Couverture (%)", "Total prévues", "Total réalisées"],
             datasets: top3.map((item, i) => ({
-              label: item.centre,
-              data: [item.taux, item.total, item.bon],
+              label: item.centre_sante,
+              data: [item.taux_pct, item.total, item.total_bon],
               backgroundColor: (["rgba(22,160,133,0.25)","rgba(52,152,219,0.25)","rgba(241,196,15,0.25)"][i] || "rgba(22,160,133,0.25)"),
               borderColor: (["#16a085","#3498db","#f1c40f"][i] || "#16a085"),
               fill: true
@@ -398,7 +405,8 @@
             responsive: true, 
             maintainAspectRatio: false,
             elements: { line: { borderWidth: 2 } },
-            scales: { r: { beginAtZero: true, suggestedMax: 100 } }
+            scales: { r: { beginAtZero: true, suggestedMax: 100 } },
+            plugins: { legend: { display: true } }
           }
         });
       })
@@ -564,25 +572,21 @@
           return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
         });
         const realData = campagnes.map(x => {
-          // propriété avec accent
           const v = x['Réalisé'] ?? x.realise ?? x.Realise ?? x.realise ?? 0;
           return Number.isFinite(Number(v)) ? parseInt(v, 10) : 0;
         });
 
-        // Si pas de Chart.js chargé, prévenir
         if (typeof Chart === 'undefined') {
           console.error('Chart.js non chargé — include la librairie Chart.js avant ce script.');
           return;
         }
 
-        // Assure-toi que le conteneur du canvas a une hauteur (ex: .chart-container { height:300px })
         const ctx = document.getElementById("chart-campagnes");
         if (!ctx) {
           console.error('Canvas #chart-campagnes introuvable');
           return;
         }
 
-        // Détruire un chart existant sur le même canvas (utile en dev si tu recharge le script)
         if (ctx._chartInstance) {
           ctx._chartInstance.destroy();
         }
