@@ -3,14 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Centre Système & Sécurité – FlowLab</title>
-
+  <title>Centre Système &amp; Sécurité – FlowLab</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="manifest" href="manifest.webmanifest" />
   <meta name="theme-color" content="#16a085" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
@@ -18,7 +16,6 @@
         .catch(err => console.error("❌ Service worker erreur :", err));
     }
   </script>
-
   <style>
     :root {
       --risk-low: #27ae60;
@@ -26,7 +23,6 @@
       --risk-high: #e67e22;
       --risk-critical: #c0392b;
     }
-
     .security-banner {
       margin: 2rem auto;
       max-width: 960px;
@@ -37,23 +33,19 @@
       color: #1f2d3d;
       text-align: center;
     }
-
     .security-banner strong {
       font-size: 1.2rem;
     }
-
     .grid-cards.security-only {
       align-items: stretch;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
-
     .insights {
       max-width: 1100px;
       margin: 3rem auto;
       display: grid;
       gap: 1.75rem;
     }
-
     .insights section {
       border-radius: 18px;
       padding: 1.75rem;
@@ -61,7 +53,6 @@
       box-shadow: 0 12px 32px rgba(0,0,0,0.08);
       position: relative;
     }
-
     .insights h3 {
       margin-top: 0;
       display: flex;
@@ -69,11 +60,9 @@
       gap: 0.5rem;
       font-size: 1.1rem;
     }
-
     .insights h3 span.emoji {
       font-size: 1.4rem;
     }
-
     .risk-chip {
       display: inline-flex;
       align-items: center;
@@ -86,30 +75,25 @@
       letter-spacing: 0.04em;
       background: rgba(31, 45, 61, 0.08);
     }
-
     .risk-chip[data-level="faible"] { background: rgba(39,174,96,0.18); color: #186a3b; }
     .risk-chip[data-level="modéré"],
     .risk-chip[data-level="modere"] { background: rgba(241,196,15,0.25); color: #7d6608; }
     .risk-chip[data-level="élevé"],
     .risk-chip[data-level="eleve"] { background: rgba(230,126,34,0.28); color: #7e4b14; }
     .risk-chip[data-level="critique"] { background: rgba(192,57,43,0.3); color: #78281f; }
-
     .insights ul {
       margin: 1rem 0 0;
       padding-left: 1.1rem;
       color: #2c3e50;
     }
-
     .insights li {
       margin-bottom: 0.4rem;
     }
-
     .insights footer {
       margin-top: 1.4rem;
       font-size: 0.85rem;
       color: #5d6d7e;
     }
-
     .insights button.refresh {
       position: absolute;
       top: 1.4rem;
@@ -123,11 +107,9 @@
       font-size: 0.8rem;
       transition: background 0.2s ease;
     }
-
     .insights button.refresh:hover {
       background: rgba(22,160,133,0.26);
     }
-
     .insights .metrics {
       display: flex;
       flex-wrap: wrap;
@@ -136,7 +118,6 @@
       padding: 0;
       list-style: none;
     }
-
     .insights .metrics li {
       min-width: 160px;
       padding: 0.9rem 1rem;
@@ -145,22 +126,23 @@
       font-weight: 600;
       color: #34495e;
     }
-
     .insights .scenarios {
       margin: 1.2rem 0 0;
       padding-left: 1.1rem;
       color: #2c3e50;
     }
-
     .insights .loading,
     .insights .error {
       margin: 1rem 0 0;
       font-size: 0.9rem;
     }
-
-    .insights .loading { color: #5d6d7e; }
-    .insights .error { color: var(--risk-critical); font-weight: 600; }
-
+    .insights .loading {
+      color: #5d6d7e;
+    }
+    .insights .error {
+      color: var(--risk-critical);
+      font-weight: 600;
+    }
     @media (max-width: 768px) {
       .insights button.refresh {
         position: static;
@@ -172,11 +154,10 @@
     }
   </style>
 </head>
-
 <body>
   <header class="top-bar">
     <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
-    <h1>Centre Système & Sécurité</h1>
+    <h1>Centre Système &amp; Sécurité</h1>
     <h2>Supervision technique, conformité, intégrations</h2>
     <p>Surveillez la stabilité, renforcez la résilience et anticipez les incidents.</p>
   </header>
@@ -192,21 +173,21 @@
     </div>
 
     <section class="grid-cards security-only" aria-label="Accès rapide sécurité">
-      <div class="card" style="background-image:url('images/security.webp')">
-        <h3>Journal & conformité</h3>
+      <div class="card" style="background-image: url('images/security.webp')">
+        <h3>Journal &amp; conformité</h3>
         <p>Audits, traçabilité RGPD, menaces détectées par le SIEM.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook/security/diagnostics"
+        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/securitydiagnostics"
            class="btn" target="_blank" rel="noopener">📄 Consulter</a>
       </div>
 
-      <div class="card" style="background-image:url('images/backup.webp')">
-        <h3>Backups & Recovery</h3>
+      <div class="card" style="background-image: url('images/backup.webp')">
+        <h3>Backups &amp; Recovery</h3>
         <p>Tester la restauration, suivre la fraîcheur et le risque de défaillance.</p>
         <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security/backups"
            class="btn" target="_blank" rel="noopener">💾 Rapport complet</a>
       </div>
 
-      <div class="card" style="background-image:url('images/integration.webp')">
+      <div class="card" style="background-image: url('images/integration.webp')">
         <h3>Hub d’intégration</h3>
         <p>API partenaires, latence, synchronisations critiques et escalades.</p>
         <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/securityintegration"
@@ -216,7 +197,7 @@
 
     <section class="insights" aria-label="Analyses prédictives sécurité">
       <section id="backups-insights" data-endpoint="backups">
-        <h3><span class="emoji">💾</span> Sauvegardes & reprise <span class="risk-chip" data-level="faible">...</span></h3>
+        <h3><span class="emoji">💾</span> Sauvegardes &amp; reprise<span class="risk-chip" data-level="faible">...</span></h3>
         <button class="refresh" type="button" data-refresh="backups">Actualiser</button>
         <p class="loading">Chargement des métriques de sauvegarde…</p>
         <ul class="metrics" hidden></ul>
@@ -226,7 +207,7 @@
       </section>
 
       <section id="integration-insights" data-endpoint="integration">
-        <h3><span class="emoji">🔗</span> Intégrations critiques <span class="risk-chip" data-level="faible">...</span></h3>
+        <h3><span class="emoji">🔗</span> Intégrations critiques<span class="risk-chip" data-level="faible">...</span></h3>
         <button class="refresh" type="button" data-refresh="integration">Actualiser</button>
         <p class="loading">Analyse des flux d’intégration en cours…</p>
         <ul class="metrics" hidden></ul>
@@ -236,7 +217,7 @@
       </section>
 
       <section id="diagnostics-insights" data-endpoint="diagnostics">
-        <h3><span class="emoji">📟</span> Diagnostics & alertes <span class="risk-chip" data-level="faible">...</span></h3>
+        <h3><span class="emoji">📟</span> Diagnostics &amp; alertes<span class="risk-chip" data-level="faible">...</span></h3>
         <button class="refresh" type="button" data-refresh="diagnostics">Actualiser</button>
         <p class="loading">Lecture des incidents récents…</p>
         <ul class="metrics" hidden></ul>
@@ -246,28 +227,24 @@
       </section>
     </section>
 
-    <div style="text-align:center; margin:3rem 0;">
+    <div style="text-align: center; margin: 3rem 0;">
       <a href="index.html" class="btn btn-secondary">⬅️ Retour au portail</a>
     </div>
   </main>
 
   <script>
     (function () {
-      const API_BASE = window.FL_SECURITY_API_BASE || 
-        "https://n8n-automation-server-waz-production.up.railway.app/webhook/security";
-
+      const API_BASE = window.FL_SECURITY_API_BASE || "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security/backups";
       const ENDPOINTS = {
-        backups: `${API_BASE}/backups`,
-        integration: `${API_BASE}/integration`,
-        diagnostics: `${API_BASE}/diagnostics`,
+        backups: API_BASE + "/backups",
+        integration: API_BASE + "/integration",
+        diagnostics: API_BASE + "/diagnostics",
       };
-
       const sections = {
         backups: document.getElementById("backups-insights"),
         integration: document.getElementById("integration-insights"),
         diagnostics: document.getElementById("diagnostics-insights"),
       };
-
       const riskChip = (section, level, score) => {
         const chip = section.querySelector(".risk-chip");
         if (!chip) return;
@@ -276,12 +253,12 @@
         const label = level ? level.charAt(0).toUpperCase() + level.slice(1) : "N/A";
         chip.textContent = score ? `${label} · ${score}%` : label;
       };
-
       const setLoading = (section, isLoading) => {
         const loadingEl = section.querySelector(".loading");
-        if (loadingEl) loadingEl.hidden = !isLoading;
+        if (loadingEl) {
+          loadingEl.hidden = !isLoading;
+        }
       };
-
       const setError = (section, message) => {
         let errorEl = section.querySelector(".error");
         if (!errorEl) {
@@ -291,12 +268,10 @@
         }
         errorEl.textContent = message;
       };
-
       const clearError = (section) => {
         const errorEl = section.querySelector(".error");
         if (errorEl) errorEl.remove();
       };
-
       const fillList = (section, selector, items) => {
         const list = section.querySelector(selector);
         if (!list) return;
@@ -308,7 +283,6 @@
         list.hidden = false;
         list.innerHTML = items.map(item => `<li>${item}</li>`).join("");
       };
-
       const fillMetrics = (section, metrics) => {
         const container = section.querySelector(".metrics");
         if (!container) return;
@@ -322,33 +296,28 @@
           `<li><span>${label}</span><br><strong>${value}</strong></li>`
         ).join("");
       };
-
       const fillFooter = (section, text) => {
         const footer = section.querySelector("footer");
         if (footer) footer.textContent = text || "";
       };
-
       const renderBackups = (section, data) => {
         const metrics = data.metrics || {};
         fillMetrics(section, [
           { label: "Jobs OK (20 derniers)", value: metrics.successes ?? "—" },
           { label: "Jobs en échec", value: metrics.failures ?? "—" },
           { label: "Taux d’échec", value: metrics.failureRate ? metrics.failureRate + "%" : "—" },
-          { label: "Dernier backup (h)", value: metrics.hoursSinceLast?.toFixed?.(1) ?? "—" },
+          { label: "Dernier backup (h)", value: metrics.hoursSinceLast ? metrics.hoursSinceLast.toFixed?.(1) : "—" },
           { label: "Durée moyenne (s)", value: metrics.meanDurationSeconds ?? "—" },
         ]);
-
         const risk = data.predictiveRisk || {};
         riskChip(section, risk.riskLevel, risk.riskScore);
-
         const scenarios = (risk.scenarios || []).map(
-          s => `• ${s.horizon} – prob. ${Math.round((s.failureProbability || 0) * 100)}% → ${s.impact}`
+          (scenario) => `• ${scenario.horizon} – prob. ${Math.round((scenario.failureProbability || 0) * 100)}% → ${scenario.impact}`
         );
         fillList(section, ".scenarios", scenarios);
         fillList(section, ".recommendations", risk.recommendations || []);
         fillFooter(section, "Source : n8n › GET /security/backups");
       };
-
       const renderIntegration = (section, data) => {
         const summary = data.summary || {};
         fillMetrics(section, [
@@ -357,22 +326,19 @@
           { label: "Élevées", value: summary.high ?? 0 },
           { label: "Modérées", value: summary.medium ?? 0 },
         ]);
-
         const top = (data.predictiveSignals || []).map(
-          s => `• ${s.nom ?? "Intégration"} (${s.horizon}) – ${s.action}`
+          signal => `• ${signal.nom ?? "Intégration"} (${signal.horizon}) – ${signal.action}`
         );
         fillList(section, ".scenarios", top);
         fillList(section, ".recommendations", data.recommendations || []);
-
         const highest = (data.predictiveSignals || [])[0];
-        const score = highest?.riskScore;
-        const level = score != null
-          ? (score >= 75 ? "critique" : score >= 50 ? "élevé" : score >= 25 ? "modéré" : "faible")
-          : data.recommendations?.length ? "élevé" : "faible";
-        riskChip(section, level, score);
+        const numericScore = highest?.riskScore;
+        const explicitLevel = numericScore != null
+          ? (numericScore >= 75 ? "critique" : numericScore >= 50 ? "élevé" : numericScore >= 25 ? "modéré" : "faible")
+          : data.recommendations && data.recommendations.length ? "élevé" : "faible";
+        riskChip(section, explicitLevel, numericScore);
         fillFooter(section, "Source : n8n › GET /security/integration");
       };
-
       const renderDiagnostics = (section, data) => {
         const diagnostics = data.diagnostics || {};
         fillMetrics(section, [
@@ -381,23 +347,23 @@
           { label: "Échecs SMS 24h", value: diagnostics.sms_echecs_24h ?? "—" },
           { label: "Idempotence 1h", value: diagnostics.idemp_1h ?? "—" },
         ]);
-
         const signals = (data.predictiveSignals || []).map(
-          s => `• ${s.horizon} – ${s.scenario} (${Math.round((s.probability || 0) * 100)}%) → ${s.action}`
+          signal => `• ${signal.horizon} – ${signal.scenario} (${Math.round((signal.probability || 0) * 100)}%) → ${signal.action}`
         );
         fillList(section, ".scenarios", signals);
         fillList(section, ".recommendations", data.recommendations || []);
-
-        const aggregate = Number(data.aggregateRisk ?? null);
-        const level = aggregate >= 75 ? "critique" :
-                      aggregate >= 50 ? "élevé" :
-                      aggregate >= 25 ? "modéré" : "faible";
+        const aggregate = data.aggregateRisk != null ? Number(data.aggregateRisk) : null;
+        const level = aggregate != null
+          ? (aggregate >= 75 ? "critique" : aggregate >= 50 ? "élevé" : aggregate >= 25 ? "modéré" : "faible")
+          : "faible";
         riskChip(section, level, aggregate);
         fillFooter(section, "Source : n8n › GET /security/diagnostics");
       };
-
-      const renderers = { backups: renderBackups, integration: renderIntegration, diagnostics: renderDiagnostics };
-
+      const renderers = {
+        backups: renderBackups,
+        integration: renderIntegration,
+        diagnostics: renderDiagnostics,
+      };
       const fetchData = async (key) => {
         const section = sections[key];
         if (!section) return;
@@ -408,14 +374,19 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const payload = await response.json();
           renderers[key](section, payload);
-        } catch (err) {
-          console.error(`Erreur ${key} :`, err);
+        } catch (error) {
+          console.error(`Erreur ${key} :`, error);
           setError(section, "Impossible de charger les données. Vérifiez la connexion ou réessayez.");
         } finally {
           setLoading(section, false);
         }
       };
-
-      document.querySelectorAll("button[data-refresh]").forEach(btn => {
-        const key = btn.dataset.refresh;
-        btn.addEventListener
+      document.querySelectorAll("button[data-refresh]").forEach(button => {
+        const key = button.dataset.refresh;
+        button.addEventListener("click", () => fetchData(key));
+      });
+      ["backups", "integration", "diagnostics"].forEach(fetchData);
+    })();
+  </script>
+</body>
+</html>
