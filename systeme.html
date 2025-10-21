@@ -117,21 +117,21 @@
     <div class="card" style="background-image: url('images/security.webp')">
       <h3>Journal &amp; conformité</h3>
       <p>Audits, traçabilité RGPD, menaces détectées par le SIEM.</p>
-      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook/security/diagnostics"
+      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security/diagnostics"
          class="btn" target="_blank" rel="noopener">📄 Consulter</a>
     </div>
 
     <div class="card" style="background-image: url('images/backup.webp')">
       <h3>Backups &amp; Recovery</h3>
       <p>Tester la restauration, suivre la fraîcheur et le risque de défaillance.</p>
-      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook/security/backups"
+      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security/backups"
          class="btn" target="_blank" rel="noopener">💾 Rapport complet</a>
     </div>
 
     <div class="card" style="background-image: url('images/integration.webp')">
       <h3>Hub d’intégration</h3>
       <p>API partenaires, latence, synchronisations critiques et escalades.</p>
-      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook/security/integration"
+      <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security/integration"
          class="btn" target="_blank" rel="noopener">🔗 Statut intégrations</a>
     </div>
   </section>
@@ -142,7 +142,7 @@
 
   <script>
     (function(){
-      const API_BASE = "https://n8n-automation-server-waz-production.up.railway.app/webhook/security";
+      const API_BASE = "https://n8n-automation-server-waz-production.up.railway.app/webhook-test/security";
       const ENDPOINTS = {
         backups: `${API_BASE}/backups`,
         integration: `${API_BASE}/integration`,
@@ -190,5 +190,4 @@
   </script>
 </body>
 </html>
-
 
