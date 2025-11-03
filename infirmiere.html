@@ -302,7 +302,7 @@
 </select>
 
 
-    <label for="symptomes"Symptomes remarqués et recommandations</label>
+    <label for="symptomes">Symptômes remarqués et recommandations</label>
     <textarea id="symptomes" name="symptomes" style="height: 150px; width: 100%;"></textarea>
 
 
@@ -457,8 +457,11 @@
     }
 
     // Gestion des formulaires
- document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
-  e.preventDefault();
+document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
+  ...
+  fetch(...).then(...).catch(...);
+});
+
   const formData = new FormData(this);
   const data = Object.fromEntries(formData);
 
@@ -493,9 +496,7 @@
   alert("Erreur lors de l'enregistrement");
 });
 
-
-
-    document.getElementById('form-grossesse-form').addEventListener('submit', function(e) {
+document.getElementById('form-grossesse-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const formData = new FormData(this);
   const data = Object.fromEntries(formData);
@@ -505,8 +506,19 @@
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(data)
   })
-  ...
-});
+  .then(async (r) => {
+    const text = await r.text();
+    if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
+    alert('Grossesse enregistrée avec succès !');
+    this.reset();
+    retourAccueil();
+  })
+  .catch(err => {
+    console.error('Erreur:', err);
+    alert("Erreur lors de l'enregistrement grossesse");
+  });
+}); // ✅ fermeture du function + addEventListener
+
 
 
  // ===================================== Vaccins ==========================================   
