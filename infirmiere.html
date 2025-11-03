@@ -457,15 +457,13 @@
     }
 
     // Gestion des formulaires
-document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
-  ...
-  fetch(...).then(...).catch(...);
-});
-
+// Gestion des formulaires
+document.getElementById('form-enfant-form').addEventListener('submit', function (e) {
+  e.preventDefault();
   const formData = new FormData(this);
   const data = Object.fromEntries(formData);
 
-  // ⬇️ AJOUTE ICI la conversion base_date_mode → base_date
+  // base_date_mode → base_date
   if (data.base_date_mode === 'today') {
     const t = new Date();
     const y = t.getFullYear(), m = String(t.getMonth()+1).padStart(2,'0'), d = String(t.getDate()).padStart(2,'0');
@@ -476,24 +474,23 @@ document.getElementById('form-enfant-form').addEventListener('submit', function(
   delete data.base_date_mode;
 
   fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", {
-  method: 'POST',
-  headers: {'Content-Type': 'application/json'},
-  body: JSON.stringify(data)
-})
-.then(async (r) => {
-  const text = await r.text();
-  let res; try { res = JSON.parse(text); } catch { res = {}; }
-  if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
-
-  // prends le nom depuis la réponse, sinon retombe sur ce que l’utilisateur a saisi
-  const nom = res.nom_complet || data.nom_complet || 'inconnu';
-  alert(`Enfant ${nom} enregistré avec succès !`);
-  this.reset();
-  retourAccueil();
-})
-.catch(err => {
-  console.error('Erreur:', err);
-  alert("Erreur lors de l'enregistrement");
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  .then(async (r) => {
+    const text = await r.text();
+    let res; try { res = JSON.parse(text); } catch { res = {}; }
+    if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
+    const nom = res.nom_complet || data.nom_complet || 'inconnu';
+    alert(`Enfant ${nom} enregistré avec succès !`);
+    this.reset();
+    retourAccueil();
+  })
+  .catch(err => {
+    console.error('Erreur:', err);
+    alert("Erreur lors de l'enregistrement");
+  });
 });
 
 document.getElementById('form-grossesse-form').addEventListener('submit', function (e) {
@@ -517,8 +514,7 @@ document.getElementById('form-grossesse-form').addEventListener('submit', functi
     console.error('Erreur:', err);
     alert("Erreur lors de l'enregistrement grossesse");
   });
-}); // ✅ fermeture du function + addEventListener
-
+});
 
 
  // ===================================== Vaccins ==========================================   
