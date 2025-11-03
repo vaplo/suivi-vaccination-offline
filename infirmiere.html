@@ -295,14 +295,14 @@
       <option value="Rattrapage">Rattrapage</option>
     </select>
 
-    <label for="base_data">Base de calcul</label>
-    <select id="base_data" name="base_data" required>
-      <option value="">Base de Calcul</option>
-      <option value="DOB">DOB</option>
-      <option value="today">Today</option>
-    </select>
+   <label for="base_date_mode">Base de calcul</label>
+<select id="base_date_mode" name="base_date_mode" required>
+  <option value="DOB">DOB (date de naissance)</option>
+  <option value="today">Aujourd'hui</option>
+</select>
 
-    <label for="sypmtomes">Symptomes remarqués et recommandations</label>
+
+    <label for="symptomes"Symptomes remarqués et recommandations</label>
     <textarea id="symptomes" name="symptomes" style="height: 150px; width: 100%;"></textarea>
 
 
@@ -317,7 +317,7 @@
   <h3>🤰 Formulaire Grossesse</h3>
   <form id="form-grossesse-form">
     <label for="nom_grossesse">Nom complet</label>
-    <input id="nom_grossesse" name="nom" type="text" required />
+    <input id="nom_grossesse" name="nom_complet" type="text" required />
 
     <label for="telephone">Téléphone</label>
     <input id="telephone" name="telephone" type="tel" required />
@@ -457,49 +457,57 @@
     }
 
     // Gestion des formulaires
-    document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData);
-      
-      fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert(`Enfant ${data.nom_complet} enregistré avec succès!`);
-        this.reset();
-        retourAccueil();
-      })
-      .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'enregistrement');
-      });
-    });
+ document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData);
+
+  // ⬇️ AJOUTE ICI la conversion base_date_mode → base_date
+  if (data.base_date_mode === 'today') {
+    const t = new Date();
+    const y = t.getFullYear(), m = String(t.getMonth()+1).padStart(2,'0'), d = String(t.getDate()).padStart(2,'0');
+    data.base_date = `${y}-${m}-${d}`;
+  } else {
+    data.base_date = data.date_naissance;
+  }
+  delete data.base_date_mode;
+
+  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", {
+  method: 'POST',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify(data)
+})
+.then(async (r) => {
+  const text = await r.text();
+  let res; try { res = JSON.parse(text); } catch { res = {}; }
+  if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
+
+  // prends le nom depuis la réponse, sinon retombe sur ce que l’utilisateur a saisi
+  const nom = res.nom_complet || data.nom_complet || 'inconnu';
+  alert(`Enfant ${nom} enregistré avec succès !`);
+  this.reset();
+  retourAccueil();
+})
+.catch(err => {
+  console.error('Erreur:', err);
+  alert("Erreur lors de l'enregistrement");
+});
+
+
 
     document.getElementById('form-grossesse-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData);
-      
-      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(data)
-      })
-      .then(response => response.json())
-      .then(data => {
-        alert('Grossesse enregistrée avec succès!');
-        this.reset();
-        retourAccueil();
-      })
-      .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'enregistrement');
-      });
-    });
+  e.preventDefault();
+  const formData = new FormData(this);
+  const data = Object.fromEntries(formData);
+
+  fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  ...
+});
+
 
  // ===================================== Vaccins ==========================================   
 
