@@ -1,95 +1,729 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tableaux de bord – FlowLab</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#16a085" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="images/logo.png">
-  <script>
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("service-worker.js")
-        .then(() => console.log("✅ SW actif"))
-        .catch(err => console.error("❌ SW error:", err));
-    }
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Planification Stratégique & Coordination</title>
+      <style>
+        :root {
+          --bg-dark: #0f172a;
+          --bg-panel: #16213c;
+          --accent: #4fd1c5;
+          --accent-strong: #f59e0b;
+          --text-light: #f8fafc;
+          --text-muted: #94a3b8;
+          --border: #1f2a44;
+          --success: #10b981;
+          --danger: #ef4444;
+          --warning: #fbbf24;
+          font-size: 16px;
+        }
 
-</head>
-<body>
-  <header class="top-bar">
-    <img src="images/logo.png" alt="FlowLab Logo" class="logo" />
-    <h1>Tableaux de bord exécutifs</h1>
-    <h2>Vue stratégique nationale, KPIs, planification intelligente</h2>
-    <p>Choisissez un tableau pour visualiser les performances en temps réel.</p>
-  </header>
+        * {
+          box-sizing: border-box;
+        }
 
-  <main class="homepage">
-    <div class="grid-cards">
+        body {
+          margin: 0;
+          background: radial-gradient(circle at top, #1e1b4b, #0f172a 45%);
+          color: var(--text-light);
+          font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+          min-height: 100vh;
+        }
 
-      <div class="card" style="background-image: url('images/kin360.jpg') ">
-        <h3>Vue nationale 360°</h3>
-        <p>KPIs en temps réel, tendances, alertes nationales.</p>
-        <a href="kpi2.html"  class="btn">🌍 Accéder</a>
-      </div>
+        a {
+          color: inherit;
+          text-decoration: none;
+        }
 
-      <!--<div class="card" style="background-image: url('images/commandeprovince.webp')">
-        <h3>Centre de commande provincial</h3>
-        <p>Coordination par province, alertes critiques, équipes terrain.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/provincial-dashboard" class="btn">🏢 Accéder</a>
-      </div>
+        header {
+          position: sticky;
+          top: 0;
+          z-index: 10;
+          background: rgba(15, 23, 42, 0.92);
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid var(--border);
+        }
 
-      <div class="card" style="background-image: url('images/zonehealth.webp')">
-        <h3>Vue par zone sanitaire</h3>
-        <p>Performance, stocks, qualité, alertes locales.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/zones-dashboard" class="btn">🗺️ Accéder</a>
-      </div>
+        .nav {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 1rem 1.5rem;
+        }
 
-      <div class="card" style="background-image: url('images/statsnationales.webp')">
-        <h3>Statistiques nationales</h3>
-        <p>Comparaison avec benchmarks OMS, tendances historiques.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/stats-superviseur" class="btn">📊 Accéder</a>
-      </div>-->
+        .nav-links {
+          display: flex;
+          gap: 1rem;
+          flex-wrap: wrap;
+        }
 
-      <div class="card" style="background-image: url('images/analytics.webp')">
-        <h3>Analytics prédictives</h3>
-        <p>Prédictions IA, risques, scénarios, planification avancée.</p>
-        <a href="intelligence.html" class="btn">📈 Accéder</a>
-      </div>
+        .nav-links a {
+          padding: 0.4rem 0.75rem;
+          border-radius: 999px;
+          color: var(--text-muted);
+          transition: color 0.2s ease, background 0.2s ease;
+        }
 
-      <!--<div class="card" style="background-image: url('images/monitoring.webp')">
-        <h3>Monitoring temps réel</h3>
-        <p>Suivi en direct, alertes automatiques, indicateurs critiques.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/monitoring-realtime" class="btn">⏱️ Accéder</a>
-      </div>-->
+        .nav-links a:hover,
+        .nav-links a.active {
+          background: rgba(79, 209, 197, 0.15);
+          color: var(--accent);
+        }
 
-      <!--<div class="card" style="background-image: url('images/classement.webp')">
-        <h3>Classement performance</h3>
-        <p>Score des structures, gamification, taux de couverture.</p>
-        <a href="https://n8n-automation-server-waz-production.up.railway.app/webhook-test/classement" class="btn">🏆 Accéder</a>
-      </div>-->
+        main {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 2rem 1.5rem 4rem;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
 
-      <div class="card" style="background-image: url('images/planning.webp')">
-        <h3>Planification stratégique</h3>
-        <p>Budgets, scénarios, projections intelligentes par zone.</p>
-        <a href="planification.html" class="btn">🧠 Accéder</a>
-      </div>
+        .panel {
+          background: var(--bg-panel);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 1.5rem;
+          box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+        }
 
-    </div>
+        .panel-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
 
-    <!-- ✅ Bouton retour -->
-    <div style="text-align: center; margin-top: 2rem;">
-      <a href="index.html" class="btn btn-secondary">⬅️ Retour à l’accueil</a>
-    </div>
-  </main>
-  
-</body>
-</html>
+        .panel-header h3 {
+          margin: 0;
+          font-size: 1.1rem;
+        }
 
+        .panel-header small {
+          color: var(--text-muted);
+        }
 
+        .status-text {
+          font-size: 0.85rem;
+          color: var(--text-muted);
+        }
+
+        .status-text.success {
+          color: var(--success);
+        }
+
+        .status-text.warning {
+          color: var(--warning);
+        }
+
+        .status-text.error {
+          color: var(--danger);
+        }
+
+        form {
+          margin: 0;
+        }
+
+        label {
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          color: var(--text-muted);
+          display: block;
+          margin-bottom: 0.35rem;
+        }
+
+        input,
+        select,
+        textarea {
+          width: 100%;
+          padding: 0.6rem 0.75rem;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: rgba(255, 255, 255, 0.03);
+          color: var(--text-light);
+          font: inherit;
+        }
+
+        textarea {
+          border-radius: 12px;
+          min-height: 80px;
+          resize: vertical;
+        }
+
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .form-grid .full-span {
+          grid-column: 1 / -1;
+        }
+
+        .form-actions {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          align-items: center;
+        }
+
+        button,
+        select {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid var(--border);
+          border-radius: 999px;
+          color: var(--text-light);
+          padding: 0.5rem 1rem;
+          font-size: 0.95rem;
+        }
+
+        button.primary {
+          background: var(--accent);
+          border-color: var(--accent);
+          color: #0f172a;
+          font-weight: 600;
+          cursor: pointer;
+        }
+
+        .table-wrapper {
+          overflow-x: auto;
+        }
+
+        .table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 1rem;
+        }
+
+        .table th,
+        .table td {
+          text-align: left;
+          padding: 0.75rem;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          font-size: 0.9rem;
+        }
+
+        .chart-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 1rem;
+        }
+
+        .chart-card {
+          background: rgba(255, 255, 255, 0.02);
+          border: 1px dashed rgba(148, 163, 184, 0.4);
+          border-radius: 12px;
+          padding: 1rem;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+
+        .chart-card span {
+          color: var(--text-muted);
+          font-size: 0.85rem;
+        }
+
+        .two-column {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.25rem;
+        }
+
+        .list {
+          display: flex;
+          flex-direction: column;
+          gap: 0.75rem;
+        }
+
+        .list-item {
+          padding: 0.75rem 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+          display: inline-flex;
+          align-items: center;
+          gap: 0.25rem;
+          padding: 0.2rem 0.6rem;
+          border-radius: 999px;
+          font-size: 0.8rem;
+          background: rgba(79, 209, 197, 0.15);
+          color: var(--accent);
+        }
+
+        .badge.critical {
+          background: rgba(239, 68, 68, 0.15);
+          color: var(--danger);
+        }
+
+        .badge.warning {
+          background: rgba(251, 191, 36, 0.15);
+          color: var(--warning);
+        }
+
+        .module-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1rem;
+        }
+
+        .module-card {
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          padding: 1rem;
+          background: rgba(255, 255, 255, 0.02);
+        }
+
+        .module-card h4 {
+          margin: 0 0 0.4rem;
+        }
+
+        .module-card p {
+          margin: 0;
+          color: var(--text-muted);
+          font-size: 0.9rem;
+          line-height: 1.4;
+        }
+
+        footer {
+          text-align: center;
+          padding: 2rem 1rem;
+          color: var(--text-muted);
+        }
+
+        @media (max-width: 720px) {
+          header {
+            position: static;
+          }
+
+          .nav {
+            flex-direction: column;
+            gap: 0.75rem;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <header>
+        <nav class="nav">
+          <div><strong>Vaccination RDC</strong></div>
+          <div class="nav-links">
+            <a href="index.html">Accueil 360°</a>
+            <a href="kpi2.html">KPIs</a>
+            <a href="intelligence.html">Analytics IA</a>
+            <a href="planification.html" class="active">Planification</a>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Budgets & ressources</h3>
+              <small>resource_allocations / budget_forecasts</small>
+            </div>
+            <span class="status-text" data-status="budgets">En attente…</span>
+          </div>
+
+          <form id="resourcePlanForm" class="form-grid">
+            <div>
+              <label for="mois">Mois</label>
+              <input type="month" id="mois" name="mois" required />
+            </div>
+            <div>
+              <label for="province">Province</label>
+              <select id="province" name="province" required>
+                <option value="">Sélectionner</option>
+                <option>Kinshasa</option>
+                <option>Bas-Congo</option>
+                <option>Haut-Katanga</option>
+                <option>Kasaï</option>
+                <option>Nord-Kivu</option>
+                <option>Sud-Kivu</option>
+                <option>Équateur</option>
+                <option>Province Orientale</option>
+                <option>Tanganyika</option>
+              </select>
+            </div>
+            <div>
+              <label for="date_reception">Prévue (réception)</label>
+              <input type="date" id="date_reception" name="prevue" />
+            </div>
+            <div>
+              <label for="date_admin">Administrée</label>
+              <input type="date" id="date_admin" name="administre" />
+            </div>
+            <div>
+              <label for="budget_prevu">Budget prévu (USD)</label>
+              <input type="number" id="budget_prevu" name="budget_prevu" min="0" step="0.01" />
+            </div>
+            <div>
+              <label for="budget_admis">Budget admis (USD)</label>
+              <input type="number" id="budget_admis" name="budget_admis" min="0" step="0.01" />
+            </div>
+            <div class="full-span">
+              <label for="notes">Notes (optionnel)</label>
+              <textarea id="notes" name="notes" placeholder="Ajoute un contexte ou une justification"></textarea>
+            </div>
+            <div class="form-actions full-span">
+              <button type="submit" class="primary">Enregistrer la planification</button>
+              <span class="status-text" data-form-status>—</span>
+            </div>
+          </form>
+           <div class="table-wrapper">
+            <table class="table" data-budget-table>
+              <thead>
+                <tr>
+                  <th>Région</th>
+                  <th>Budget alloué</th>
+                  <th>Besoins projetés</th>
+                  <th>Burn rate</th>
+                  <th>Niveau de stress</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Comparateur de plans d’action</h3>
+              <small>scenario_runs (simulations)</small>
+            </div>
+            <span class="status-text" data-status="plans">En attente…</span>
+          </div>
+          <div class="chart-grid" data-plan-compare></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Coordination logistique & multi-acteurs</h3>
+              <small>journal_alertes / route_plans</small>
+            </div>
+            <span class="status-text" data-status="logistics">En attente…</span>
+          </div>
+          <div class="two-column">
+            <div class="list" data-logistics-list></div>
+            <div class="module-card">
+              <h4>Espace collaboratif</h4>
+              <p>Suivi des décisions, documents officiels, comptes-rendus.</p>
+              <button class="primary" style="margin-top:1rem">Accéder à l’espace partagé</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <div>
+              <h3>Portail documentation & formation</h3>
+              <small>training_materials / user_trainings</small>
+            </div>
+            <span class="status-text" data-status="training">En attente…</span>
+          </div>
+          <div class="module-grid" data-training-grid></div>
+        </section>
+      </main>
+
+      <footer>Coordination intégrée – Gouvernance & pérennité</footer>
+
+      <script>
+        const budgetTableBody = document.querySelector('[data-budget-table] tbody');
+        const planCompareTarget = document.querySelector('[data-plan-compare]');
+        const logisticsTarget = document.querySelector('[data-logistics-list]');
+        const trainingTarget = document.querySelector('[data-training-grid]');
+        const planForm = document.getElementById('resourcePlanForm');
+        const formStatus = document.querySelector('[data-form-status]');
+        const statusRefs = {
+          budgets: document.querySelector('[data-status="budgets"]'),
+          plans: document.querySelector('[data-status="plans"]'),
+          logistics: document.querySelector('[data-status="logistics"]'),
+          training: document.querySelector('[data-status="training"]')
+        };
+
+        const sampleBudgets = [
+          { region: 'Kinshasa', budget: 4200000, projected: 4800000, burn: '0.88', stress: 'normal' },
+          { region: 'Tanganyika', budget: 2100000, projected: 3000000, burn: '0.70', stress: 'warning' },
+          { region: 'Équateur', budget: 1400000, projected: 1600000, burn: '0.87', stress: 'normal' }
+        ];
+
+        const samplePlans = [
+          { name: 'Plan A – Mobile teams', impact: '+6 pts couverture', cost: '$0.9M', readiness: '2 semaines' },
+          { name: 'Plan B – Influence digitale', impact: '-15% refus', cost: '$0.4M', readiness: '3 semaines' },
+          { name: 'Plan C – Supervision renforcée', impact: '+9 pts conformité', cost: '$0.6M', readiness: '1 semaine' }
+        ];
+
+        const sampleLogistics = [
+          { facility: 'Centre Mwene-Ditu', risk: 'Rupture BCG', detail: 'Seringues 0.5ml < 2 jours', level: 'critical' },
+          { facility: 'Zone Bunia', risk: 'Surveillance', detail: 'Chaîne du froid – groupe électrogène', level: 'warning' }
+        ];
+
+        const sampleTraining = [
+          { title: 'Guide campagne mobile', category: 'Opérations', url: '#', completion: '72%' },
+          { title: 'Communication contre la désinformation', category: 'Engagement', url: '#', completion: '54%' },
+          { title: 'Gestion chaîne du froid', category: 'Logistique', url: '#', completion: '63%' },
+          { title: 'Module IA & équité', category: 'Analytics', url: '#', completion: '38%' }
+        ];
+
+        const N8N_BASE_URL = window.N8N_BASE_URL ?? 'https://n8n-automation-server-waz-production.up.railway.app/webhook';
+        const buildWebhookUrl = (path) => {
+          const base = N8N_BASE_URL.replace(/\/$/, '');
+          const cleanPath = path.replace(/^\//, '');
+          return `${base}/${cleanPath}`;
+        };
+
+        const WEBHOOKS = {
+          resourcePlanSubmit: buildWebhookUrl('resource-plan'),
+          resourcePlanList: buildWebhookUrl('resource-plan/list'),
+          scenarioList: buildWebhookUrl('run-scenario/list'),
+          logistics: buildWebhookUrl('health-signals'),
+          lmsCatalog: buildWebhookUrl('lms-catalog'),
+          trainingNotification: buildWebhookUrl('training-notification')
+        };
+
+        const formatBudget = (value) => {
+          const num = Number(value);
+          if (!Number.isFinite(num)) return '—';
+          if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)} M$`;
+          return `${Math.round(num).toLocaleString('fr-CD')} $`;
+        };
+
+        const formatBurnRate = (value) => {
+          if (typeof value === 'string' && value.trim().endsWith('%')) return value;
+          const num = Number(value);
+          if (!Number.isFinite(num)) return '—';
+          return `${(num * 100).toFixed(0)}%`;
+        };
+
+        const setStatus = (section, text, tone = 'neutral') => {
+          const el = statusRefs[section];
+          if (!el) return;
+          el.textContent = text;
+          el.classList.remove('success', 'warning', 'error');
+          if (tone !== 'neutral') el.classList.add(tone);
+        };
+
+        function renderBudgets(rows) {
+          budgetTableBody.innerHTML = rows
+            .map(
+              (row) => `
+              <tr>
+                <td>${row.region ?? '—'}</td>
+                <td>${formatBudget(row.budget)}</td>
+                <td>${formatBudget(row.projected)}</td>
+                <td>${formatBurnRate(row.burn)}</td>
+                <td><span class="badge ${row.stress === 'critique' ? 'critical' : row.stress === 'warning' ? 'warning' : ''}">${row.stress ?? '—'}</span></td>
+              </tr>`
+            )
+            .join('');
+        }
+
+        function renderPlans(plans) {
+          planCompareTarget.innerHTML = plans
+            .map(
+              (plan) => `
+              <article class="chart-card">
+                <strong>${plan.name}</strong>
+                <span>Impact: ${plan.impact}</span>
+                <span>Coût: ${plan.cost}</span>
+                <span>Prêt en ${plan.readiness}</span>
+              </article>`
+            )
+            .join('');
+        }
+
+        function renderLogistics(items) {
+          logisticsTarget.innerHTML = items
+            .map(
+              (item) => `
+              <div class="list-item">
+                <strong>${item.facility ?? item.title ?? 'Signal'}</strong>
+                <p>${item.detail ?? item.description ?? ''}</p>
+                <span class="badge ${item.level === 'critical' ? 'critical' : 'warning'}">${item.risk ?? item.level ?? ''}</span>
+              </div>`
+            )
+            .join('');
+        }
+
+        function renderTraining(items) {
+          trainingTarget.innerHTML = items
+            .map(
+              (item) => `
+              <article class="module-card">
+                <h4>${item.title}</h4>
+                <p>${item.category}</p>
+                <p>Taux de complétion: ${item.completion}</p>
+                <a class="badge" href="${item.url}" target="_blank" rel="noopener">Consulter</a>
+              </article>`
+            )
+            .join('');
+        }
+
+        async function fetchJSON(url, options = {}) {
+          const response = await fetch(url, options);
+          if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+          }
+          return response.json();
+        }
+
+        async function loadBudgets() {
+          setStatus('budgets', 'Chargement…');
+          try {
+            const data = await fetchJSON(WEBHOOKS.resourcePlanList);
+            const items = data?.items ?? data ?? [];
+            if (!items.length) throw new Error('Aucune donnée');
+            renderBudgets(items);
+            setStatus('budgets', 'Synchronisé', 'success');
+          } catch (err) {
+            console.warn('Budgets fallback:', err.message);
+            renderBudgets(sampleBudgets);
+            setStatus('budgets', 'Mode dégradé (données locales)', 'warning');
+          }
+        }
+
+        async function loadPlans() {
+          setStatus('plans', 'Chargement…');
+          try {
+            const data = await fetchJSON(WEBHOOKS.scenarioList);
+            const items = data?.items ?? [];
+            if (!items.length) throw new Error('Aucun scénario');
+            renderPlans(items);
+            setStatus('plans', 'Simulations à jour', 'success');
+          } catch (err) {
+            console.warn('Plans fallback:', err.message);
+            renderPlans(samplePlans);
+            setStatus('plans', 'Mode dégradé (exemples)', 'warning');
+          }
+        }
+
+        async function loadLogistics() {
+          setStatus('logistics', 'Chargement…');
+          try {
+            const data = await fetchJSON(`${WEBHOOKS.logistics}?limit=6`);
+            const alerts = data?.alerts ?? [];
+            if (!alerts.length) throw new Error('Aucune alerte');
+            renderLogistics(alerts);
+            setStatus('logistics', 'Alertes actualisées', 'success');
+          } catch (err) {
+            console.warn('Logistics fallback:', err.message);
+            renderLogistics(sampleLogistics);
+            setStatus('logistics', 'Mode dégradé (exemples)', 'warning');
+          }
+        }
+
+        function normalizeCatalogItems(data) {
+          const modules = data?.catalog ?? data?.items ?? data?.modules ?? [];
+          if (!modules.length) return [];
+          return modules.slice(0, 6).map((module, index) => {
+            const rawCompletion = module.completion ?? module.progress ?? module.completion_rate;
+            let completionValue = rawCompletion ?? 'N/A';
+            if (typeof rawCompletion === 'number' && !Number.isNaN(rawCompletion)) {
+              const percent = rawCompletion <= 1 ? rawCompletion * 100 : rawCompletion;
+              completionValue = `${Math.round(percent)}%`;
+            }
+            return {
+              title: module.title ?? module.name ?? `Module ${index + 1}`,
+              category: module.category ?? module.topic ?? 'Formation',
+              url: module.url ?? module.link ?? '#',
+              completion: completionValue
+            };
+          });
+        }
+
+        async function notifyTrainingView(count) {
+          try {
+            await fetch(WEBHOOKS.trainingNotification, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                event_type: 'catalog_view',
+                total_modules: count,
+                timestamp: new Date().toISOString()
+              })
+            });
+          } catch (err) {
+            console.warn('Notification formation indisponible:', err.message);
+          }
+        }
+
+        async function loadTraining() {
+          setStatus('training', 'Chargement…');
+          try {
+            const data = await fetchJSON(WEBHOOKS.lmsCatalog);
+            const normalized = normalizeCatalogItems(data);
+            if (!normalized length) throw new Error('Catalogue vide');
+            renderTraining(normalized);
+            await notifyTrainingView(normalized.length);
+            setStatus('training', 'Catalogue synchronisé', 'success');
+          } catch (err) {
+            console.warn('Training fallback:', err.message);
+            renderTraining(sampleTraining);
+            setStatus('training', 'Mode dégradé (exemples)', 'warning');
+          }
+        }
+
+        planForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          formStatus.textContent = 'Envoi en cours…';
+          try {
+            const formData = new FormData(planForm);
+            const plannedValue = Number(formData.get('budget_prevu') || 0);
+            const admittedValue = Number(formData.get('budget_admis') || 0);
+            const payload = {
+              mois: formData.get('mois'),
+              province: formData.get('province'),
+              prevues: formData.get('prevue') || null,
+              administrees: formData.get('administre') || null,
+              budget_prevu: plannedValue,
+              budget_prevus: plannedValue,
+              budget_admis: admittedValue,
+              budget_admin: admittedValue,
+              notes: formData.get('notes') || null
+            };
+            await fetchJSON(WEBHOOKS.resourcePlanSubmit, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload)
+            });
+            formStatus.textContent = 'Planification enregistrée ✓';
+            planForm.reset();
+            await loadBudgets();
+          } catch (err) {
+            console.error('Envoi impossible:', err.message);
+            formStatus.textContent = 'Erreur d’envoi';
+          } finally {
+            setTimeout(() => {
+              formStatus.textContent = '—';
+            }, 4000);
+          }
+        });
+
+        renderBudgets(sampleBudgets);
+        renderPlans(samplePlans);
+        renderLogistics(sampleLogistics);
+        renderTraining(sampleTraining);
+        setStatus('budgets', 'Mode dégradé (exemples)', 'warning');
+        setStatus('plans', 'Mode dégradé (exemples)', 'warning');
+        setStatus('logistics', 'Mode dégradé (exemples)', 'warning');
+        setStatus('training', 'Mode dégradé (exemples)', 'warning');
+
+        loadBudgets();
+        loadPlans();
+        loadLogistics();
+        loadTraining();
+      </script>
+    </body>
+  </html>
 
