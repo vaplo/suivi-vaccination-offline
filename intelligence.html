@@ -1,0 +1,296 @@
+ <!DOCTYPE html>
+  <html lang="fr">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>Analytics Pr&#233;dictives &amp; Sc&#233;narios IA</title>
+      <link rel="stylesheet" href="assets/styles.css" />
+    </head>
+    <body>
+      <header>
+        <nav class="nav">
+          <div><strong>Vaccination RDC</strong></div>
+          <div class="nav-links">
+            <a href="index.html">Accueil 360&#176;</a>
+            <a href="kpi2.html">KPIs</a>
+            <a href="intelligence.html" class="active">Analytics IA</a>
+            <a href="planification.html">Planification</a>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Pr&#233;visions IA</h3>
+            <small>Bas&#233;es sur ml_predictions</small>
+          </div>
+          <div class="chart-grid" data-forecast-grid></div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Simulateur multi-sc&#233;narios</h3>
+            <small>Webhook run-scenario</small>
+          </div>
+          <form class="two-column" id="scenario-form">
+            <label class="module-card">
+              <h4>Zone cibl&#233;e</h4>
+              <select name="region_id" required>
+                <option value="cd-kin">Kinshasa</option>
+                <option value="cd-tnk">Tanganyika</option>
+                <option value="cd-ituri">Ituri</option>
+              </select>
+            </label>
+            <label class="module-card">
+              <h4>Strat&#233;gie</h4>
+              <select name="strategy" required>
+                <option value="boost_campaign">Intensification campagne</option>
+                <option value="community_drive">Renforcement communautaire</
+  option>
+                <option value="mobile_teams">Ajout mobile team</option>
+              </select>
+            </label>
+            <label class="module-card">
+              <h4>Dur&#233;e (jours)</h4>
+              <input type="number" name="horizon_days" min="30" max="120"
+  value="60" />
+            </label>
+            <label class="module-card">
+              <h4>Budget additionnel (USD)</h4>
+              <input type="number" name="extra_budget" min="0" step="5000"
+  value="25000" />
+            </label>
+            <div class="module-card" style="grid-column: 1 / -1; display:flex;
+  justify-content:flex-end">
+              <button class="primary" type="submit">Simuler</button>
+            </div>
+          </form>
+          <div class="panel" style="margin-top:1rem">
+            <div class="panel-header">
+              <h4>Derniers sc&#233;narios</h4>
+              <small>Donn&#233;es scenario_runs</small>
+            </div>
+            <div class="list" data-scenario-list></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h3>Actions personnalis&#233;es recommand&#233;es</h3>
+            <small>personalized_actions</small>
+          </div>
+          <div class="list two-column" data-action-list></div>
+        </section>
+      </main>
+
+      <footer>Pr&#233;dictions &amp; optimisation IA &#8211; version beta</
+  footer>
+
+      <script>
+        const forecastTarget = document.querySelector("[data-forecast-grid]");
+        const scenarioList = document.querySelector("[data-scenario-list]");
+        const actionList = document.querySelector("[data-action-list]");
+        const scenarioForm = document.getElementById("scenario-form");
+
+        const N8N_BASE_URL = window.N8N_BASE_URL ?? "https://n8n-automation-
+  server-waz-production.up.railway.app/webhook";
+        const buildWebhookUrl = (path) => {
+          const base = N8N_BASE_URL.replace(/\/$/, "");
+          const cleanPath = path.replace(/^\//, "");
+          return `${base}/${cleanPath}`;
+        };
+
+        const WEBHOOKS = {
+          forecast: buildWebhookUrl("coverage-forecast"),
+          runScenario: buildWebhookUrl("run-scenario"),
+          governance: buildWebhookUrl("governance")
+        };
+
+        const sampleForecasts = [
+          { region: "Tanganyika", indicator: "Couverture Penta3", horizon: 45,
+  value: "78%", anomaly: 0.82 },
+          { region: "Kasai-Oriental", indicator: "Z&#233;ro dose", horizon: 45,
+  value: "34k", anomaly: 0.72 },
+          { region: "Kinshasa", indicator: "Retards >30j", horizon: 30, value:
+  "6.2%", anomaly: 0.41 }
+        ];
+
+        const sampleScenarios = [
+          { run_uid: "scn_001", region: "Tanganyika", strategy: "mobile_teams",
+  impact: "+6 pts couverture", status: "simul&#233;" },
+          { run_uid: "scn_002", region: "Kinshasa", strategy: "community_drive",
+  impact: "-14% refus", status: "valid&#233;" }
+        ];
+
+        const sampleActions = [
+          { region: "Lomami", indicator: "Z&#233;ro dose", priority:
+  "&#233;lev&#233;", detail: "Mission mobile + bundle IEC" },
+          { region: "Nord-Kivu", indicator: "Retards Penta", priority: "normal",
+  detail: "Ouvrir cr&#233;neaux week-end" },
+          { region: "Tshopo", indicator: "Couverture Rougeole", priority:
+  "&#233;lev&#233;", detail: "Campagne coupl&#233;e nutrition" }
+        ];
+
+        let scenarioState = [...sampleScenarios];
+
+        function renderForecasts(items) {
+          forecastTarget.innerHTML = items
+            .map(
+              (item) => `
+              <article class="chart-card">
+                <strong>${item.region}</strong>
+                <span>${item.indicator} &#8226; ${item.horizon} j</span>
+                <div class="map-placeholder" style="min-height:120px">
+                  <p>Valeur pr&#233;vue: ${item.value}</p>
+                </div>
+                <span class="badge ${Number(item.anomaly) > 0.8 ? "critical" :
+  ""}">Anomalie ${item.anomaly}</span>
+              </article>`
+            )
+            .join("");
+        }
+
+        function renderScenarios(items) {
+          scenarioList.innerHTML = items
+            .map(
+              (item) => `
+              <div class="list-item">
+                <strong>${item.region} &#8226; ${item.strategy}</strong>
+                <div class="trend">${item.impact}</div>
+                <span class="badge">${item.status}</span>
+              </div>`
+            )
+            .join("");
+        }
+
+        function renderActions(items) {
+          actionList.innerHTML = items
+            .map(
+              (item) => `
+              <article class="module-card">
+                <h4>${item.region}</h4>
+                <p><strong>${item.indicator}</strong></p>
+                <p>${item.detail}</p>
+                <span class="badge ${item.priority === "&#233;lev&#233;" ?
+  "critical" : ""}">${item.priority}</span>
+              </article>`
+            )
+            .join("");
+        }
+
+        function mapPredictionsToForecasts(data) {
+          const predictions = data?.predictions ?? [];
+          if (!predictions.length) return null;
+          return predictions.slice(0, 3).map((prediction, index) => ({
+            region: prediction.region_name ?? prediction.region ?? `R&#233;gion
+  ${index + 1}`,
+            indicator: prediction.indicator ?? "Couverture",
+            horizon: prediction.horizon_days ?? prediction.horizon ?? 45,
+            value: prediction.value ?? prediction.predicted_value ?? "N/A",
+            anomaly: Number(prediction.anomaly_score ?? prediction.anomaly ??
+  0).toFixed(2)
+          }));
+        }
+
+        async function fetchForecastsFromWebhook() {
+          const response = await fetch(WEBHOOKS.forecast, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify({
+              horizon_days: 45,
+              indicators: ["coverage_rate", "zero_dose"],
+              regions: ["cd-tnk", "cd-kin", "cd-ituri"]
+            })
+          });
+          if (!response.ok) {
+            throw new Error(`Webhook forecast ${response.status}`);
+          }
+          return response.json();
+        }
+
+        async function logGovernanceEvent(eventType, payload = {}) {
+          try {
+            await fetch(WEBHOOKS.governance, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                event_type: eventType,
+                source: "analytics_page",
+                timestamp: new Date().toISOString(),
+                ...payload
+              })
+            });
+          } catch (err) {
+            console.warn("Webhook gouvernance indisponible:", err.message);
+          }
+        }
+
+        async function submitScenario(payload) {
+          const response = await fetch(WEBHOOKS.runScenario, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+          if (!response.ok) {
+            throw new Error(`Webhook scenario ${response.status}`);
+          }
+          return response.json();
+        }
+
+        scenarioForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const formData = new FormData(event.currentTarget);
+          const payload = Object.fromEntries(formData.entries());
+          try {
+            const result = await submitScenario(payload);
+            const normalizedScenario = {
+              run_uid: result.run_uid ?? `run_${Date.now()}`,
+              region: result.region ?? result.region_name ?? payload.region_id,
+              strategy: result.strategy ?? payload.strategy,
+              impact: result.impact ?? result.projected_impact ?? "Impact en
+  calcul",
+              status: result.status ?? "soumis"
+            };
+            scenarioState = [normalizedScenario, ...scenarioState].slice(0, 5);
+            renderScenarios(scenarioState);
+            await logGovernanceEvent("scenario_submitted", {
+              run_uid: normalizedScenario.run_uid,
+              region: normalizedScenario.region,
+              strategy: normalizedScenario.strategy
+            });
+            alert("Sc&#233;nario transmis via webhook IA.");
+          } catch (err) {
+            console.warn("Erreur webhook run-scenario:", err.message);
+            alert("Echec de l&#8217;appel webhook run-scenario (voir
+  console).");
+          }
+        });
+
+        async function bootstrapIntelligence() {
+          renderForecasts(sampleForecasts);
+          renderScenarios(scenarioState);
+          renderActions(sampleActions);
+          await logGovernanceEvent("analytics_viewed", { section:
+  "intelligence" });
+          try {
+            const data = await fetchForecastsFromWebhook();
+            const normalized = mapPredictionsToForecasts(data);
+            if (normalized) {
+              renderForecasts(normalized);
+            }
+          } catch (err) {
+            console.warn("Webhook forecast injoignable:", err.message);
+          }
+        }
+
+        bootstrapIntelligence();
+      </script>
+    </body>
+  </html
