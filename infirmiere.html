@@ -7,218 +7,276 @@
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="images/logo.png">
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#16a085" />
+  <meta name="theme-color" content="#0f172a" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4fdfc;
-      margin: 0;
-      color: #333;
-    }
+    <style>
+:root {
+  --bg-dark: #0f172a;
+  --bg-panel: #16213c;
+  --bg-soft: rgba(255, 255, 255, 0.03);
+  --accent: #4fd1c5;
+  --accent-strong: #f59e0b;
+  --text-light: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: #1f2a44;
+  --success: #10b981;
+  --danger: #ef4444;
+  --warning: #fbbf24;
+  font-size: 16px;
+}
 
-    .top-bar {
-      background-color: #16a085;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-      border-bottom: 4px solid #138d75;
-    }
+* { box-sizing: border-box; }
 
-    .top-bar .logo {
-      display: block;
-      margin: 0 auto 0.5rem;
-      max-height: 60px;
-    }
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: radial-gradient(circle at top, #1e1b4b, #0f172a 45%);
+  margin: 0;
+  color: var(--text-light);
+  min-height: 100vh;
+}
 
-    .grid-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      padding: 2rem;
-    }
+.top-bar {
+  background: rgba(15, 23, 42, 0.92);
+  border-bottom: 1px solid var(--border);
+  text-align: center;
+  padding: 1.25rem;
+  backdrop-filter: blur(10px);
+}
 
-    .card {
-      position: relative;
-      background-size: cover;
-      background-position: center;
-      border-radius: 16px;
-      min-height: 280px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-      padding: 1.5rem;
-      color: white;
-    }
+.top-bar .logo {
+  display: block;
+  margin: 0 auto 0.5rem;
+  max-height: 60px;
+}
 
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 0;
-    }
+.top-bar h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
 
-    .card * {
-      position: relative;
-      z-index: 1;
-    }
+.top-bar h2 {
+  margin: 0.2rem 0 0;
+  font-weight: 400;
+  color: var(--text-muted);
+}
 
-    .card h3 {
-      margin-bottom: 0.5rem;
-    }
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+}
 
-    .btn-small { padding: .35rem .6rem; font-size: .875rem; border-radius: 6px; }
-    .btn-inline { margin: 0; display: inline-flex; align-items: center; gap: .4rem; }
-    .btn[disabled] { opacity: .6; cursor: not-allowed; }
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  padding: 1rem 0 1.5rem;
+}
 
+.card {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.35);
+  padding: 1.5rem;
+  color: #fff;
+}
 
-    .btn {
-      margin-top: 1rem;
-      padding: 0.6rem 1rem;
-      background-color: #16a085;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      cursor: pointer;
-      display: inline-block;
-      text-align: center;
-    }
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 25%, rgba(0,0,0,0.6) 100%);
+  z-index: 0;
+}
 
-    .btn:hover {
-      background-color: #138d75;
-    }
+.card * { position: relative; z-index: 1; }
+.card h3 { margin: 0 0 0.35rem; }
+.card p { margin: 0; color: #e2e8f0; }
 
-    .btn-secondary {
-      background-color: #2980b9;
-    }
+.btn {
+  margin-top: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--accent);
+  color: #0f172a;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
 
-    .btn-secondary:hover {
-      background-color: #216a94;
-    }
+.btn:hover { transform: translateY(-1px); box-shadow: 0 10px 25px rgba(79, 209, 197, 0.25); }
+.btn:active { transform: translateY(0); }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-    }
+.btn-secondary {
+  background: var(--bg-soft);
+  color: var(--text-light);
+  border: 1px solid var(--border);
+}
 
-    .formulaire {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin: 1rem 2rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      display: none;
-    }
+.btn-small { padding: .35rem .6rem; font-size: .875rem; border-radius: 8px; }
+.btn-inline { margin: 0; display: inline-flex; align-items: center; gap: .4rem; }
+.btn[disabled] { opacity: .6; cursor: not-allowed; }
 
-    .formulaire.active {
-      display: block;
-    }
+.formulaire {
+  background: var(--bg-panel);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin: 1rem 0 2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  display: none;
+}
 
-    .formulaire h3 {
-      color: #16a085;
-      margin-bottom: 1rem;
-    }
+.formulaire.active { display: block; }
+.formulaire h3 { color: var(--accent); margin: 0 0 1rem; }
 
-    .formulaire form {
-      display: grid;
-      gap: 1rem;
-    }
+.form-section {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
 
-    .formulaire label {
-      font-weight: bold;
-      color: #333;
-    }
+.form-section h4 {
+  margin: 0 0 0.5rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
 
-    .formulaire input,
-    .formulaire select {
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 1rem;
-    }
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem 1rem;
+}
 
-    .formulaire input:focus,
-    .formulaire select:focus {
-      outline: none;
-      border-color: #16a085;
-      box-shadow: 0 0 0 2px rgba(22, 160, 133, 0.2);
-    }
+label { font-weight: 600; color: var(--text-light); display: flex; flex-direction: column; gap: 0.3rem; }
 
-    .table-stats {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 1rem;
-    }
+input, select, textarea {
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
 
-    .table-stats th, .table-stats td {
-      border: 1px solid #ccc;
-      padding: 0.75rem;
-      text-align: left;
-    }
+textarea { resize: vertical; min-height: 80px; }
 
-    .table-stats th {
-      background-color: #16a085;
-      color: white;
-    }
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.2);
+}
 
-    .table-stats tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
+.table-stats {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
 
-    .vaccins-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin: 2rem;
-    }
+.table-stats th, .table-stats td {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  text-align: left;
+  color: var(--text-light);
+}
 
-    .vaccin-table-container {
-      background: #fff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
+.table-stats th { background: rgba(79, 209, 197, 0.12); }
+.table-stats tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
 
-    .vaccin-table-container h3 {
-      color: #16a085;
-      margin-bottom: 1rem;
-      text-align: center;
-    }
+.vaccins-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin: 2rem 0;
+}
 
-    footer {
-      text-align: center;
-      margin: 2rem 0;
-    }
+.vaccin-table-container {
+  background: var(--bg-panel);
+  border-radius: 14px;
+  padding: 1.2rem;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
 
-    @media (max-width: 900px) {
-      .vaccins-section {
-        grid-template-columns: 1fr;
-      }
-    }
+.vaccin-table-container h3 {
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+  text-align: center;
+}
 
-    @media (max-width: 600px) {
-      .card {
-        padding: 1rem;
-      }
-      .grid-cards {
-        padding: 1rem;
-      }
-      .formulaire {
-        margin: 1rem;
-      }
-      .vaccins-section {
-        margin: 1rem;
-      }
-    }
+/* RDV du jour */
+.rdv-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem; }
+.rdv-controls { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+.rdv-controls input { min-width:240px; }
+.rdv-stats { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap:0.75rem; margin-bottom:1rem; }
+.stat-card { background: var(--bg-soft); border:1px solid var(--border); border-radius:12px; padding:0.75rem; }
+.stat-card strong { font-size:1.6rem; display:block; margin-top:0.25rem; }
+.rdv-list { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:0.75rem; }
+.rdv-card { background:#fff; color:#111; border-radius:12px; padding:0.9rem; border:1px solid #e0e0e0; box-shadow:0 8px 16px rgba(0,0,0,0.08); }
+.rdv-enfant { border-left:4px solid #2e7d32; }
+.rdv-femme { border-left:4px solid #c2185b; }
+.rdv-top div { margin-bottom:0.2rem; }
+.rdv-middle { display:flex; justify-content:space-between; font-weight:600; margin:0.5rem 0; }
+.rdv-actions { display:flex; gap:0.5rem; }
+
+.modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); align-items:center; justify-content:center; padding:1rem; }
+.modal.open { display:flex; }
+.modal-content { background: var(--bg-panel); color: var(--text-light); border:1px solid var(--border); border-radius:12px; max-width:520px; width:100%; padding:1rem; box-shadow:0 20px 40px rgba(0,0,0,0.3); }
+.modal-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem; }
+.modal-body { display:grid; gap:0.75rem; }
+.modal-footer { display:flex; gap:0.5rem; justify-content:flex-end; margin-top:1rem; }
+.modal textarea { min-height:70px; }
+
+footer { text-align: center; margin: 2rem 0; color: var(--text-muted); }
+
+@media (max-width: 900px) {
+  .vaccins-section { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .card { padding: 1rem; }
+  .grid-cards { padding: 0; }
+  .formulaire { margin: 1rem 0; }
+  .vaccins-section { margin: 1rem 0; }
+}
+  
+.search-section { margin-bottom: 1.5rem; display:flex; justify-content:center; }
+.search-group { display:flex; gap:0.75rem; align-items:center; width:100%; max-width:520px; }
+.search-input { position:relative; flex:1; }
+.search-input input { width:100%; padding:0.8rem 1rem; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,0.04); color:var(--text-light); }
+.btn-search { padding:0.7rem 1rem; border:none; border-radius:10px; background:#667eea; color:#fff; font-weight:700; cursor:pointer; }
+.search-suggestions { position:absolute; top:100%; left:0; right:0; background:#0f172a; border:1px solid var(--border); border-radius:10px; box-shadow:0 10px 20px rgba(0,0,0,0.35); max-height:220px; overflow:auto; display:none; z-index:20; }
+.search-suggestions.show { display:block; }
+.suggestion-item { padding:0.65rem 0.85rem; border-bottom:1px solid var(--border); cursor:pointer; }
+.suggestion-item:hover { background:rgba(102,126,234,0.12); }
+.tab-content .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1rem; margin:1rem 0; }
+.tab-content .stat-card { background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; padding:1rem; text-align:center; }
+.tab-content .stat-card .number { font-size:2rem; font-weight:800; color:var(--accent); }
+.empty-state { text-align:center; padding:2rem; background:rgba(255,255,255,0.04); border:1px dashed var(--border); border-radius:12px; }
+.loading { display:flex; align-items:center; gap:0.5rem; justify-content:center; padding:1rem; }
+.spinner { width:18px; height:18px; border:3px solid rgba(255,255,255,0.2); border-top-color:var(--accent); border-radius:50%; animation:spin 1s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
   </style>
   <script>
-    if ("serviceWorker" in navigator) {
+    if (location.protocol.startswith("http") && "serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("✅ SW actif"))
         .catch(err => console.error("❌ SW error:", err));
@@ -251,185 +309,661 @@
         <p>Consultez la liste des enfants à vacciner ou déjà vaccinés aujourd'hui.</p>
         <button class="btn" onclick="afficherVaccins()">📌 Voir les vaccinations</button>
       </div>
+
+      <div class="card" style="background-image: linear-gradient(135deg, rgba(102,126,234,0.7), rgba(118,75,162,0.7));">
+        <h3>📅 RDV du jour</h3>
+        <p>Vaccinations & visites prénatales prévues aujourd'hui.</p>
+        <button class="btn btn-secondary" onclick="afficherRdv()">Charger les RDV</button>
+      </div>
     </section>
 
-    <!-- Formulaire Enfant --><!-- Formulaire Enfant -->
-<section class="formulaire" id="form-enfant">
-  <h3>👶 Formulaire Enfant</h3>
-  <form id="form-enfant-form">
-    <label for="nom_complet">Nom complet</label>
-    <input id="nom_complet" name="nom_complet" type="text" required placeholder="Nom complet de l'enfant" />
+    <!-- Formulaire Enfant -->
+    <section class="formulaire" id="form-enfant">
+      <h3>👶 Formulaire Enfant</h3>
+      <form id="form-enfant-form">
+        <div class="form-section">
+          <h4>Identité enfant</h4>
+          <div class="field-grid">
+            <label for="nom_infirmier">Nom de l'infirmier
+              <input id="nom_infirmier" name="nom_infirmier" type="text" placeholder="Infirmier responsable" />
+            </label>
+            <label for="nom_complet">Nom de famille
+              <input id="nom_complet" name="nom_complet" type="text" required placeholder="Nom" />
+            </label>
+            <label for="prenoms">Prénoms
+              <input id="prenoms" name="prenoms" type="text" required />
+            </label>
+            <label for="sexe">Sexe
+              <select id="sexe" name="sexe" required>
+                <option value="">Sélectionner</option>
+                <option value="M">Masculin</option>
+                <option value="F">Féminin</option>
+              </select>
+            </label>
+            <label for="date_naissance">Date de naissance
+              <input id="date_naissance" name="date_naissance" type="date" required />
+            </label>
+            <label for="lieu_naissance">Lieu de naissance
+              <input id="lieu_naissance" name="lieu_naissance" type="text" />
+            </label>
+            <label for="telephone_parent">Téléphone du parent/tuteur
+              <input id="telephone_parent" name="telephone_parent" type="tel" />
+            </label>
+          </div>
+        </div>
 
-    <label for="date_naissance">Date de naissance</label>
-    <input id="date_naissance" name="date_naissance" type="date" required />
+        <div class="form-section">
+          <h4>Profil médical initial</h4>
+          <div class="field-grid">
+            <label for="poids_naissance_kg">Poids naissance (kg)
+              <input id="poids_naissance_kg" name="poids_naissance_kg" type="number" min="0" step="0.1" />
+            </label>
+            <label for="taille_naissance_cm">Taille naissance (cm)
+              <input id="taille_naissance_cm" name="taille_naissance_cm" type="number" min="0" step="0.1" />
+            </label>
+            <label for="prematurity">Prématurité
+              <select id="prematurity" name="prematurity">
+                <option value="">Sélectionner</option>
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </label>
+            <label id="prematurity_semaines_wrap" for="prematurity_semaines">Semaines (si prématuré)
+              <input id="prematurity_semaines" name="prematurity_semaines" type="number" min="20" max="40" step="1" />
+            </label>
+            <label for="maladie_chronique">Maladie chronique
+              <select id="maladie_chronique" name="maladie_chronique">
+                <option value="">Sélectionner</option>
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </label>
+            <label id="maladie_chronique_description_wrap" for="maladie_chronique_description">Description (si oui)
+              <textarea id="maladie_chronique_description" name="maladie_chronique_description" placeholder="Détails de la pathologie"></textarea>
+            </label>
+            <label for="malnutrition_enfant">Malnutrition
+              <select id="malnutrition_enfant" name="malnutrition">
+                <option value="">Non précisé</option>
+                <option value="non">Non</option>
+                <option value="risque">Risque</option>
+                <option value="diagnostiquee">Diagnostiquée</option>
+              </select>
+            </label>
+          </div>
+          <div class="field-grid">
+            <div>
+              <strong>Complications naissance</strong>
+              <div class="field-grid">
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="complications_naissance" value="asphyxie" /> Asphyxie
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="complications_naissance" value="infection" /> Infection
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="complications_naissance" value="hemorragie" /> Hémorragie
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="complications_naissance" value="autre" /> Autre
+                </label>
+              </div>
+            </div>
+            <div>
+              <strong>Allergies connues</strong>
+              <div class="field-grid">
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie_connues" value="alimentaire" /> Alimentaire
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie_connues" value="medicaments" /> Médicaments
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie_connues" value="vaccins" /> Vaccins
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie_connues" value="autre" /> Autre
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
 
-    <label for="sexe">Sexe</label>
-    <select id="sexe" name="sexe" required>
-      <option value="">Sélectionner</option>
-      <option value="M">Masculin</option>
-      <option value="F">Féminin</option>
-    </select>
+        <div class="form-section">
+          <h4>Situation familiale</h4>
+          <div class="field-grid">
+            <label for="orphelin">Situation orphelin
+              <select id="orphelin" name="orphelin">
+                <option value="non">Non</option>
+                <option value="pere">Père</option>
+                <option value="mere">Mère</option>
+                <option value="tous_deux">Les deux</option>
+              </select>
+            </label>
+            <label id="tuteur_nom_wrap" for="tuteur_nom">Nom du tuteur
+              <input id="tuteur_nom" name="tuteur_nom" type="text" />
+            </label>
+            <label for="nombre_freres_soeurs">Nombre de frères/soeurs
+              <input id="nombre_freres_soeurs" name="nombre_freres_soeurs" type="number" min="0" />
+            </label>
+          </div>
+        </div>
 
-    <label for="telephone_parent">Téléphone du parent</label>
-    <input id="telephone_parent" name="telephone_parent" type="tel" required />
+        <div class="form-section">
+          <h4>Localisation & assignation</h4>
+          <div class="field-grid">
+            <label for="province">Province
+              <select id="province" name="province">
+                <option value="">Sélectionner</option>
+                <option value="Bas-Uélé (Buta)">Bas-Uélé (Buta)</option>
+                <option value="Équateur (Mbandaka)">Équateur (Mbandaka)</option>
+                <option value="Haut-Katanga (Lubumbashi)">Haut-Katanga (Lubumbashi)</option>
+                <option value="Haut-Lomami (Kamina)">Haut-Lomami (Kamina)</option>
+                <option value="Haut-Uélé (Isiro)">Haut-Uélé (Isiro)</option>
+                <option value="Ituri (Bunia)">Ituri (Bunia)</option>
+                <option value="Kasaï (Tshikapa)">Kasaï (Tshikapa)</option>
+                <option value="Kasaï-Central (Kananga)">Kasaï-Central (Kananga)</option>
+                <option value="Kasaï-Oriental (Mbuji-Mayi)">Kasaï-Oriental (Mbuji-Mayi)</option>
+                <option value="Kinshasa (Kinshasa)">Kinshasa (Kinshasa)</option>
+                <option value="Kongo-Central (Matadi)">Kongo-Central (Matadi)</option>
+                <option value="Kwango (Kenge)">Kwango (Kenge)</option>
+                <option value="Kwilu (Bandundu)">Kwilu (Bandundu)</option>
+                <option value="Lomami (Kabinda)">Lomami (Kabinda)</option>
+                <option value="Lualaba (Kolwezi)">Lualaba (Kolwezi)</option>
+                <option value="Mai-Ndombe (Inongo)">Mai-Ndombe (Inongo)</option>
+                <option value="Maniema (Kindu)">Maniema (Kindu)</option>
+                <option value="Mongala (Lisala)">Mongala (Lisala)</option>
+                <option value="Nord-Kivu (Goma)">Nord-Kivu (Goma)</option>
+                <option value="Nord-Ubangi (Gbadolite)">Nord-Ubangi (Gbadolite)</option>
+                <option value="Sankuru (Lusambo)">Sankuru (Lusambo)</option>
+                <option value="Sud-Kivu (Bukavu)">Sud-Kivu (Bukavu)</option>
+                <option value="Sud-Ubangi (Gemena)">Sud-Ubangi (Gemena)</option>
+                <option value="Tanganyika (Kalemie)">Tanganyika (Kalemie)</option>
+                <option value="Tshopo (Kisangani)">Tshopo (Kisangani)</option>
+                <option value="Tshuapa (Boende)">Tshuapa (Boende)</option>
+              </select>
+            </label>
+            <label for="district">District
+              <input id="district" name="district" type="text" />
+            </label>
+            <label for="zone_sante">Zone de santé
+              <input id="zone_sante" name="zone_sante" type="text" />
+            </label>
+            <label for="centre_sante_principal">Centre de santé principal
+              <input id="centre_sante_principal" name="centre_sante_principal" type="text" />
+            </label>
+            <label for="sous_quartier">Sous-quartier
+              <input id="sous_quartier" name="sous_quartier" type="text" />
+            </label>
+            <label for="adresse_complete">Adresse complète
+              <textarea id="adresse_complete" name="adresse_complete" rows="2"></textarea>
+            </label>
+          </div>
+        </div>
 
-    <label for="centre_sante">Structure de santé</label>
-    <input id="centre_sante" name="centre_sante" type="text" required />
+        <div class="form-section">
+          <h4>Statut vaccinal initial</h4>
+          <div class="field-grid">
+            <label style="flex-direction:row;align-items:center;gap:.5rem;">
+              <input id="zero_dose" name="zero_dose" type="checkbox" value="true" /> Zéro dose
+            </label>
+            <label id="raison_zero_dose_wrap" for="raison_zero_dose">Raison zéro dose
+              <textarea id="raison_zero_dose" name="raison_zero_dose" rows="2" placeholder="Refus, rupture, éloignement..."></textarea>
+            </label>
+            <label for="vaccins_recus_avant">Vaccins reçus avant
+              <select id="vaccins_recus_avant" name="vaccins_recus_avant">
+                <option value="">Sélectionner</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+              </select>
+            </label>
+            <label id="vaccins_antecedens_wrap" for="vaccins_antecedens">Vaccins antécédents (liste + dates)
+              <textarea id="vaccins_antecedens" name="vaccins_antecedens" rows="2" placeholder="BCG - 2024-02-01; Polio 0 - 2024-02-01"></textarea>
+            </label>
+            <label for="mode">Mode
+              <select id="mode" name="mode" required>
+                <option value="Nouveau-né">Nouveau-né</option>
+                <option value="Rattrapage">Rattrapage</option>
+              </select>
+            </label>
+            <label for="base_date_mode">Base de calcul
+              <select id="base_date_mode" name="base_date_mode" required>
+                <option value="DOB">DOB (date de naissance)</option>
+                <option value="today">Aujourd'hui</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
-    <label for="province">Province</label>
-    <input id="province" name="province" type="text" required />
+        <div class="form-section">
+          <h4>Consentement & suivi</h4>
+          <div class="field-grid">
+            <label for="langue_preferee">Langue préférée
+              <select id="langue_preferee" name="langue_preferee" required>
+                <option value="">Langue préférée</option>
+                <option value="Français">Français</option>
+                <option value="Lingala">Lingala</option>
+                <option value="Swahili">Swahili</option>
+                <option value="Kikongo">Kikongo</option>
+                <option value="Tshiluba">Tshiluba</option>
+              </select>
+            </label>
+            <label style="flex-direction:row;align-items:center;gap:.5rem;margin-top:.5rem;">
+              <input id="consent_sms" name="consent_sms" type="checkbox" value="true" /> Consentement SMS
+            </label>
+          </div>
+          <label for="symptomes">Observations / symptômes remarqués</label>
+          <textarea id="symptomes" name="symptomes" style="height: 110px; width: 100%;"></textarea>
+        </div>
 
-    <label for="langue_preferee">Langue préférée</label>
-    <select id="langue_preferee" name="langue_preferee" required>
-      <option value="">Langue préférée</option>
-      <option value="Français">Français</option>
-      <option value="Lingala">Lingala</option>
-      <option value="Swahili">Swahili</option>
-      <option value="Kikongo">Kikongo</option>
-      <option value="Tshiluba">Tshiluba</option>
-    </select>
-
-    <label for="mode">Mode</label>
-    <select id="mode" name="mode" required>
-      <option value="Nouveau-né">Nouveau-né</option>
-      <option value="Rattrapage">Rattrapage</option>
-    </select>
-
-    <label for="base_data">Base de calcul</label>
-    <select id="base_data" name="base_data" required>
-      <option value="">Base de Calcul</option>
-      <option value="DOB">DOB</option>
-      <option value="today">Today</option>
-    </select>
-
-    <label for="sypmtomes">Symptomes remarqués et recommandations</label>
-    <textarea id="symptomes" name="symptomes" style="height: 150px; width: 100%;"></textarea>
-
-
-    <button type="submit" class="btn">📅 Envoyer</button>
-  </form>
-  <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
-</section>
+        <button type="submit" class="btn">📅 Envoyer</button>
+      </form>
+      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+    </section>
 
     <!-- Formulaire Grossesse -->
-   <!-- Formulaire Grossesse -->
-<section class="formulaire" id="form-grossesse">
-  <h3>🤰 Formulaire Grossesse</h3>
-  <form id="form-grossesse-form">
-    <label for="nom_grossesse">Nom complet</label>
-    <input id="nom_grossesse" name="nom" type="text" required />
+    <section class="formulaire" id="form-grossesse">
+      <h3>🤰 Formulaire Grossesse</h3>
+      <form id="form-grossesse-form">
+        <div class="form-section">
+          <h4>Identité mère</h4>
+          <div class="field-grid">
+            <label for="nom_infirmier_medecin">Nom de l'infirmier / médecin
+              <input id="nom_infirmier_medecin" name="nom_infirmier_medecin" type="text" />
+            </label>
+            <label for="nom_grossesse">Nom de famille
+              <input id="nom_grossesse" name="nom_complet" type="text" required />
+            </label>
+            <label for="prenoms_mere">Prénoms
+              <input id="prenoms_mere" name="prenoms" type="text" required />
+            </label>
+            <label for="date_naissance_mere">Date de naissance
+              <input id="date_naissance_mere" name="date_naissance" type="date" />
+            </label>
+            <label for="age_calcule">Âge (auto)
+              <input id="age_calcule" name="age" type="number" readonly />
+            </label>
+            <label for="id_nationale">ID nationale (optionnel)
+              <input id="id_nationale" name="id_nationale" type="text" />
+            </label>
+            <label for="etat_civil">État civil
+              <select id="etat_civil" name="etat_civil">
+                <option value="">Sélectionner</option>
+                <option value="celibataire">Célibataire</option>
+                <option value="mariee">Mariée</option>
+                <option value="union_libre">Union libre</option>
+                <option value="veuve">Veuve</option>
+                <option value="separee">Séparée</option>
+              </select>
+            </label>
+            <label for="telephone">Téléphone
+              <input id="telephone" name="telephone" type="tel" />
+            </label>
+          </div>
+        </div>
 
-    <label for="telephone">Téléphone</label>
-    <input id="telephone" name="telephone" type="tel" required />
+        <div class="form-section">
+          <h4>Profil médical</h4>
+          <div class="field-grid">
+            <label for="test_vih">Test VIH
+              <select id="test_vih" name="test_vih">
+                <option value="">Non réalisé / Inconnu</option>
+                <option value="negatif">Négatif</option>
+                <option value="positif">Positif</option>
+              </select>
+            </label>
+            <label for="test_syphilis">Test syphilis
+              <select id="test_syphilis" name="test_syphilis">
+                <option value="">Non réalisé / Inconnu</option>
+                <option value="negatif">Négatif</option>
+                <option value="positif">Positif</option>
+              </select>
+            </label>
+            <div>
+              <strong>Allergies (sélection multiple)</strong>
+              <div class="field-grid">
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie" value="medicamenteuse" /> Médicaments
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie" value="alimentaire" /> Alimentaire
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie" value="latex" /> Latex
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="allergie" value="autre" /> Autre
+                </label>
+              </div>
+            </div>
+            <label for="grossesse_a_risque">Grossesse à risque
+              <select id="grossesse_a_risque" name="grossesse_a_risque">
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </label>
+            <div id="grossesse_risque_details_wrap">
+              <strong>Détails si grossesse à risque</strong>
+              <div class="field-grid">
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="grossesse_risque_details" value="adolescente" /> Adolescente
+                </label>
+                <label style="flex-direction:row;align-items:center;gap:.4rem;">
+                  <input type="checkbox" name="grossesse_risque_details" value="agee" /> Âge élevé
+                </label>
+              </div>
+            </div>
+            <label for="antecedent_fausseacouche">Antécédent fausse couche
+              <select id="antecedent_fausseacouche" name="antecedent_fausseacouche.existe">
+                <option value="faux">Non</option>
+                <option value="vrai">Oui</option>
+              </select>
+            </label>
+            <label id="fausseacouche_nombre_wrap" for="antecedent_fausseacouche_nombre">Nombre (si oui)
+              <input id="antecedent_fausseacouche_nombre" name="antecedent_fausseacouche.nombre" type="number" min="0" />
+            </label>
+            <label for="antecedent_cesarienne">Antécédent césarienne
+              <select id="antecedent_cesarienne" name="antecedent_cesarienne.existe">
+                <option value="faux">Non</option>
+                <option value="vrai">Oui</option>
+              </select>
+            </label>
+            <label id="cesarienne_nombre_wrap" for="antecedent_cesarienne_nombre">Nombre (si oui)
+              <input id="antecedent_cesarienne_nombre" name="antecedent_cesarienne.nombre" type="number" min="0" />
+            </label>
+          </div>
+          <label for="complications_precedente_grossesse">Complications grossesses précédentes</label>
+          <textarea id="complications_precedente_grossesse" name="complications_precedente_grossesse" rows="3"></textarea>
+        </div>
 
-    <label for="semaines_grossesse">Semaines de grossesse</label>
-    <input id="semaines_grossesse" name="semaines_grossesse" type="number" min="1" required />
+        <div class="form-section">
+          <h4>Situation actuelle</h4>
+          <div class="field-grid">
+            <label for="date_dernieres_regles">Date des dernières règles
+              <input id="date_dernieres_regles" name="date_dernieres_regles" type="date" />
+            </label>
+            <label for="semaines_actuelles">Semaines de grossesse (auto)
+              <input id="semaines_actuelles" name="semaines_actuelles" type="number" readonly />
+            </label>
+            <label for="multipare">Multipare
+              <select id="multipare" name="multipare">
+                <option value="">Sélectionner</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+              </select>
+            </label>
+            <label for="partenaire_nom">Nom du partenaire
+              <input id="partenaire_nom" name="partenaire_nom" type="text" />
+            </label>
+            <label for="partenaire_phone">Téléphone partenaire
+              <input id="partenaire_phone" name="partenaire_phone" type="tel" />
+            </label>
+            <label for="soutien_familial">Soutien familial
+              <select id="soutien_familial" name="soutien_familial">
+                <option value="">Sélectionner</option>
+                <option value="faible">Faible</option>
+                <option value="moyen">Moyen</option>
+                <option value="fort">Fort</option>
+              </select>
+            </label>
+            <label for="intervalle_grossesse_court">Intervalle de grossesse court
+              <select id="intervalle_grossesse_court" name="intervalle_grossesse_court">
+                <option value="">Non précisé</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+              </select>
+            </label>
+            <label for="grossesse_multiple">Grossesse multiple
+              <select id="grossesse_multiple" name="grossesse_multiple">
+                <option value="">Non précisé</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+              </select>
+            </label>
+            <label for="malnutrition">Malnutrition
+              <select id="malnutrition" name="malnutrition">
+                <option value="">Non précisé</option>
+                <option value="non">Non</option>
+                <option value="risque">Risque</option>
+                <option value="diagnostiquee">Diagnostiquée</option>
+              </select>
+            </label>
+          </div>
+        </div>
 
-    <label for="dpa">Date prévue d’accouchement (DPA)</label>
-    <input id="dpa" name="dpa" type="date" required />
+        <div class="form-section">
+          <h4>Localisation</h4>
+          <div class="field-grid">
+            <label for="province_grossesse">Province
+              <select id="province_grossesse" name="province">
+                <option value="">Sélectionner</option>
+                <option value="Bas-Uélé (Buta)">Bas-Uélé (Buta)</option>
+                <option value="Équateur (Mbandaka)">Équateur (Mbandaka)</option>
+                <option value="Haut-Katanga (Lubumbashi)">Haut-Katanga (Lubumbashi)</option>
+                <option value="Haut-Lomami (Kamina)">Haut-Lomami (Kamina)</option>
+                <option value="Haut-Uélé (Isiro)">Haut-Uélé (Isiro)</option>
+                <option value="Ituri (Bunia)">Ituri (Bunia)</option>
+                <option value="Kasaï (Tshikapa)">Kasaï (Tshikapa)</option>
+                <option value="Kasaï-Central (Kananga)">Kasaï-Central (Kananga)</option>
+                <option value="Kasaï-Oriental (Mbuji-Mayi)">Kasaï-Oriental (Mbuji-Mayi)</option>
+                <option value="Kinshasa (Kinshasa)">Kinshasa (Kinshasa)</option>
+                <option value="Kongo-Central (Matadi)">Kongo-Central (Matadi)</option>
+                <option value="Kwango (Kenge)">Kwango (Kenge)</option>
+                <option value="Kwilu (Bandundu)">Kwilu (Bandundu)</option>
+                <option value="Lomami (Kabinda)">Lomami (Kabinda)</option>
+                <option value="Lualaba (Kolwezi)">Lualaba (Kolwezi)</option>
+                <option value="Mai-Ndombe (Inongo)">Mai-Ndombe (Inongo)</option>
+                <option value="Maniema (Kindu)">Maniema (Kindu)</option>
+                <option value="Mongala (Lisala)">Mongala (Lisala)</option>
+                <option value="Nord-Kivu (Goma)">Nord-Kivu (Goma)</option>
+                <option value="Nord-Ubangi (Gbadolite)">Nord-Ubangi (Gbadolite)</option>
+                <option value="Sankuru (Lusambo)">Sankuru (Lusambo)</option>
+                <option value="Sud-Kivu (Bukavu)">Sud-Kivu (Bukavu)</option>
+                <option value="Sud-Ubangi (Gemena)">Sud-Ubangi (Gemena)</option>
+                <option value="Tanganyika (Kalemie)">Tanganyika (Kalemie)</option>
+                <option value="Tshopo (Kisangani)">Tshopo (Kisangani)</option>
+                <option value="Tshuapa (Boende)">Tshuapa (Boende)</option>
+              </select>
+            </label>
+            <label for="district_grossesse">District
+              <input id="district_grossesse" name="district" type="text" />
+            </label>
+            <label for="zone_sante_grossesse">Zone de santé
+              <input id="zone_sante_grossesse" name="zone_sante" type="text" />
+            </label>
+            <label for="centre_prenatal_principal">Centre prénatal principal
+              <input id="centre_prenatal_principal" name="centre_prenatal_principal" type="text" />
+            </label>
+            <label for="acces_ambulance">Accès ambulance
+              <select id="acces_ambulance" name="acces_ambulance">
+                <option value="">Sélectionner</option>
+                <option value="oui">Oui</option>
+                <option value="non">Non</option>
+              </select>
+            </label>
+            <label for="adresse_complete_grossesse">Adresse complète
+              <textarea id="adresse_complete_grossesse" name="adresse_complete" rows="2"></textarea>
+            </label>
+          </div>
+        </div>
 
-    <label for="centre_sante_grossesse">Structure de santé</label>
-    <input id="centre_sante_grossesse" name="centre_sante" type="text" required />
+        <div class="form-section">
+          <h4>Consentement & suivi</h4>
+          <div class="field-grid">
+            <label for="langue_preferee_grossesse">Langue préférée
+              <select id="langue_preferee_grossesse" name="langue_preferee">
+                <option value="">Langue préférée</option>
+                <option value="Français">Français</option>
+                <option value="Lingala">Lingala</option>
+                <option value="Swahili">Swahili</option>
+                <option value="Kikongo">Kikongo</option>
+                <option value="Tshiluba">Tshiluba</option>
+              </select>
+            </label>
+            <label style="flex-direction:row;align-items:center;gap:.5rem;margin-top:.5rem;">
+              <input id="consent_sms_grossesse" name="consent_sms" type="checkbox" value="true" /> Consentement SMS
+            </label>
+            <label for="contact_urgence_nom">Contact d'urgence (nom)
+              <input id="contact_urgence_nom" name="contact_urgence_nom" type="text" />
+            </label>
+            <label for="contact_urgence_phone">Téléphone urgence
+              <input id="contact_urgence_phone" name="contact_urgence_phone" type="tel" />
+            </label>
+          </div>
+          <label for="observations">Observations</label>
+          <textarea id="observations" name="observations" rows="3"></textarea>
+        </div>
 
-    <label for="province_grossesse">Province</label>
-    <input id="province_grossesse" name="province" type="text" required />
-
-    <label for="langue_preferee_grossesse">Langue préférée</label>
-    <select id="langue_preferee_grossesse" name="langue_preferee" required>
-      <option value="">Langue préférée</option>
-      <option value="Français">Français</option>
-      <option value="Lingala">Lingala</option>
-      <option value="Swahili">Swahili</option>
-      <option value="Kikongo">Kikongo</option>
-      <option value="Tshiluba">Tshiluba</option>
-    </select>
-
-    <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
-  </form>
-  <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
-</section>
+        <button type="submit" class="btn btn-secondary">📅 Envoyer</button>
+      </form>
+      <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
+    </section>
 
 
     <!-- Section Vaccins -->
     <section class="vaccins-section" id="vaccins-section" style="display: none;">
-      <div class="vaccin-table-container">
-        <h3>📌 Vaccins à faire aujourd'hui</h3><br />
-        <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:1rem;">
-          <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
-            Du
-            <input id="filter-prevus-from" type="date" />
-          </label>
+      <!-- ONGLET: VACCINS AUJOURD'HUI -->
+      <div id="vaccinsTab" class="tab-content">
+          <div class="search-section">
+              <div class="search-group">
+                  <div class="search-input">
+                      <input 
+                          type="text" 
+                          id="vaccinsSearchCentre" 
+                          placeholder="🔍 Rechercher centre de santé..."
+                          autocomplete="off"
+                      >
+                      <div class="search-suggestions" id="vaccinsSuggestions"></div>
+                  </div>
+                  <button class="btn-search" onclick="loadVaccinsAujourdhui()">Charger Vaccins</button>
+              </div>
+          </div>
 
-          <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
-            Au
-            <input id="filter-prevus-to" type="date" />
-          </label>
+          <!-- STATS -->
+          <div class="stats">
+              <div class="stat-card">
+                  <h3>À Faire</h3>
+                  <div class="number" id="vaccinsStats">0</div>
+              </div>
+              <div class="stat-card">
+                  <h3>Administrés</h3>
+                  <div class="number" id="vaccinsAdministres">0</div>
+              </div>
+              <div class="stat-card">
+                  <h3>Total</h3>
+                  <div class="number" id="vaccinsTotalStats">0</div>
+              </div>
+          </div>
 
-          <label style="display:flex; align-items:center; gap:0.4rem; font-weight:600;">
-            <input id="filter-prevus-since-start" type="checkbox" />
-            Depuis le début
-          </label>
-
-          <button id="btn-apply-filter-prevus" class="btn btn-small btn-inline">Appliquer</button>
-          <button id="btn-reset-filter-prevus" class="btn btn-small btn-secondary">Réinitialiser</button>
-          <button id="btn-range-prevus-yesterday-today" class="btn btn-small">Hier & Aujourd'hui</button>
-          <button id="btn-range-prevus-start-today" class="btn btn-small">Du début → Aujourd'hui</button>
-        </div>
-        <table class="table-stats">
-          <thead>
-            <tr><th>Catégorie</th><th>ID</th><th>Centre Santé</th><th>Nom</th><th>Date naissance</th><th>Date RDV</th><th>Vaccin</th><th>Dose</th><th>Action</th></tr>
-          </thead>
-          <tbody id="table-vaccins-prevus">
-            <tr><td>Jean Mukamba</td><td>15/03/2023</td><td>BCG</td><td>1ère dose</td></tr>
-            <tr><td>Marie Nsimba</td><td>28/02/2023</td><td>DTC</td><td>2ème dose</td></tr>
-            <tr><td>Pierre Kabamba</td><td>10/04/2023</td><td>Polio</td><td>1ère dose</td></tr>
-            <tr><td>Grace Mbuyi</td><td>05/01/2023</td><td>Rougeole</td><td>1ère dose</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="vaccin-table-container">
-        <h3>✅ Vaccins déjà administrés</h3> <br />
-
-         <!-- Barre de filtres -->
-  <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center; justify-content:center; margin-bottom:1rem;">
-    <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
-      Du
-      <input id="filter-from" type="date" />
-    </label>
-
-    <label style="display:flex; flex-direction:column; align-items:flex-start; font-weight:600;">
-      Au
-      <input id="filter-to" type="date" />
-    </label>
-
-    <label style="display:flex; align-items:center; gap:0.4rem; font-weight:600;">
-      <input id="filter-since-start" type="checkbox" />
-      Depuis le début
-    </label>
-
-    <button id="btn-apply-filter" class="btn btn-small btn-inline">Appliquer</button>
-    <button id="btn-reset-filter" class="btn btn-small btn-secondary">Réinitialiser</button>
-    <button id="btn-range-yesterday-today" class="btn btn-small">Hier & Aujourd'hui</button>
-    <button id="btn-range-start-today" class="btn btn-small">Du début → Aujourd'hui</button>
-  </div>
-
-        <table class="table-stats">
-          <thead>
-            <tr><th>Nom</th><th>Date</th><th>Vaccin</th><th>Dose</th></tr>
-          </thead>
-          <tbody id="table-vaccins-administres">
-            <tr><td>Joseph Kilolo</td><td>12/11/2024</td><td>BCG</td><td>1ère dose</td></tr>
-            <tr><td>Sarah Mwamba</td><td>12/11/2024</td><td>DTC</td><td>3ème dose</td></tr>
-            <tr><td>Daniel Kasongo</td><td>11/11/2024</td><td>Polio</td><td>2ème dose</td></tr>
-            <tr><td>Esther Ngandu</td><td>11/11/2024</td><td>Pneumocoque</td><td>1ère dose</td></tr>
-          </tbody>
-        </table>
+          <!-- LISTE VACCINS -->
+          <div id="vaccinsContainer">
+              <div class="empty-state">
+                  <h3>👋 Recherchez un centre de santé</h3>
+                  <p>Entrez le nom du centre pour voir les vaccins du jour</p>
+              </div>
+          </div>
       </div>
       <div style="grid-column: 1/-1; text-align: center; margin-top: 1rem;">
         <button type="button" onclick="retourAccueil()" class="btn btn-secondary">⬅ Retour</button>
       </div>
     </section>
+
+    <!-- Modal Administrer Vaccin -->
+    <div id="modalAdministrer" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>Administrer Vaccin</h4>
+          <button class="btn btn-secondary" onclick="closeModal()">Fermer</button>
+        </div>
+        <div class="modal-body">
+          <label>Patient
+            <input type="text" id="modalNom" readonly />
+          </label>
+          <label>Vaccin
+            <input type="text" id="modalVaccin" readonly />
+          </label>
+          <label>Heure
+            <input type="time" id="modalHeure" />
+          </label>
+          <label>Observations
+            <textarea id="modalObservations"></textarea>
+          </label>
+          <label>Effets secondaires
+            <textarea id="modalEffets"></textarea>
+          </label>
+          <label>Infirmier(e)
+            <input type="text" id="modalInfirmier" placeholder="Nom infirmier(e)" />
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="submitVaccinModal()">✅ Confirmer</button>
+          <button class="btn btn-secondary" onclick="closeModal()">❌ Annuler</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section RDV du jour -->
+    <section class="formulaire" id="rdv-section">
+      <h3>📅 RDV du jour</h3>
+      <div class="rdv-header">
+        <div>
+          <h4 style="margin:0;">Vaccinations & visites prénatales</h4>
+          <p style="margin:0;color:var(--text-muted);">Filtre par centre de santé</p>
+        </div>
+        <button class="btn btn-secondary" onclick="retourAccueil()">⬅ Retour</button>
+      </div>
+
+      <div class="rdv-controls">
+        <input list="centre-sante-list" id="rdv-centre-input" placeholder="🔍 Rechercher centre..." />
+        <datalist id="centre-sante-list"></datalist>
+        <button class="btn" id="btn-load-rdv">Charger RDV</button>
+      </div>
+
+      <div class="rdv-stats" id="rdv-stats">
+        <div class="stat-card">
+          <div>💉 Vaccins</div>
+          <strong id="stat-vaccins">0</strong>
+        </div>
+        <div class="stat-card">
+          <div>🤰 Visites</div>
+          <strong id="stat-visites">0</strong>
+        </div>
+        <div class="stat-card">
+          <div>📊 Total</div>
+          <strong id="stat-total">0</strong>
+        </div>
+      </div>
+
+      <div id="rdv-list" class="rdv-list"></div>
+    </section>
+
+    <!-- Modal Administrer RDV -->
+    <div id="rdv-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 id="modal-title">Administrer RDV</h4>
+          <button class="btn btn-secondary" onclick="closeRdvModal()">Fermer</button>
+        </div>
+        <div class="modal-body">
+          <div id="modal-patient"></div>
+          <label>Heure
+            <input type="time" id="modal-heure" required />
+          </label>
+          <label>Observations
+            <textarea id="modal-observations"></textarea>
+          </label>
+          <label>Effets secondaires
+            <textarea id="modal-effets"></textarea>
+          </label>
+          <label>Infirmier(e)
+            <input type="text" id="modal-infirmier" placeholder="Nom infirmier(e)" />
+          </label>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" onclick="submitVaccinModal()">✅ Confirmer</button>
+          <button class="btn btn-secondary" onclick="closeRdvModal()">❌ Annuler</button>
+        </div>
+      </div>
+    </div>
 
     <footer>
       <a href="index.html" class="btn">⬅ Retour à l'accueil</a>
@@ -441,65 +975,228 @@
       document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
       document.getElementById('vaccins-section').style.display = 'none';
       document.querySelector('.grid-cards').style.display = 'none';
+      document.getElementById('rdv-section')?.classList.remove('active');
       document.getElementById(id).classList.add('active');
     }
 
     function afficherVaccins() {
       document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
       document.querySelector('.grid-cards').style.display = 'none';
+      document.getElementById('rdv-section')?.classList.remove('active');
       document.getElementById('vaccins-section').style.display = 'grid';
+    }
+
+    function afficherRdv() {
+      document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
+      document.getElementById('vaccins-section').style.display = 'none';
+      document.querySelector('.grid-cards').style.display = 'none';
+      document.getElementById('rdv-section').classList.add('active');
+      loadCentres();
     }
 
     function retourAccueil() {
       document.querySelectorAll('.formulaire').forEach(f => f.classList.remove('active'));
       document.getElementById('vaccins-section').style.display = 'none';
+      document.getElementById('rdv-section')?.classList.remove('active');
       document.querySelector('.grid-cards').style.display = 'grid';
     }
 
-    // Gestion des formulaires
-    document.getElementById('form-enfant-form').addEventListener('submit', function(e) {
+    // =====================
+    // MASQUER NUMÉRO TÉLÉPHONE
+    // =====================
+    function maskPhoneNumber(phone) {
+      if (!phone) return 'N/A';
+      const str = String(phone);
+      if (str.length < 8) return str.substring(0, 2) + '****' + str.substring(str.length - 1);
+      const first = str.substring(0, 3);
+      const last = str.substring(str.length - 2);
+      return first + '****' + last;
+    }
+
+    // Gestion des formulaires et helpers
+    const get = (id) => document.getElementById(id);
+
+    const formatInputDate = (date) => {
+      if (!date) return '';
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    };
+
+    const parseDateLocal = (val) => {
+      if (!val) return null;
+      const normalized = String(val).trim().replace(/\//g, '-').replace(/\s.*$/, '');
+      const d = new Date(normalized);
+      return isNaN(d) ? null : d;
+    };
+
+    const toggleField = (wrapperId, shouldShow) => {
+      const el = get(wrapperId);
+      if (!el) return;
+      el.style.display = shouldShow ? '' : 'none';
+      if (!shouldShow) {
+        el.querySelectorAll('input, select, textarea').forEach((input) => {
+          if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+          } else {
+            input.value = '';
+          }
+        });
+      }
+    };
+
+    const serializeForm = (formEl) => {
+      const fd = new FormData(formEl);
+      const data = {};
+      fd.forEach((value, key) => {
+        if (Object.prototype.hasOwnProperty.call(data, key)) {
+          if (!Array.isArray(data[key])) data[key] = [data[key]];
+          data[key].push(value);
+        } else {
+          data[key] = value;
+        }
+      });
+      return data;
+    };
+    const toArray = (value) => value === undefined ? [] : Array.isArray(value) ? value : [value];
+
+    function updatePrematurity() {
+      toggleField('prematurity_semaines_wrap', get('prematurity')?.value === 'oui');
+    }
+    function updateMaladieChronique() {
+      toggleField('maladie_chronique_description_wrap', get('maladie_chronique')?.value === 'oui');
+    }
+    function updateOrphelin() {
+      const show = get('orphelin')?.value && get('orphelin').value !== 'non';
+      toggleField('tuteur_nom_wrap', show);
+    }
+    function updateZeroDose() {
+      toggleField('raison_zero_dose_wrap', !!get('zero_dose')?.checked);
+    }
+    function updateVaccinsRecusAvant() {
+      toggleField('vaccins_antecedens_wrap', get('vaccins_recus_avant')?.value === 'oui');
+    }
+    function updateAntecedents() {
+      toggleField('fausseacouche_nombre_wrap', get('antecedent_fausseacouche')?.value === 'vrai');
+      toggleField('cesarienne_nombre_wrap', get('antecedent_cesarienne')?.value === 'vrai');
+    }
+
+    function updateAge() {
+      const dob = parseDateLocal(get('date_naissance_mere')?.value);
+      const ageField = get('age_calcule');
+      if (!ageField) return;
+      if (!dob) { ageField.value = ''; return; }
+      const age = Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+      ageField.value = age;
+    }
+
+    function updateDpaEtSemaines() {
+      const lmp = parseDateLocal(get('date_dernieres_regles')?.value);
+      const weeksField = get('semaines_actuelles');
+      if (weeksField) {
+        weeksField.value = lmp ? Math.floor((Date.now() - lmp.getTime()) / (7 * 24 * 60 * 60 * 1000)) : '';
+      }
+    }
+
+    function updateGrossesseRisque() {
+      const show = get('grossesse_a_risque')?.value === 'oui';
+      toggleField('grossesse_risque_details_wrap', show);
+    }
+
+    function initToggles() {
+      updatePrematurity();
+      updateMaladieChronique();
+      updateOrphelin();
+      updateZeroDose();
+      updateVaccinsRecusAvant();
+      updateAntecedents();
+      updateAge();
+      updateDpaEtSemaines();
+      updateGrossesseRisque();
+    }
+
+    get('prematurity')?.addEventListener('change', updatePrematurity);
+    get('maladie_chronique')?.addEventListener('change', updateMaladieChronique);
+    get('orphelin')?.addEventListener('change', updateOrphelin);
+    get('zero_dose')?.addEventListener('change', updateZeroDose);
+    get('vaccins_recus_avant')?.addEventListener('change', updateVaccinsRecusAvant);
+    get('antecedent_fausseacouche')?.addEventListener('change', updateAntecedents);
+    get('antecedent_cesarienne')?.addEventListener('change', updateAntecedents);
+    get('date_naissance_mere')?.addEventListener('change', updateAge);
+    get('date_dernieres_regles')?.addEventListener('change', updateDpaEtSemaines);
+    get('multipare')?.addEventListener('change', updateGrossesseRisque);
+    get('grossesse_a_risque')?.addEventListener('change', updateGrossesseRisque);
+
+    document.getElementById('form-enfant-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData);
-      
-      fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-child", {
+      const data = serializeForm(this);
+      data.zero_dose = !!get('zero_dose')?.checked;
+      data.consent_sms = !!get('consent_sms')?.checked;
+      data.complications_naissance = toArray(data.complications_naissance);
+      data.allergie_connues = toArray(data.allergie_connues);
+      data.centre_sante = data.centre_sante || data.centre_sante_principal || '';
+
+      // base_date_mode → base_date
+      if (data.base_date_mode === 'today') {
+        data.base_date = formatInputDate(new Date());
+      } else {
+        data.base_date = data.date_naissance;
+      }
+      delete data.base_date_mode;
+
+  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/webhook-test/register-child", {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       })
-      .then(response => response.json())
-      .then(data => {
-        alert(`Enfant ${data.nom_complet} enregistré avec succès!`);
+      .then(async (r) => {
+        const text = await r.text();
+        let res; try { res = JSON.parse(text); } catch { res = {}; }
+        if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
+        const nom = res.nom_complet || data.nom_complet || 'inconnu';
+        alert(`Enfant ${nom} enregistré avec succès !`);
         this.reset();
+        initToggles();
         retourAccueil();
       })
-      .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'enregistrement');
+      .catch(err => {
+        console.error('Erreur:', err);
+        alert("Erreur lors de l'enregistrement");
       });
     });
 
-    document.getElementById('form-grossesse-form').addEventListener('submit', function(e) {
+    document.getElementById('form-grossesse-form').addEventListener('submit', function (e) {
       e.preventDefault();
-      const formData = new FormData(this);
-      const data = Object.fromEntries(formData);
-      
-      fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy', {
+      updateAge();
+      updateDpaEtSemaines();
+      const data = serializeForm(this);
+      data.consent_sms = !!get('consent_sms_grossesse')?.checked;
+      data.allergie = toArray(data.allergie);
+      data.grossesse_risque_details = toArray(data.grossesse_risque_details);
+      data.centre_sante = data.centre_sante || data.centre_prenatal_principal || '';
+
+  fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook-test/register-pregnancy', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(data)
       })
-      .then(response => response.json())
-      .then(data => {
-        alert('Grossesse enregistrée avec succès!');
+      .then(async (r) => {
+        const text = await r.text();
+        if (!r.ok) throw new Error(text || `HTTP ${r.status}`);
+        alert('Grossesse enregistrée avec succès !');
         this.reset();
+        initToggles();
         retourAccueil();
       })
-      .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur lors de l\'enregistrement');
+      .catch(err => {
+        console.error('Erreur:', err);
+        alert("Erreur lors de l'enregistrement grossesse");
       });
     });
+
+    initToggles();
+
 
  // ===================================== Vaccins ==========================================   
 
@@ -746,45 +1443,24 @@
     renderPrevusTable(null, parseDateSafe(document.getElementById('filter-prevus-to').value));
   });
 
-  // FETCH des vaccins prévus depuis l'API officielle
-  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinprevue")
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    })
-    .then(data => {
-      // data attendu comme array ; si objet unique on convertit en array
-      allPrevus = Array.isArray(data) ? data : (data ? [data] : []);
-      // par défaut : hier -> aujourd'hui
-      setPrevusInputsToYesterdayToday();
-      const from = parseDateSafe(document.getElementById('filter-prevus-from').value);
-      const to   = parseDateSafe(document.getElementById('filter-prevus-to').value);
-      renderPrevusTable(from, to);
-    })
-    .catch(err => {
-      console.error("Erreur fetch vaccins prévus:", err);
-      /* fallback : si tbody contient déjà des lignes statiques, les utiliser
-      const tbody = document.getElementById("table-vaccins-prevus");
-      if (tbody) {
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        allPrevus = rows.map(tr => {
-          // on essaie de reconstruire les objets à partir du DOM
-          const cells = tr.querySelectorAll('td');
-          return {
-            categorie: (cells[0] && cells[0].textContent.trim()) || '',
-            personne_id: (cells[1] && cells[1].textContent.trim()) || '',
-            centre_sante: (cells[2] && cells[2].textContent.trim()) || '',
-            nom: (cells[3] && cells[3].textContent.trim()) || '',
-            date_naissance: (cells[4] && cells[4].textContent.trim()) || '',
-            date_rdv: (cells[5] && cells[5].textContent.trim()) || '',
-            vaccin: (cells[6] && cells[6].textContent.trim()) || '',
-            dose: (cells[7] && cells[7].textContent.trim()) || ''
-          };
-        });
+  // FETCH des vaccins prévus depuis l'API officielle (désactivé si aucun filtre n'est présent)
+  if (document.getElementById('filter-prevus-from')) {
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinprevue")
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        allPrevus = Array.isArray(data) ? data : (data ? [data] : []);
         setPrevusInputsToYesterdayToday();
-        renderPrevusTable(parseDateSafe(document.getElementById('filter-prevus-from').value), parseDateSafe(document.getElementById('filter-prevus-to').value));*/
-      //}
-    });
+        const from = parseDateSafe(document.getElementById('filter-prevus-from').value);
+        const to   = parseDateSafe(document.getElementById('filter-prevus-to').value);
+        renderPrevusTable(from, to);
+      })
+      .catch(err => {
+        console.error("Erreur fetch vaccins prévus:", err);
+      });
+  }
 </script>
 
 
@@ -897,39 +1573,367 @@
   });
 
   // ---- FETCH des vaccins administrés depuis l'API (source officielle) ----
-  fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
-    .then(r => {
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      return r.json();
-    })
-    .then(data => {
-      // data attendu comme array d'objets
-      allAdmin = Array.isArray(data) ? data : (data ? [data] : []);
-      // initialisation par défaut : hier -> aujourd'hui
-      setInputsToYesterdayToday();
-      const from = parseDateSafe(document.getElementById('filter-from').value);
-      const to   = parseDateSafe(document.getElementById('filter-to').value);
-      renderAdminTable(from, to);
-    })
-    .catch(err => {
-      console.error("Erreur fetch vaccins administrés:", err);
-      // Si erreur, on essaie de récupérer les lignes statiques déjà présentes dans le tbody (fallback)
-      const tbody = document.getElementById("table-vaccins-administres");
-      if (tbody) {
-        const rows = Array.from(tbody.querySelectorAll('tr'));
-        allAdmin = rows.map(tr => {
-          const cells = tr.querySelectorAll('td');
-          return {
-            nom_complet: (cells[0] && cells[0].textContent.trim()) || '',
-            date_administration: (cells[1] && cells[1].textContent.trim()) || '',
-            vaccin: (cells[2] && cells[2].textContent.trim()) || '',
-            dose: (cells[3] && cells[3].textContent.trim()) || ''
-          };
-        });
+  if (document.getElementById('filter-from')) {
+    fetch("https://n8n-automation-server-waz-production.up.railway.app/webhook-test/vaccinsadministres")
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        allAdmin = Array.isArray(data) ? data : (data ? [data] : []);
         setInputsToYesterdayToday();
-        renderAdminTable(parseDateSafe(document.getElementById('filter-from').value), parseDateSafe(document.getElementById('filter-to').value));
-      }
+        const from = parseDateSafe(document.getElementById('filter-from').value);
+        const to   = parseDateSafe(document.getElementById('filter-to').value);
+        renderAdminTable(from, to);
+      })
+      .catch(err => {
+        console.error("Erreur fetch vaccins administrés:", err);
+        const tbody = document.getElementById("table-vaccins-administres");
+        if (tbody) {
+          const rows = Array.from(tbody.querySelectorAll('tr'));
+          allAdmin = rows.map(tr => {
+            const cells = tr.querySelectorAll('td');
+            return {
+              nom_complet: (cells[0] && cells[0].textContent.trim()) || '',
+              date_administration: (cells[1] && cells[1].textContent.trim()) || '',
+              vaccin: (cells[2] && cells[2].textContent.trim()) || '',
+              dose: (cells[3] && cells[3].textContent.trim()) || ''
+            };
+          });
+          setInputsToYesterdayToday();
+          renderAdminTable(parseDateSafe(document.getElementById('filter-from').value), parseDateSafe(document.getElementById('filter-to').value));
+        }
+      });
+  }
+</script>
+
+<script>
+  // ========================= RDV DU JOUR ============================
+  let currentRdv = null;
+  let allCentres = [];
+
+  async function loadCentres() {
+    const datalist = document.getElementById('centre-sante-list');
+    if (!datalist) return;
+    if (allCentres.length) {
+      datalist.innerHTML = allCentres.map(c => `<option value="${c.centre_sante || c}"></option>`).join('');
+      return;
+    }
+    try {
+      const res = await fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook/get-centres-sante');
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      allCentres = (Array.isArray(data) ? data : []).map(c => {
+        if (typeof c === 'string') return { centre_sante: c, zone_sante: '', province: '' };
+        return {
+          centre_sante: c.centre_sante || c.nom || '',
+          zone_sante: c.zone_sante || '',
+          province: c.province || ''
+        };
+      });
+    } catch (e) {
+      allCentres = [
+        { centre_sante: 'CS KABAMBARE', zone_sante: '', province: '' },
+        { centre_sante: 'CS Benie', zone_sante: '', province: '' },
+        { centre_sante: 'CS Bukavu', zone_sante: '', province: '' },
+        { centre_sante: 'CS Katindo', zone_sante: '', province: '' }
+      ];
+    }
+    datalist.innerHTML = allCentres.map(c => `<option value="${c.centre_sante || ''}"></option>`).join('');
+  }
+
+  async function loadRdv() {
+    const centre = (document.getElementById('rdv-centre-input')?.value || '').trim();
+    if (!centre) { alert('Choisir un centre'); return; }
+    const listEl = document.getElementById('rdv-list');
+    listEl.innerHTML = '<p>Chargement...</p>';
+    try {
+      const url = `https://n8n-automation-server-waz-production.up.railway.app/webhook/get-rdv-du-jour?centre_sante=${encodeURIComponent(centre)}`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      const items = Array.isArray(data) ? data : [];
+      renderStats(items);
+      renderRdvList(items);
+    } catch (e) {
+      listEl.innerHTML = '<p style="color:#c2185b;">Erreur de chargement RDV</p>';
+      console.error(e);
+    }
+  }
+
+  function renderStats(items) {
+    const vaccins = items.filter(i => i.type === 'enfant').length;
+    const visites = items.filter(i => i.type === 'femme').length;
+    const total = items.length;
+    document.getElementById('stat-vaccins').textContent = vaccins;
+    document.getElementById('stat-visites').textContent = visites;
+    document.getElementById('stat-total').textContent = total;
+  }
+
+  function renderRdvList(items) {
+    const listEl = document.getElementById('rdv-list');
+    if (!items.length) {
+      listEl.innerHTML = '<p>Aucun RDV pour ce centre aujourd’hui.</p>';
+      return;
+    }
+    listEl.innerHTML = items.map(rdv => `
+      <div class="rdv-card ${rdv.type === 'enfant' ? 'rdv-enfant' : 'rdv-femme'}">
+        <div class="rdv-top">
+          <div class="rdv-type">${rdv.type === 'enfant' ? '👶 Enfant' : '🤰 Femme'}</div>
+          <div class="rdv-name">${rdv.nom || 'Patient'}</div>
+          <div class="rdv-phone">📞 ${maskPhoneNumber(rdv.telephone)}</div>
+          <div class="rdv-date">⏰ ${rdv.date_prevue || ''}</div>
+        </div>
+        <div class="rdv-middle">
+          <div>${rdv.vaccin || 'Visite'}</div>
+          <div>${rdv.dose || ''}</div>
+        </div>
+        <div class="rdv-actions">
+          <button class="btn" onclick='openRdvModal(${JSON.stringify(rdv)})'>✅ ${rdv.type === 'enfant' ? 'Administrer' : 'Réaliser'}</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openRdvModal(rdv) {
+    currentRdv = rdv;
+    document.getElementById('modal-title').textContent = rdv.type === 'enfant' ? 'Administrer Vaccination' : 'Réaliser Visite';
+    document.getElementById('modal-patient').textContent = `${rdv.nom || ''} - ${rdv.vaccin || ''} ${rdv.dose || ''}`;
+    document.getElementById('modal-heure').value = rdv.heure_rdv || '';
+    document.getElementById('modal-observations').value = '';
+    document.getElementById('modal-effets').value = '';
+    document.getElementById('modal-infirmier').value = '';
+    document.getElementById('rdv-modal').classList.add('open');
+  }
+
+  function closeRdvModal() {
+    document.getElementById('rdv-modal').classList.remove('open');
+    currentRdv = null;
+  }
+
+  async function submitRdv() {
+    if (!currentRdv) return;
+    const payload = {
+      rdv_id: currentRdv.rdv_id,
+      entity_id: currentRdv.entity_id,
+      type: currentRdv.type,
+      vaccin: currentRdv.vaccin,
+      dose: currentRdv.dose,
+      centre_sante: currentRdv.centre_sante,
+      date_administration: currentRdv.date_prevue,
+      heure_administration: document.getElementById('modal-heure').value,
+      observations: document.getElementById('modal-observations').value,
+      effets_secondaires: document.getElementById('modal-effets').value,
+      infirmier_nom: document.getElementById('modal-infirmier').value
+    };
+    try {
+      const res = await fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook/administrer-rdv', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      alert('RDV mis à jour');
+      closeRdvModal();
+      loadRdv();
+    } catch (e) {
+      alert('Erreur mise à jour RDV');
+      console.error(e);
+    }
+  }
+
+  document.getElementById('btn-load-rdv')?.addEventListener('click', loadRdv);
+</script>
+
+<script>
+  // =====================
+  // VACCINS AUJOURD'HUI
+  // =====================
+  let currentVaccine = null;
+
+  const vaccinsSearch = document.getElementById('vaccinsSearchCentre');
+  vaccinsSearch?.addEventListener('input', (e) => {
+    const query = (e.target.value || '').toLowerCase();
+    const suggestions = document.getElementById('vaccinsSuggestions');
+    if (!suggestions) return;
+    if (query.length === 0) {
+      suggestions.classList.remove('show');
+      return;
+    }
+    const filtered = (allCentres || []).filter(c => {
+      const name = (c.centre_sante || '').toLowerCase();
+      const zone = (c.zone_sante || '').toLowerCase();
+      const prov = (c.province || '').toLowerCase();
+      return name.includes(query) || zone.includes(query) || prov.includes(query);
     });
+    suggestions.innerHTML = filtered.map(c => `
+        <div class="suggestion-item" onclick="selectVaccinsCentre('${c.centre_sante}')">
+            <strong>${c.centre_sante}</strong>
+            <div style="font-size: 12px; color: #999;">
+                ${c.zone_sante || ''} • ${c.province || ''}
+            </div>
+        </div>
+    `).join('');
+    suggestions.classList.toggle('show', filtered.length > 0);
+  });
+
+  function selectVaccinsCentre(centre) {
+    const input = document.getElementById('vaccinsSearchCentre');
+    if (input) input.value = centre;
+    const suggestions = document.getElementById('vaccinsSuggestions');
+    suggestions?.classList.remove('show');
+  }
+
+  async function loadVaccinsAujourdhui() {
+    const centre = document.getElementById('vaccinsSearchCentre')?.value;
+    if (!centre) {
+      alert('Veuillez sélectionner un centre');
+      return;
+    }
+    const container = document.getElementById('vaccinsContainer');
+    container.innerHTML = '<div class="loading"><div class="spinner"></div>Chargement...</div>';
+    try {
+      const response = await fetch(`https://n8n-automation-server-waz-production.up.railway.app/webhook/get-vaccins-jour?centre_sante=${encodeURIComponent(centre)}`);
+      if (!response.ok) {
+        container.innerHTML = '<div class="empty-state"><h3>❌ Centre non trouvé</h3></div>';
+        return;
+      }
+      const vaccins = await response.json();
+      if (!Array.isArray(vaccins) || vaccins.length === 0) {
+        container.innerHTML = '<div class="empty-state"><h3>✅ Aucun vaccin pour aujourd'hui</h3></div>';
+        updateVaccinsStats(0, 0);
+        return;
+      }
+      const aFaire = vaccins.filter(v => v.statut === 'prevu');
+      const administres = vaccins.filter(v => v.statut === 'administre');
+      updateVaccinsStats(aFaire.length, administres.length);
+      let html = '';
+      if (aFaire.length > 0) {
+        html += '<h2 style="color: #667eea; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #667eea;">🔴 À Faire (' + aFaire.length + ')</h2>';
+        html += aFaire.map(v => createVaccinCard(v, true)).join('');
+      }
+      if (administres.length > 0) {
+        html += '<h2 style="color: #2e7d32; margin: 30px 0 20px; padding-bottom: 10px; border-bottom: 2px solid #2e7d32;">✅ Administrés (' + administres.length + ')</h2>';
+        html += administres.map(v => createVaccinCard(v, false)).join('');
+      }
+      container.innerHTML = html;
+    } catch (error) {
+      console.error('Erreur:', error);
+      container.innerHTML = '<div class="empty-state"><h3>❌ Erreur chargement</h3></div>';
+    }
+  }
+
+  function createVaccinCard(vaccine, isAfaire) {
+    const safeData = JSON.stringify(vaccine).replace(/"/g, '&quot;');
+    return `
+        <div class="rdv-card">
+            <div class="rdv-header">
+                <div class="rdv-info">
+                    <span class="rdv-type enfant">👶 ${vaccine.nom_enfant || vaccine.nom || ''}</span>
+                    <h3>${vaccine.vaccin || ''}</h3>
+                    <div class="rdv-meta">
+                        <div>📞 ${maskPhoneNumber(vaccine.telephone_parent)}</div>
+                        <div>⏰ ${vaccine.date_prevue || ''}</div>
+                        <div style="margin-top: 8px;">
+                            <span style="padding: 4px 8px; background: ${isAfaire ? '#ffeaa7' : '#d4edda'}; border-radius: 4px; font-size: 12px;">
+                                ${isAfaire ? '⏳ À faire' : '✅ Fait le ' + (vaccine.date_administration || vaccine.date_prevue || '')}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="rdv-body">
+                <div>
+                    <div class="rdv-detail">
+                        <label>Vaccin</label>
+                        <value>${vaccine.vaccin || ''}</value>
+                    </div>
+                </div>
+                <div>
+                    <div class="rdv-detail">
+                        <label>Dose</label>
+                        <value>${vaccine.dose || ''}</value>
+                    </div>
+                </div>
+            </div>
+            <div class="rdv-footer">
+                ${isAfaire ? 
+                    `<button class="btn-administrer enfant" onclick="openModalVaccin(${safeData})">
+                        ✅ Administrer
+                    </button>` 
+                    : 
+                    `<button class="btn-administrer enfant" style="opacity: 0.5; cursor: default;" disabled>
+                        ✅ Déjà administré
+                    </button>`
+                }
+            </div>
+        </div>
+    `;
+  }
+
+  function openModalVaccin(vaccine) {
+    currentVaccine = vaccine;
+    document.getElementById('modalNom').value = vaccine.nom_enfant || vaccine.nom || '';
+    document.getElementById('modalVaccin').value = `${vaccine.vaccin || ''} - ${vaccine.dose || ''}`;
+    const now = new Date();
+    document.getElementById('modalHeure').value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('modalObservations').value = '';
+    document.getElementById('modalEffets').value = '';
+    document.getElementById('modalInfirmier').value = '';
+    document.getElementById('modalAdministrer').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modalAdministrer')?.classList.remove('open');
+    currentVaccine = null;
+  }
+
+  function updateVaccinsStats(aFaire, administres) {
+    document.getElementById('vaccinsStats').textContent = aFaire;
+    document.getElementById('vaccinsAdministres').textContent = administres;
+    document.getElementById('vaccinsTotalStats').textContent = aFaire + administres;
+  }
+
+  document.getElementById('modalAdministrer')?.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modalAdministrer')) {
+        closeModal();
+    }
+  });
+</script>
+
+
+<script>
+  async function submitVaccinModal() {
+    if (!currentVaccine) { closeModal(); return; }
+    const payload = {
+      enfant_id: currentVaccine.enfant_id || currentVaccine.entity_id || null,
+      enfant_nom: currentVaccine.nom_enfant || currentVaccine.nom || '',
+      telephone_parent: currentVaccine.telephone_parent || '',
+      vaccin: currentVaccine.vaccin || '',
+      dose: currentVaccine.dose || '',
+      date_vaccination: currentVaccine.date_prevue || new Date().toISOString().slice(0,10),
+      heure_vaccination: document.getElementById('modalHeure').value,
+      centre_sante: currentVaccine.centre_sante || currentVaccine.centre_sante_principal || '',
+      infirmier_nom: document.getElementById('modalInfirmier').value,
+      observations: document.getElementById('modalObservations').value,
+      effets_secondaires: document.getElementById('modalEffets').value,
+      workflow_code: 'wf_vaccination_administree_v1'
+    };
+    try {
+      const res = await fetch('https://n8n-automation-server-waz-production.up.railway.app/webhook/register-vaccination', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      closeModal();
+      alert('Vaccination enregistrée');
+      loadVaccinsAujourdhui();
+    } catch (e) {
+      console.error('Erreur enregistrement vaccination:', e);
+      alert('Erreur enregistrement vaccination');
+    }
+  }
 </script>
 
 </body>
