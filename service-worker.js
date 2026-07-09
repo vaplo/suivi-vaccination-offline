@@ -1,16 +1,19 @@
-const CACHE_NAME = "flowlab-cache-v1";
+const CACHE_NAME = "flowlab-cache-v2";
 
-// 📦 Fichiers à mettre en cache (pages + assets + images)
-const urlsToCache = [
+// Static files used by the PWA shell. Each file is cached independently so one
+// missing optional asset does not break the whole service worker installation.
+const STATIC_ASSETS = [
   "/",
   "/index.html",
   "/infirmiere.html",
   "/superviseur.html",
+  "/operation.html",
+  "/dashboard.html",
+  "/systeme.html",
+  "/avis.html",
   "/styles.css",
   "/script.js",
   "/manifest.webmanifest",
-  "/icon-192.png",
-  "/icon-512.png",
   "/images/logo.png",
   "/images/enfants.png",
   "/images/grossesses.png",
@@ -18,44 +21,80 @@ const urlsToCache = [
   "/images/exportdesretards.png",
   "/images/suiviequitable.png",
   "/images/statistique.png",
-  "/images/espacesuperviseur.png"
+  "/images/espacesuperviseur.png",
+  "/images/espacemedical.png",
+  "/images/operations.jpg",
+  "/images/tableaubord2.jpg",
+  "/images/audit.jpg",
+  "/images/parents.jpeg"
 ];
 
-// 🔃 Installation : cache tous les fichiers listés
 self.addEventListener("install", event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
+      .then(cache => Promise.allSettled(STATIC_ASSETS.map(url => cache.add(url))))
+      .then(results => {
+        const failedAssets = results
+          .map((result, index) => ({ result, url: STATIC_ASSETS[index] }))
+          .filter(entry => entry.result.status === "rejected")
+          .map(entry => entry.url);
+
+        if (failedAssets.length > 0) {
+          console.warn("FlowLab PWA: assets non mis en cache", failedAssets);
+        }
+
+        return self.skipWaiting();
+      })
   );
 });
 
-// ✅ Interception des requêtes
 self.addEventListener("fetch", event => {
+  const { request } = event;
+
+  // Never intercept POST/PUT/PATCH/DELETE requests. FlowLab API calls to n8n must
+  // keep their normal network behaviour, especially for form submissions.
+  if (request.method !== "GET") return;
+
+  const requestUrl = new URL(request.url);
+  if (requestUrl.origin !== self.location.origin) return;
+
+  if (request.mode === "navigate") {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          return response;
+        })
+        .catch(() => caches.match(request).then(cached => cached || caches.match("/index.html")))
+    );
+    return;
+  }
+
   event.respondWith(
-    caches.match(event.request).then(cached => {
-      return cached || fetch(event.request).catch(() => {
-        if (event.request.destination === "document") {
-          return caches.match("/index.html");
-        }
+    caches.match(request).then(cached => {
+      if (cached) return cached;
+
+      return fetch(request).then(response => {
+        if (!response || !response.ok) return response;
+
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+        return response;
       });
     })
   );
 });
 
-// 🧹 Nettoyage des anciens caches
 self.addEventListener("activate", event => {
-  const keep = [CACHE_NAME];
   event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.map(key => {
-          if (!keep.includes(key)) {
-            return caches.delete(key);
-          }
-        })
-      );
-    }).then(() => self.clients.claim())
+    caches.keys()
+      .then(keys => Promise.all(keys.map(key => {
+        if (key !== CACHE_NAME) {
+          return caches.delete(key);
+        }
+        return Promise.resolve();
+      })))
+      .then(() => self.clients.claim())
   );
 });
-
